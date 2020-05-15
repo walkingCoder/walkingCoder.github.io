@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="webview," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="大家好，又和大家见面了。 今天的标题有点特殊，全是一点一点的不成句，这是有原因的，因为如果成句成为标题的话比较长，所以干脆透露知识点吧。 前述意思是：webview加载拼凑的html时，就要用loadData了，loadUrl就行不通了，但是还想知道用户点击了哪张图片，网上的一些教程要么是加载的html文件、要么是网络url，这里，咱们解决拼凑的String html. 情况介绍我们这个项目是这样">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android webview loadData 图片点击">
+<meta property="og:url" content="http://yoursite.com/2016/12/09/Android-webview-loadData-%E5%9B%BE%E7%89%87%E7%82%B9%E5%87%BB/index.html">
+<meta property="og:site_name" content="Build Your Dreams">
+<meta property="og:description" content="大家好，又和大家见面了。 今天的标题有点特殊，全是一点一点的不成句，这是有原因的，因为如果成句成为标题的话比较长，所以干脆透露知识点吧。 前述意思是：webview加载拼凑的html时，就要用loadData了，loadUrl就行不通了，但是还想知道用户点击了哪张图片，网上的一些教程要么是加载的html文件、要么是网络url，这里，咱们解决拼凑的String html. 情况介绍我们这个项目是这样">
+<meta property="article:published_time" content="2016-12-09T09:44:31.000Z">
+<meta property="article:modified_time" content="2017-05-25T03:27:27.000Z">
+<meta property="article:author" content="walkingCoder">
+<meta property="article:tag" content="webview">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/12/09/Android-webview-loadData-图片点击/"/>
+
+
+
+
+
+  <title>Android webview loadData 图片点击 | Build Your Dreams</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d93547c1df1bf79570af4684f56090cf";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Build Your Dreams</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">专注技术,极速成长</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/09/Android-webview-loadData-%E5%9B%BE%E7%89%87%E7%82%B9%E5%87%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="walkingCoder">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Build Your Dreams">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android webview loadData 图片点击</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-12-09T17:44:31+08:00">
+                2016-12-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/12/09/Android-webview-loadData-%E5%9B%BE%E7%89%87%E7%82%B9%E5%87%BB/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/12/09/Android-webview-loadData-图片点击/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>大家好，又和大家见面了。</p>
+<p>今天的标题有点特殊，全是一点一点的不成句，这是有原因的，因为如果成句成为标题的话比较长，所以干脆透露知识点吧。</p>
+<h4 id="前述"><a href="#前述" class="headerlink" title="前述"></a>前述</h4><p>意思是：webview加载拼凑的html时，就要用loadData了，loadUrl就行不通了，但是还想知道用户点击了哪张图片，网上的一些教程要么是加载的html文件、要么是网络url，这里，咱们解决拼凑的String html.</p>
+<h4 id="情况介绍"><a href="#情况介绍" class="headerlink" title="情况介绍"></a>情况介绍</h4><p>我们这个项目是这样的：图文混排 上传服务器的数据 是div嵌套p、img这些文本、图片标签，toString()字符串传上去。显示的时候，获取字符串然后自己拼凑成完整的html,webView显示。</p>
+<h4 id="上代码"><a href="#上代码" class="headerlink" title="上代码"></a>上代码</h4><h5 id="初始化："><a href="#初始化：" class="headerlink" title="初始化："></a>初始化：</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">webView.addJavascriptInterface(<span class="keyword">new</span> JSInterFace(), <span class="string">"jsi"</span>);</span><br><span class="line">webView.getSettings().setJavaScriptEnabled(<span class="keyword">true</span>);</span><br></pre></td></tr></table></figure>
+<h5 id="webview-load拼凑html"><a href="#webview-load拼凑html" class="headerlink" title="webview load拼凑html"></a>webview load拼凑html</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String content = contentToHtml(info.getContent());</span><br><span class="line">webView.loadData(content, <span class="string">"text/html; charset=UTF-8"</span>, <span class="string">""</span>);  <span class="comment">//这样做 有效解决乱码</span></span><br></pre></td></tr></table></figure>
+<h5 id="用Jsoup-获取img-加上点击事件属性"><a href="#用Jsoup-获取img-加上点击事件属性" class="headerlink" title="用Jsoup 获取img 加上点击事件属性"></a>用Jsoup 获取img 加上点击事件属性</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> String <span class="title">contentToHtml</span><span class="params">(String content)</span> </span>&#123;</span><br><span class="line">        String decodeContent=<span class="keyword">null</span>;</span><br><span class="line">        StringBuilder builder = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            decodeContent= URLDecoder.decode(content,<span class="string">"UTF-8"</span>);   <span class="comment">//解码是为了解决表情的显示，上传服务器的时候进行了编码</span></span><br><span class="line">        &#125; <span class="keyword">catch</span> (UnsupportedEncodingException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        Document document = Jsoup.parse(decodeContent);</span><br><span class="line"></span><br><span class="line">        Elements imgs = document.select(<span class="string">"img"</span>);</span><br><span class="line">        <span class="keyword">for</span> (Element img : imgs) &#123;</span><br><span class="line">            String src = img.attr(<span class="string">"src"</span>);</span><br><span class="line">            pictureUrlList.add(src);</span><br><span class="line">            img.attr(<span class="string">"onClick"</span>, <span class="string">"window.jsi.image("</span> + (pictureUrlList.size()-<span class="number">1</span>)+ <span class="string">")"</span>);</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        builder.append(<span class="string">"&lt;html&gt;\n"</span> +</span><br><span class="line">                <span class="string">"\t&lt;head&gt;\n"</span> +</span><br><span class="line">                <span class="string">"\t\t&lt;meta charset=\"UTF-8\"&gt;\n"</span> +</span><br><span class="line">                <span class="string">"\t\t&lt;meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=2.0, user-scalable=yes\" /&gt;\n"</span> +<span class="comment">//这里可以使html自动铺满手机屏幕</span></span><br><span class="line">                <span class="string">"\t\t&lt;style&gt;\n"</span> +</span><br><span class="line">                <span class="string">"\t\t\tbody &#123;\n"</span> +</span><br><span class="line">                <span class="string">"\t\t\t\twidth: 100%;\n"</span> +</span><br><span class="line">                <span class="string">"\t\t\t\theight: 100%;\n"</span> +</span><br><span class="line">                <span class="string">"\t\t\t\tmargin:0px;\n"</span> +</span><br><span class="line">                <span class="string">"\t\t\t&#125;\n"</span> +</span><br><span class="line">                <span class="string">"\t\t\timg &#123;\n"</span> +</span><br><span class="line">                <span class="string">"\t\t\t\tmax-width: 100%;\n"</span> +<span class="comment">//使图片刚好铺满屏幕，不超出屏幕</span></span><br><span class="line">                <span class="string">"\t\t\t&#125;"</span> +</span><br><span class="line">                <span class="string">"\t\t&lt;/style&gt;\n"</span> +</span><br><span class="line">                <span class="string">"\t&lt;/head&gt;\n"</span> +</span><br><span class="line">                <span class="string">"\n"</span> +</span><br><span class="line">                <span class="string">"\t&lt;body&gt;\t"</span>);</span><br><span class="line"></span><br><span class="line">        builder.append(document.toString());</span><br><span class="line">        builder.append(<span class="string">"&lt;/body&gt;\n"</span> +</span><br><span class="line">                <span class="string">"&lt;/html&gt;"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> builder.toString();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="图片点击事件响应"><a href="#图片点击事件响应" class="headerlink" title="图片点击事件响应"></a>图片点击事件响应</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">JSInterFace</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">       <span class="meta">@JavascriptInterface</span></span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">image</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">           AppLog.LOG(<span class="string">"tag"</span>,<span class="string">"imgage===url=="</span>+pictureUrlList.get(i));</span><br><span class="line">           Intent intent=<span class="keyword">new</span> Intent(AskingShareDetailActivity.<span class="keyword">this</span>, ImageSwipeActivity<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">           intent.putStringArrayListExtra(Constants.Extra.IMAGE_URL_LIST, (ArrayList&lt;String&gt;) pictureUrlList);</span><br><span class="line">           intent.putExtra(Constants.Extra.IMAGE_POSITION,i);</span><br><span class="line">           startActivity(intent);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="其实还有更好的办法"><a href="#其实还有更好的办法" class="headerlink" title="其实还有更好的办法"></a>其实还有更好的办法</h5><p>更好的办法：就是在上传服务器的时候 img 就添上 js点击属性，但是还没有与ios那边沟通，只能先这样了，这样可以自己玩自己的，不用管任何人。 </p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/webview/" rel="tag"># webview</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/08/Android%E8%BE%93%E5%85%A5%E6%B3%95%E8%A1%A8%E6%83%85%E7%9A%84%E8%8E%B7%E5%8F%96%E3%80%81%E6%98%BE%E7%A4%BA%E5%8F%8A%E4%B8%8A%E4%BC%A0%E6%9C%8D%E5%8A%A1%E5%99%A8/" rel="next" title="Android输入法表情的获取、显示及上传服务器">
+                <i class="fa fa-chevron-left"></i> Android输入法表情的获取、显示及上传服务器
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/23/TextView%E5%AE%9E%E7%8E%B0%E8%B6%85%E9%93%BE%E6%8E%A5%E8%87%AA%E5%AE%9A%E4%B9%89%E8%B7%B3%E8%BD%AC%E5%8F%8A%E8%A7%A3%E5%86%B3%E5%9C%A8ListView%E4%B8%AD%E7%9A%84%E4%BA%8B%E4%BB%B6%E5%86%B2%E7%AA%81/" rel="prev" title="TextView实现超链接自定义跳转及解决在ListView中的事件冲突">
+                TextView实现超链接自定义跳转及解决在ListView中的事件冲突 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">walkingCoder</p>
+              <p class="site-description motion-element" itemprop="description">专注技术,极速成长</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/walkingCoder" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="os_line@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#前述"><span class="nav-number">1.</span> <span class="nav-text">前述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#情况介绍"><span class="nav-number">2.</span> <span class="nav-text">情况介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#上代码"><span class="nav-number">3.</span> <span class="nav-text">上代码</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#初始化："><span class="nav-number">3.1.</span> <span class="nav-text">初始化：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#webview-load拼凑html"><span class="nav-number">3.2.</span> <span class="nav-text">webview load拼凑html</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#用Jsoup-获取img-加上点击事件属性"><span class="nav-number">3.3.</span> <span class="nav-text">用Jsoup 获取img 加上点击事件属性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#图片点击事件响应"><span class="nav-number">3.4.</span> <span class="nav-text">图片点击事件响应</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#其实还有更好的办法"><span class="nav-number">3.5.</span> <span class="nav-text">其实还有更好的办法</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">walkingCoder</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://walkingCoder.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2016/12/09/Android-webview-loadData-%E5%9B%BE%E7%89%87%E7%82%B9%E5%87%BB/';
+          this.page.identifier = '2016/12/09/Android-webview-loadData-图片点击/';
+          this.page.title = 'Android webview loadData 图片点击';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://walkingCoder.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

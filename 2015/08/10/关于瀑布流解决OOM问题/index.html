@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="瀑布流," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="最近在做一款全图片的壁纸的app应用，既然是全图片那么，必不可免的会出现oom异常，非常的头疼麻烦~,其他的瀑布流开源项目使用总是出现这样或那样的问题….说实话，下面这么长的代码我都不想看，又乱 借鉴  资源借鉴      &#x2F;&#x2F;百度网盘里面有我借鉴的资源，可以下载来看一下 自定义ScrollView解决OOM123456789101112131415161718192021222324252627">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于瀑布流解决OOM问题">
+<meta property="og:url" content="http://yoursite.com/2015/08/10/%E5%85%B3%E4%BA%8E%E7%80%91%E5%B8%83%E6%B5%81%E8%A7%A3%E5%86%B3OOM%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:site_name" content="Build Your Dreams">
+<meta property="og:description" content="最近在做一款全图片的壁纸的app应用，既然是全图片那么，必不可免的会出现oom异常，非常的头疼麻烦~,其他的瀑布流开源项目使用总是出现这样或那样的问题….说实话，下面这么长的代码我都不想看，又乱 借鉴  资源借鉴      &#x2F;&#x2F;百度网盘里面有我借鉴的资源，可以下载来看一下 自定义ScrollView解决OOM123456789101112131415161718192021222324252627">
+<meta property="article:published_time" content="2015-08-10T06:36:01.000Z">
+<meta property="article:modified_time" content="2017-05-24T08:18:04.000Z">
+<meta property="article:author" content="walkingCoder">
+<meta property="article:tag" content="瀑布流">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/08/10/关于瀑布流解决OOM问题/"/>
+
+
+
+
+
+  <title>关于瀑布流解决OOM问题 | Build Your Dreams</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d93547c1df1bf79570af4684f56090cf";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Build Your Dreams</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">专注技术,极速成长</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/08/10/%E5%85%B3%E4%BA%8E%E7%80%91%E5%B8%83%E6%B5%81%E8%A7%A3%E5%86%B3OOM%E9%97%AE%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="walkingCoder">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Build Your Dreams">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">关于瀑布流解决OOM问题</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-08-10T14:36:01+08:00">
+                2015-08-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/08/10/%E5%85%B3%E4%BA%8E%E7%80%91%E5%B8%83%E6%B5%81%E8%A7%A3%E5%86%B3OOM%E9%97%AE%E9%A2%98/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015/08/10/关于瀑布流解决OOM问题/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近在做一款全图片的壁纸的app应用，既然是全图片那么，必不可免的会出现oom异常，非常的头疼麻烦<del>~</del>,其他的瀑布流开源项目使用总是出现这样或那样的问题….说实话，下面这么长的代码我都不想看，又乱</p>
+<h3 id="借鉴"><a href="#借鉴" class="headerlink" title="借鉴"></a>借鉴</h3><p>  <a href="http://pan.baidu.com/s/1i3rjMDJ" target="_blank" rel="noopener">资源借鉴</a>      //百度网盘里面有我借鉴的资源，可以下载来看一下</p>
+<h3 id="自定义ScrollView解决OOM"><a href="#自定义ScrollView解决OOM" class="headerlink" title="自定义ScrollView解决OOM"></a>自定义ScrollView解决OOM</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 自定义的ScrollView，在其中动态地对图片进行添加。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> guolin</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyScrollView2</span> <span class="keyword">extends</span> <span class="title">ScrollView</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 每页要加载的图片数量</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> PAGE_SIZE = <span class="number">20</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 记录当前已加载到第几页</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> page;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 每一列的宽度</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> columnWidth;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 当前第一列的高度</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> firstColumnHeight;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 当前第二列的高度</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> secondColumnHeight;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 是否已加载过一次layout，这里onLayout中的初始化只需加载一次</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> loadOnce;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 第一列的布局</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> LinearLayout firstColumn;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 第二列的布局</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> LinearLayout secondColumn;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * MyScrollView下的直接子布局。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> View scrollLayout;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * MyScrollView布局的高度。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> scrollViewHeight;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 记录上垂直方距向的滚动离。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> lastScrollY = -<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 记录所有界面上的图片，用以可以随时控制对图片的释放。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> List&lt;ImageView&gt; imageViewList = <span class="keyword">new</span> ArrayList&lt;ImageView&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 在Handler中进行图片可见性检查的判断，以及加载更多图片的操作。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="comment">/*private Handler handler = new Handler() &#123;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">        public void handleMessage(android.os.Message msg) &#123;</span></span><br><span class="line"><span class="comment">            MyScrollView2 myScrollView = (MyScrollView2) msg.obj;</span></span><br><span class="line"><span class="comment">            int scrollY = myScrollView.getScrollY();</span></span><br><span class="line"><span class="comment">            // 如果当前的滚动位置和上次相同，表示已停止滚动</span></span><br><span class="line"><span class="comment">            if (scrollY == lastScrollY) &#123;</span></span><br><span class="line"><span class="comment">                // 当滚动的最底部，并且当前没有正在下载的任务时，开始加载下一页的图片</span></span><br><span class="line"><span class="comment">                if (scrollViewHeight + scrollY &gt;= scrollLayout.getHeight()) &#123;</span></span><br><span class="line"><span class="comment">                    myScrollView.loadMoreImages();</span></span><br><span class="line"><span class="comment">                &#125;</span></span><br><span class="line"><span class="comment">                myScrollView.checkVisibility();</span></span><br><span class="line"><span class="comment">            &#125; else &#123;</span></span><br><span class="line"><span class="comment">                lastScrollY = scrollY;</span></span><br><span class="line"><span class="comment">                Message message = new Message();</span></span><br><span class="line"><span class="comment">                message.obj = myScrollView;</span></span><br><span class="line"><span class="comment">                // 5毫秒后再次对滚动位置进行判断</span></span><br><span class="line"><span class="comment">                handler.sendMessageDelayed(message, 5);</span></span><br><span class="line"><span class="comment">            &#125;</span></span><br><span class="line"><span class="comment">        &#125;;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    &#125;;*/</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * MyScrollView的构造函数。</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> context</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> attrs</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyScrollView2</span><span class="params">(Context context, AttributeSet attrs)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context, attrs);</span><br><span class="line">       handler.sendEmptyMessageDelayed(<span class="number">11</span>,<span class="number">500</span>);</span><br><span class="line"><span class="comment">//        setOnTouchListener(this);</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Handler handler=<span class="keyword">new</span> Handler()&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">super</span>.handleMessage(msg);</span><br><span class="line">            checkVisibility();</span><br><span class="line">            handler.sendEmptyMessageDelayed(<span class="number">11</span>,<span class="number">500</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onScrollChanged</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> t, <span class="keyword">int</span> oldl, <span class="keyword">int</span> oldt)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onScrollChanged(l, t, oldl, oldt);</span><br><span class="line">        doOnBorderListener();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">boolean</span> isZhixing;  <span class="comment">//到底部是会一直夹在数据 加个标记 就只会加载一次</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">doOnBorderListener</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (scrollViewHeight + getScrollY() &gt;= scrollLayout.getHeight()) &#123;</span><br><span class="line">            <span class="keyword">if</span>(!isZhixing)&#123;</span><br><span class="line">                LLogUtils.d(<span class="string">"============loadCount==="</span> + loadCount);</span><br><span class="line">                isZhixing=<span class="keyword">true</span>;</span><br><span class="line">                initData(loadCount);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (getScrollY() == <span class="number">0</span>) &#123;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String mUrl;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setUrl</span><span class="params">(String url)</span> </span>&#123;</span><br><span class="line">        mUrl = url;</span><br><span class="line">        initData(loadCount);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    List&lt;GroupPicture&gt; imageDatas = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initData</span><span class="params">(<span class="keyword">int</span> loadCount)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> firstIndex = (loadCount - <span class="number">1</span>) * <span class="number">20</span>;</span><br><span class="line">        <span class="keyword">int</span> endIndex = <span class="number">20</span>;</span><br><span class="line">        String selectUrl = mUrl + <span class="string">"&amp;limit_a="</span> + firstIndex + <span class="string">"&amp;limit_b="</span> + endIndex;</span><br><span class="line">        LApplication.getHttpUtils().send(HttpRequest.HttpMethod.GET, selectUrl, <span class="keyword">new</span> RequestCallBack&lt;String&gt;() &#123;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSuccess</span><span class="params">(ResponseInfo&lt;String&gt; response)</span> </span>&#123;</span><br><span class="line">                String result = response.result;</span><br><span class="line">                LogUtils.d(<span class="string">"result"</span> + result);</span><br><span class="line">                Response&lt;GroupPicture&gt; data = GsonUtil.get(result, <span class="keyword">new</span> TypeToken&lt;Response&lt;GroupPicture&gt;&gt;() &#123;</span><br><span class="line">                &#125;);</span><br><span class="line">                <span class="keyword">if</span> (data.getStatus() == Response.FAILED) &#123;</span><br><span class="line"><span class="comment">//                    ToastUtil.show(data.getMsg());</span></span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    List&lt;GroupPicture&gt; dataList = data.getList();</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">if</span> (dataList == <span class="keyword">null</span> || dataList.size() == <span class="number">0</span>) &#123;</span><br><span class="line">                        ToastUtil.show(<span class="string">"暂未更多资源，敬请期待..."</span>);</span><br><span class="line">                        <span class="keyword">return</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                        imageDatas.addAll(dataList);</span><br><span class="line"></span><br><span class="line">                    LLogUtils.d(<span class="string">"imageDatas==============="</span>+imageDatas.size());</span><br><span class="line">                        loadMoreImages();</span><br><span class="line"><span class="comment">//                    handler.sendMessageDelayed(handler.obtainMessage(0, MyScrollView2.this), 5);</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFailure</span><span class="params">(HttpException arg0, String arg1)</span> </span>&#123;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 进行一些关键性的初始化操作，获取MyScrollView的高度，以及得到第一列的宽度值。并在这里开始加载第一页的图片。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onLayout</span><span class="params">(<span class="keyword">boolean</span> changed, <span class="keyword">int</span> l, <span class="keyword">int</span> t, <span class="keyword">int</span> r, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onLayout(changed, l, t, r, b);</span><br><span class="line">        <span class="keyword">if</span> (changed &amp;&amp; !loadOnce) &#123;</span><br><span class="line">            scrollViewHeight = getHeight();</span><br><span class="line">            scrollLayout = getChildAt(<span class="number">0</span>);</span><br><span class="line">            firstColumn = (LinearLayout) findViewById(R.id.first_column);</span><br><span class="line">            secondColumn = (LinearLayout) findViewById(R.id.second_column);</span><br><span class="line">            columnWidth = firstColumn.getWidth();</span><br><span class="line">            loadOnce = <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 监听用户的触屏事件，如果用户手指离开屏幕则开始进行滚动检测。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">   <span class="comment">/* @Override</span></span><br><span class="line"><span class="comment">    public boolean onTouch(View v, MotionEvent event) &#123;</span></span><br><span class="line"><span class="comment">        if (event.getAction() == MotionEvent.ACTION_UP) &#123;</span></span><br><span class="line"><span class="comment">            Message message = new Message();</span></span><br><span class="line"><span class="comment">            message.obj = this;</span></span><br><span class="line"><span class="comment">            handler.sendMessageDelayed(message, 5);</span></span><br><span class="line"><span class="comment">        &#125;</span></span><br><span class="line"><span class="comment">        return false;</span></span><br><span class="line"><span class="comment">    &#125;*/</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> loadCount = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 开始加载下一页的图片，每张图片都会开启一个异步线程去下载。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">loadMoreImages</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> startIndex = page * PAGE_SIZE;</span><br><span class="line">        <span class="keyword">int</span> endIndex = page * PAGE_SIZE + PAGE_SIZE;</span><br><span class="line">        <span class="keyword">if</span> (startIndex &lt; imageDatas.size()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (loadCount &gt;= <span class="number">2</span>) &#123;</span><br><span class="line">                Toast.makeText(getContext(), <span class="string">"正在加载..."</span>, Toast.LENGTH_SHORT).show();</span><br><span class="line">            &#125;</span><br><span class="line">            loadCount++;</span><br><span class="line">            <span class="keyword">if</span> (endIndex &gt; imageDatas.size()) &#123;</span><br><span class="line">                endIndex = imageDatas.size();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = startIndex; i &lt; endIndex; i++) &#123;</span><br><span class="line">                ImageView imageView = <span class="keyword">new</span> ImageView(getContext());</span><br><span class="line"></span><br><span class="line">                <span class="keyword">final</span> GroupPicture bean = imageDatas.get(i);</span><br><span class="line">                LApplication.getBitmapUtils().configDefaultShowOriginal(<span class="keyword">true</span>);</span><br><span class="line">                LApplication.getBitmapUtils().display(imageView, bean.getPictureUrl(), <span class="keyword">new</span> BitmapLoadCallBack&lt;ImageView&gt;() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onLoadCompleted</span><span class="params">(ImageView imageView, String s, Bitmap bitmap, BitmapDisplayConfig bitmapDisplayConfig, BitmapLoadFrom bitmapLoadFrom)</span> </span>&#123;</span><br><span class="line">                        LinearLayout.LayoutParams params = <span class="keyword">new</span> LinearLayout.LayoutParams(</span><br><span class="line">                                ScreenUtil.getWidth() / <span class="number">2</span>, ScreenUtil.getWidth() / <span class="number">2</span>);</span><br><span class="line">                        params.setMargins(ScreenUtil.dp2px(<span class="number">1</span>), <span class="number">0</span>, <span class="number">0</span>, ScreenUtil.dp2px(<span class="number">1</span>));</span><br><span class="line">                        imageView.setTag(R.string.id, <span class="keyword">true</span>);</span><br><span class="line">                        imageView.setLayoutParams(params);</span><br><span class="line">                        imageView.setImageBitmap(bitmap);</span><br><span class="line">                        imageView.setScaleType(ScaleType.CENTER_CROP);</span><br><span class="line"></span><br><span class="line">                        imageView.setTag(R.string.image_url, bean);</span><br><span class="line">                        imageViewList.add(imageView);</span><br><span class="line">                        imageView.setOnClickListener(<span class="keyword">new</span> OnClickListener() &#123;</span><br><span class="line">                            <span class="meta">@Override</span></span><br><span class="line">                            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">                                Intent intent = <span class="keyword">new</span> Intent(getContext(), ImageShowActivity<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">                                String groupId = bean.getGroupId();</span><br><span class="line">                                intent.putExtra(<span class="string">"groupId"</span>, groupId);</span><br><span class="line">                                getContext().startActivity(intent);</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;);</span><br><span class="line"></span><br><span class="line">                        findColumnToAdd(imageView, ScreenUtil.getWidth() / <span class="number">2</span>).addView(imageView);</span><br><span class="line"></span><br><span class="line">                        isZhixing=<span class="keyword">false</span>;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onLoadFailed</span><span class="params">(ImageView imageView, String s, Drawable drawable)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            page++;</span><br><span class="line">        &#125;</span><br><span class="line">        checkVisibility();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 遍历imageViewList中的每张图片，对图片的可见性进行检查，如果图片已经离开屏幕可见范围，则将图片替换成一张空图。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">checkVisibility</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; imageViewList.size(); i++) &#123;</span><br><span class="line">            ImageView imageView = imageViewList.get(i);</span><br><span class="line">            <span class="keyword">boolean</span> isSet = (<span class="keyword">boolean</span>) imageView.getTag(R.string.id);</span><br><span class="line">            <span class="keyword">int</span> borderTop = (Integer) imageView.getTag(R.string.border_top);</span><br><span class="line">            <span class="keyword">int</span> borderBottom = (Integer) imageView</span><br><span class="line">                    .getTag(R.string.border_bottom);</span><br><span class="line">               <span class="comment">//这个地方 getScrollY()-ScreenUtil.getWidth() 和getScrollY() + scrollViewHeight+ScreenUtil.getWidth() 多加个ScreenUtil.getWidth() 是为了上下提前显示一张图片</span></span><br><span class="line">            <span class="keyword">if</span> (borderBottom &gt; getScrollY()-ScreenUtil.getWidth()</span><br><span class="line">                   &amp;&amp; borderTop &lt; getScrollY() + scrollViewHeight+ScreenUtil.getWidth()) &#123;<span class="comment">//show</span></span><br><span class="line">                <span class="keyword">final</span> GroupPicture bean = (GroupPicture) imageView.getTag(R.string.image_url);</span><br><span class="line">                imageView.setOnClickListener(<span class="keyword">new</span> OnClickListener() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">                        Intent intent = <span class="keyword">new</span> Intent(getContext(), ImageShowActivity<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">                        String groupId = bean.getGroupId();</span><br><span class="line">                        intent.putExtra(<span class="string">"groupId"</span>, groupId);</span><br><span class="line">                        getContext().startActivity(intent);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">                 <span class="keyword">if</span>(!isSet) &#123;</span><br><span class="line">                     LApplication.getBitmapUtils().display(imageView, bean.getPictureUrl());</span><br><span class="line">                     imageView.setTag(R.string.id, <span class="keyword">true</span>);</span><br><span class="line">                 &#125;</span><br><span class="line"></span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                imageView.setImageResource(R.drawable.empty_photo);</span><br><span class="line">                imageView.setOnClickListener(<span class="keyword">null</span>);</span><br><span class="line">                imageView.setTag(R.string.id, <span class="keyword">false</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> LinearLayout <span class="title">findColumnToAdd</span><span class="params">(ImageView imageView, <span class="keyword">int</span> imageHeight)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (firstColumnHeight &lt;= secondColumnHeight) &#123;</span><br><span class="line">            imageView.setTag(R.string.border_top, firstColumnHeight);</span><br><span class="line">            firstColumnHeight += imageHeight;</span><br><span class="line">            imageView.setTag(R.string.border_bottom, firstColumnHeight);</span><br><span class="line">            <span class="keyword">return</span> firstColumn;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            imageView.setTag(R.string.border_top, secondColumnHeight);</span><br><span class="line">            secondColumnHeight += imageHeight;</span><br><span class="line">            imageView</span><br><span class="line">                    .setTag(R.string.border_bottom, secondColumnHeight);</span><br><span class="line">            <span class="keyword">return</span> secondColumn;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此自定义ScrollView没有使用常规的实现解耦分离、这点没有做好~~</p>
+<p>使用方法：或者将这个布局文件加到其他布局文件中 或者作为根布局文件<br>布局文件</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=<span class="string">"1.0"</span> encoding=<span class="string">"utf-8"</span>?&gt;</span><br><span class="line"></span><br><span class="line">	&lt;com.qiao.custom.MyScrollView2</span><br><span class="line">	    android:id=<span class="string">"@+id/select_scroll"</span></span><br><span class="line">	    xmlns:android=<span class="string">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">	    android:layout_width=<span class="string">"match_parent"</span></span><br><span class="line">	    android:layout_height=<span class="string">"match_parent"</span>&gt;</span><br><span class="line">	</span><br><span class="line">	    &lt;LinearLayout</span><br><span class="line">	        android:layout_width=<span class="string">"match_parent"</span></span><br><span class="line">	        android:layout_height=<span class="string">"wrap_content"</span></span><br><span class="line">	        android:orientation=<span class="string">"vertical"</span>&gt;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//在顶部加了个自定义的viewPager 轮播图	 看需求 不需要删除 不影响</span></span><br><span class="line">		        &lt;com.klo.zz.bizhi.widget.CustomeViewPager</span><br><span class="line">	            android:id=<span class="string">"@+id/lunbo_pager"</span></span><br><span class="line">	            android:layout_width=<span class="string">"match_parent"</span></span><br><span class="line">	            android:layout_height=<span class="string">"wrap_content"</span>/&gt;</span><br><span class="line">	</span><br><span class="line">	        &lt;LinearLayout</span><br><span class="line">	            android:layout_width=<span class="string">"match_parent"</span></span><br><span class="line">	            android:layout_height=<span class="string">"wrap_content"</span></span><br><span class="line">	            android:layout_marginTop=<span class="string">"1dp"</span></span><br><span class="line">	            android:orientation=<span class="string">"horizontal"</span>&gt;</span><br><span class="line">	</span><br><span class="line">	            &lt;LinearLayout</span><br><span class="line">	                android:id=<span class="string">"@+id/first_column"</span></span><br><span class="line">	                android:layout_width=<span class="string">"0dp"</span></span><br><span class="line">	                android:layout_height=<span class="string">"wrap_content"</span></span><br><span class="line">	                android:layout_weight=<span class="string">"1"</span></span><br><span class="line">	                android:orientation="vertical"&gt;&lt;/LinearLayout&gt;</span><br><span class="line">	</span><br><span class="line">	            &lt;LinearLayout</span><br><span class="line">	                android:id=<span class="string">"@+id/second_column"</span></span><br><span class="line">	                android:layout_width=<span class="string">"0dp"</span></span><br><span class="line">	                android:layout_height=<span class="string">"wrap_content"</span></span><br><span class="line">	                android:layout_weight=<span class="string">"1"</span></span><br><span class="line">	                android:orientation="vertical"&gt;&lt;/LinearLayout&gt;</span><br><span class="line">	        &lt;/LinearLayout&gt;</span><br><span class="line">	    &lt;/LinearLayout&gt;</span><br><span class="line">	&lt;/com.qiao.custom.MyScroll2&gt;</span><br></pre></td></tr></table></figure>
+<p>在String.xml中添加</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;string name="border_top"&gt;Border Top&lt;/string&gt;</span><br><span class="line">&lt;string name="border_bottom"&gt;Border Bottom&lt;/string&gt;</span><br><span class="line">&lt;string name="image_url"&gt;Image Url&lt;/string&gt;</span><br><span class="line">&lt;string name="bitmap"&gt;bitmap&lt;/string&gt;</span><br><span class="line">&lt;string name="id"&gt;99&lt;/string&gt;</span><br></pre></td></tr></table></figure>
+<p>在类里面 findViewById()找到 myScrollView 然后 setUrl();</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E7%80%91%E5%B8%83%E6%B5%81/" rel="tag"># 瀑布流</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/08/10/%E5%85%B3%E4%BA%8EAndroid-Studio%E7%9A%84Gradle%E7%9A%84%E9%85%8D%E7%BD%AE%E7%9A%84%E4%B8%80%E4%BA%9B%E7%9F%A5%E8%AF%86/" rel="next" title="关于Android Studio的Gradle文件配置的一些知识">
+                <i class="fa fa-chevron-left"></i> 关于Android Studio的Gradle文件配置的一些知识
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/08/10/ScrollView%E6%BB%91%E5%8A%A8%E5%88%B0%E9%A1%B6%E9%83%A8%E6%88%96%E5%BA%95%E9%83%A8%E7%9A%84%E5%93%8D%E5%BA%94/" rel="prev" title="ScrollView滑动到顶部或底部的响应">
+                ScrollView滑动到顶部或底部的响应 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">walkingCoder</p>
+              <p class="site-description motion-element" itemprop="description">专注技术,极速成长</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/walkingCoder" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="os_line@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#借鉴"><span class="nav-number">1.</span> <span class="nav-text">借鉴</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义ScrollView解决OOM"><span class="nav-number">2.</span> <span class="nav-text">自定义ScrollView解决OOM</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">walkingCoder</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://walkingCoder.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2015/08/10/%E5%85%B3%E4%BA%8E%E7%80%91%E5%B8%83%E6%B5%81%E8%A7%A3%E5%86%B3OOM%E9%97%AE%E9%A2%98/';
+          this.page.identifier = '2015/08/10/关于瀑布流解决OOM问题/';
+          this.page.title = '关于瀑布流解决OOM问题';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://walkingCoder.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="壁纸," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="直接获取网络上的图片，然后设置壁纸、锁屏可以，不过我这里是先将网络上的图片下载下来，存到sd卡上，然后设置sd卡上的图片为壁纸。 源码下载：这个我还没添加到github上，添加之后更改本位置的内容设置壁纸12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535">
+<meta property="og:type" content="article">
+<meta property="og:title" content="开发Android壁纸:设置壁纸、设置锁屏心得">
+<meta property="og:url" content="http://yoursite.com/2015/07/23/%E5%BC%80%E5%8F%91Android%E5%A3%81%E7%BA%B8-%E8%AE%BE%E7%BD%AE%E5%A3%81%E7%BA%B8%E3%80%81%E8%AE%BE%E7%BD%AE%E9%94%81%E5%B1%8F%E5%BF%83%E5%BE%97/index.html">
+<meta property="og:site_name" content="Build Your Dreams">
+<meta property="og:description" content="直接获取网络上的图片，然后设置壁纸、锁屏可以，不过我这里是先将网络上的图片下载下来，存到sd卡上，然后设置sd卡上的图片为壁纸。 源码下载：这个我还没添加到github上，添加之后更改本位置的内容设置壁纸12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535">
+<meta property="article:published_time" content="2015-07-23T10:32:44.000Z">
+<meta property="article:modified_time" content="2017-05-25T03:23:10.000Z">
+<meta property="article:author" content="walkingCoder">
+<meta property="article:tag" content="壁纸">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/07/23/开发Android壁纸-设置壁纸、设置锁屏心得/"/>
+
+
+
+
+
+  <title>开发Android壁纸:设置壁纸、设置锁屏心得 | Build Your Dreams</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d93547c1df1bf79570af4684f56090cf";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Build Your Dreams</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">专注技术,极速成长</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/07/23/%E5%BC%80%E5%8F%91Android%E5%A3%81%E7%BA%B8-%E8%AE%BE%E7%BD%AE%E5%A3%81%E7%BA%B8%E3%80%81%E8%AE%BE%E7%BD%AE%E9%94%81%E5%B1%8F%E5%BF%83%E5%BE%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="walkingCoder">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Build Your Dreams">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">开发Android壁纸:设置壁纸、设置锁屏心得</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-07-23T18:32:44+08:00">
+                2015-07-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/07/23/%E5%BC%80%E5%8F%91Android%E5%A3%81%E7%BA%B8-%E8%AE%BE%E7%BD%AE%E5%A3%81%E7%BA%B8%E3%80%81%E8%AE%BE%E7%BD%AE%E9%94%81%E5%B1%8F%E5%BF%83%E5%BE%97/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015/07/23/开发Android壁纸-设置壁纸、设置锁屏心得/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>直接获取网络上的图片，然后设置壁纸、锁屏可以，不过我这里是先将网络上的图片下载下来，存到sd卡上，然后设置sd卡上的图片为壁纸。</p>
+<h2 id="源码下载："><a href="#源码下载：" class="headerlink" title="源码下载："></a>源码下载：</h2><pre><code>这个我还没添加到github上，添加之后更改本位置的内容</code></pre><h2 id="设置壁纸"><a href="#设置壁纸" class="headerlink" title="设置壁纸"></a>设置壁纸</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">  <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Wallpaper</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Activity mContext;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Wallpaper</span><span class="params">(ImageShowActivity imageShowActivity)</span> </span>&#123;</span><br><span class="line">        mContext = imageShowActivity;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setWallPaper</span><span class="params">(String url)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> index = url.lastIndexOf(<span class="string">"/"</span>);</span><br><span class="line">        String pirtureName = url.substring(index + <span class="number">1</span>);</span><br><span class="line">        String path = AppConfig.DOWN_PATH;</span><br><span class="line">        File file = <span class="keyword">new</span> File(path);</span><br><span class="line">        <span class="keyword">if</span> (!file.exists() &amp;&amp; !file.isDirectory()) &#123;</span><br><span class="line">            file.mkdir();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">final</span> String target = path + <span class="string">"/"</span> + pirtureName;</span><br><span class="line">        File targetFile = <span class="keyword">new</span> File(target);</span><br><span class="line">        <span class="keyword">if</span> (targetFile.exists()) &#123;</span><br><span class="line">            set(target);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            LApplication.getHttpUtils().download(url, target, <span class="keyword">new</span> RequestCallBack&lt;File&gt;() &#123;</span><br><span class="line"></span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onLoading</span><span class="params">(<span class="keyword">long</span> total, <span class="keyword">long</span> current, <span class="keyword">boolean</span> isUploading)</span> </span>&#123;</span><br><span class="line">                    <span class="keyword">super</span>.onLoading(total, current, isUploading);</span><br><span class="line"></span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSuccess</span><span class="params">(ResponseInfo&lt;File&gt; arg0)</span> </span>&#123;</span><br><span class="line">                    set(target);   <span class="comment">//设置壁纸</span></span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFailure</span><span class="params">(HttpException arg0, String arg1)</span> </span>&#123;</span><br><span class="line">                    ToastUtil.show(<span class="string">"网络异常"</span>);</span><br><span class="line"></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 设置壁纸</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> target 图片路径</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">set</span><span class="params">(String target)</span> </span>&#123;</span><br><span class="line">        Bitmap bitmap = BitmapFactory.decodeFile(target);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            WallpaperManager wallpaperManager = android.app.WallpaperManager.getInstance(mContext);</span><br><span class="line">            wallpaperManager.setBitmap(bitmap);</span><br><span class="line">            ToastUtil.show(<span class="string">"设置成功"</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            String msg = <span class="string">"设置桌面背景发生异常:"</span> + e.getLocalizedMessage();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>别忘记在ApplicationManifest.xml 中加上权限的设置。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;uses-permission android:name = <span class="string">"android.permission.SET_WALLPAPER"</span>/&gt;</span><br></pre></td></tr></table></figure>
+
+<p>壁纸设置方法有三种：  <b>（尼玛，这三种设置壁纸的方法，都不管我们的死活，直接设置随着屏幕滚动，图片都模糊了）</b></p>
+<p>第一 通过WallpaperManager方法中的 setBitmap（）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">WallpaperManager wallpaperManager = WallpaperManager.getInstance(<span class="keyword">this</span>);</span><br><span class="line"> Resources res = getResources();</span><br><span class="line"> Bitmap bitmap=BitmapFactory.decodeResource(res,R.drawable.h); </span><br><span class="line">  <span class="keyword">try</span>&#123;</span><br><span class="line"> wallpaperManager.setBitmap(bitmap);</span><br><span class="line">&#125;<span class="keyword">catch</span> (IOException e)&#123;</span><br><span class="line">e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第二 使用WallpaperManager的setResource(int ResourceID)方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">WallpaperManager wallpaperManager = WallpaperManager.getInstance(<span class="keyword">this</span>);</span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">		wallpaperManager.setResource(ResourceID);</span><br><span class="line">        Toast.makeText(<span class="keyword">this</span>, <span class="string">"设置成功"</span>, Toast.LENGTH_SHORT).show();</span><br><span class="line">	&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">		e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第三 通过ContextWrapper 类中提供的setWallpaper（）方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Resources localResources = getBaseContext().getResources();</span><br><span class="line">InputStream localInputStream2 = localResources.openRawResource(ResourceID);</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			setWallpaper(localInputStream2);</span><br><span class="line">		&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="注意：设置单屏壁纸，不随着屏幕滑动而滑动"><a href="#注意：设置单屏壁纸，不随着屏幕滑动而滑动" class="headerlink" title="注意：设置单屏壁纸，不随着屏幕滑动而滑动"></a>注意：设置单屏壁纸，不随着屏幕滑动而滑动</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line">	 <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">set</span><span class="params">(String target)</span> </span>&#123;</span><br><span class="line">	        Bitmap bitmap = BitmapFactory.decodeFile(target);</span><br><span class="line">	        <span class="keyword">try</span> &#123;</span><br><span class="line">	            WallpaperManager wallpaperManager = android.app.WallpaperManager.getInstance(mContext);</span><br><span class="line">	            <span class="keyword">int</span> desiredMinimumWidth = mContext.getWindowManager().getDefaultDisplay().getWidth();  <span class="comment">//获取屏幕的宽</span></span><br><span class="line">	            <span class="keyword">int</span> desiredMinimumHeight = mContext.getWindowManager().getDefaultDisplay().getHeight(); <span class="comment">//获取屏幕的高</span></span><br><span class="line">                 <span class="comment">//bitmap这个参数再加工一次，缩放到desireMinimumWidth,desireMinmunHeight宽度和高度后再设置</span></span><br><span class="line">	            Bitmap sbitmap = sBitmap(bitmap,desiredMinimumWidth,desiredMinimumHeight);</span><br><span class="line">                <span class="comment">//很重要，有的手机少了这句话不行........</span></span><br><span class="line">                wallpaperManager.suggestDesiredDimensions(screenWidth, screenHeight);<span class="comment">//设置期望壁纸的尺寸</span></span><br><span class="line">	            wallpaperManager.setBitmap(sbitmap);</span><br><span class="line">	            ToastUtil.show(<span class="string">"设置成功"</span>);</span><br><span class="line">	        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">	            String msg = <span class="string">"设置桌面背景发生异常:"</span> + e.getLocalizedMessage();</span><br><span class="line">	            ToastUtil.show(msg);</span><br><span class="line">	        &#125;</span><br><span class="line">	    &#125;</span><br><span class="line">	    <span class="function"><span class="keyword">public</span>  Bitmap <span class="title">sBitmap</span><span class="params">(Bitmap b, <span class="keyword">int</span> w, <span class="keyword">int</span> h)</span> </span>&#123;</span><br><span class="line">	        <span class="keyword">int</span> width = b.getWidth();</span><br><span class="line">	        <span class="keyword">int</span> height = b.getHeight();</span><br><span class="line">	        <span class="keyword">float</span> scaleWidth = ((<span class="keyword">float</span>) w) / width;</span><br><span class="line">	        <span class="keyword">float</span> scaleHeight = ((<span class="keyword">float</span>) h) / height;</span><br><span class="line">	        Matrix matrix = <span class="keyword">new</span> Matrix();</span><br><span class="line">	        matrix.postScale(scaleWidth, scaleHeight);<span class="comment">//缩放</span></span><br><span class="line">	        <span class="keyword">return</span> Bitmap.createBitmap(b, <span class="number">0</span>, <span class="number">0</span>, width, height, matrix, <span class="keyword">true</span>);</span><br><span class="line">	    &#125;</span><br><span class="line">```	   </span><br><span class="line"></span><br><span class="line">### 设置锁屏(此处的设置锁屏无法禁用home键，而且不好看，马上推出好看的....)</span><br><span class="line"></span><br><span class="line">&lt;h1&gt;&lt;a href="https://github.com/iosline/lockScreen"&gt;好看的锁屏：源码下载&lt;/a&gt;&lt;/h1&gt;</span><br><span class="line"></span><br><span class="line">&lt;b&gt;设置锁屏壁纸的原理：</span><br><span class="line"></span><br><span class="line">  <span class="number">1</span>.监测开机广播，开启锁屏服务，开启锁屏的Activity</span><br><span class="line"></span><br><span class="line">  <span class="number">2</span>.设置锁屏壁纸其实就是，监测手机解锁屏幕，然后start一个Activity,该Activity设置壁纸，设置滑动按钮，滑倒指定位置，将当前Activity finish掉即可。</span><br><span class="line"></span><br><span class="line">  3.需要注意 home键    Home键在3.1之后就不能屏蔽掉了 所以我们采用广播的方式：在当前Activity注册监听home键的广播,然后重新启动该Activity&lt;/b&gt;</span><br><span class="line"></span><br><span class="line">#### 代码如下：</span><br><span class="line"></span><br><span class="line">设置锁屏：</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">	<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LockManager</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">	    <span class="keyword">private</span> Activity mContext;</span><br><span class="line">	</span><br><span class="line">	    <span class="function"><span class="keyword">public</span> <span class="title">LockManager</span><span class="params">(ImageShowActivity imageShowActivity)</span> </span>&#123;</span><br><span class="line">	        mContext = imageShowActivity;</span><br><span class="line">	    &#125;</span><br><span class="line">	</span><br><span class="line">	    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setLock</span><span class="params">(String url)</span> </span>&#123;</span><br><span class="line">	        <span class="keyword">int</span> index = url.lastIndexOf(<span class="string">"/"</span>);</span><br><span class="line">	        String pirtureName = url.substring(index + <span class="number">1</span>);</span><br><span class="line">	        String path = AppConfig.DOWN_PATH;</span><br><span class="line">	        File file = <span class="keyword">new</span> File(path);</span><br><span class="line">	        <span class="keyword">if</span> (!file.exists() &amp;&amp; !file.isDirectory()) &#123;</span><br><span class="line">	            file.mkdir();</span><br><span class="line">	        &#125;</span><br><span class="line">	        <span class="keyword">final</span> String target = path + <span class="string">"/"</span> + pirtureName;</span><br><span class="line">	        File targetFile = <span class="keyword">new</span> File(target);</span><br><span class="line">	        <span class="keyword">if</span> (targetFile.exists()) &#123;</span><br><span class="line">	            set(target);</span><br><span class="line">	        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">	            LApplication.getHttpUtils().download(url, target, <span class="keyword">new</span> RequestCallBack&lt;File&gt;() &#123;</span><br><span class="line">	</span><br><span class="line">	                <span class="meta">@Override</span></span><br><span class="line">	                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onLoading</span><span class="params">(<span class="keyword">long</span> total, <span class="keyword">long</span> current, <span class="keyword">boolean</span> isUploading)</span> </span>&#123;</span><br><span class="line">	                    <span class="keyword">super</span>.onLoading(total, current, isUploading);</span><br><span class="line">	</span><br><span class="line">	                &#125;</span><br><span class="line">	</span><br><span class="line">	                <span class="meta">@Override</span></span><br><span class="line">	                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSuccess</span><span class="params">(ResponseInfo&lt;File&gt; arg0)</span> </span>&#123;</span><br><span class="line">	                    set(target);</span><br><span class="line">	                &#125;</span><br><span class="line">	</span><br><span class="line">	                <span class="meta">@Override</span></span><br><span class="line">	                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFailure</span><span class="params">(HttpException arg0, String arg1)</span> </span>&#123;</span><br><span class="line">	                    ToastUtil.show(<span class="string">"网络异常"</span>);</span><br><span class="line">	</span><br><span class="line">	                &#125;</span><br><span class="line">	            &#125;);</span><br><span class="line">	        &#125;</span><br><span class="line">	    &#125;</span><br><span class="line">	</span><br><span class="line">	    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">set</span><span class="params">(String target)</span> </span>&#123;</span><br><span class="line">	        Intent i = <span class="keyword">new</span> Intent(mContext, LockScreenActivity<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">	        i.putExtra(<span class="string">"targetPath"</span>, target);     <span class="comment">//将图片路径传过去，设置新的壁纸</span></span><br><span class="line">	        CacheUtil.save(<span class="string">"targetLock"</span>,target);  <span class="comment">//将图片路径存起来，这样做是为了 开机自动从存储系统里获取图片路径</span></span><br><span class="line">	        mContext.startActivity(i);</span><br><span class="line">	    &#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>在AndroidManifest.xml清单文件中配置</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- ############ 锁屏界面、服务、监听器############ --&gt;</span><br><span class="line">  &lt;activity android:name=<span class="string">".lock.LockScreenActivity"</span> /&gt;</span><br><span class="line"></span><br><span class="line">  &lt;service</span><br><span class="line">      android:name=<span class="string">".lock.LockScreenService"</span></span><br><span class="line">      android:process=<span class="string">"system"</span> /&gt;</span><br><span class="line"></span><br><span class="line">  &lt;receiver</span><br><span class="line">      android:name=<span class="string">".lock.LockScreenReceiver"</span></span><br><span class="line">      android:process=<span class="string">":remote"</span>&gt;</span><br><span class="line">      &lt;intent-filter android:priority=<span class="string">"1000"</span>&gt;</span><br><span class="line">          &lt;action android:name=<span class="string">"android.intent.action.BOOT_COMPLETED"</span> /&gt;</span><br><span class="line">          &lt;action android:name=<span class="string">"android.intent.action.USER_PRESENT"</span> /&gt;</span><br><span class="line"></span><br><span class="line">          &lt;category android:name=<span class="string">"android.intent.category.HOME"</span> /&gt;</span><br><span class="line">      &lt;/intent-filter&gt;</span><br><span class="line">  &lt;/receiver&gt;</span><br></pre></td></tr></table></figure>
+
+<p>监测开机的广播 广播接收者   (注意：开机启动，启动锁屏的service,然后service里面启动LockScreenActivity)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 开机广播，启动activity</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> jyk</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LockScreenReceiver</span> <span class="keyword">extends</span> <span class="title">BroadcastReceiver</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> String TAG = <span class="string">"LockScreenReceiver"</span>;</span><br><span class="line">	<span class="comment">//private KeyguardManager keyguardManager = null;</span></span><br><span class="line">	<span class="comment">//private KeyguardManager.KeyguardLock keyguardLock = null;</span></span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onReceive</span><span class="params">(Context context, Intent intent)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED))&#123;</span><br><span class="line">			Intent mIntent = <span class="keyword">new</span> Intent(context, LockScreenService<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">			mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);</span><br><span class="line"></span><br><span class="line">			<span class="comment">//keyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);</span></span><br><span class="line">			<span class="comment">//keyguardLock = keyguardManager.newKeyguardLock("");</span></span><br><span class="line">			<span class="comment">//keyguardLock.disableKeyguard(); </span></span><br><span class="line">			</span><br><span class="line">			context.startActivity(mIntent);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>锁屏的服务 同时注册屏幕锁住与解锁的广播</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LockScreenService</span> <span class="keyword">extends</span> <span class="title">Service</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> String TAG = <span class="string">"LockScreenService"</span>;</span><br><span class="line">	<span class="keyword">private</span> Intent lockIntent;</span><br><span class="line">	<span class="keyword">private</span> KeyguardManager keyguardManager = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">private</span> KeyguardManager.KeyguardLock keyguardLock = <span class="keyword">null</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> IBinder <span class="title">onBind</span><span class="params">(Intent arg0)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">super</span>.onCreate();</span><br><span class="line">		lockIntent = <span class="keyword">new</span> Intent(LockScreenService.<span class="keyword">this</span>, LockScreenActivity<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">		lockIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//注册广播</span></span><br><span class="line">		IntentFilter mScreenOffFilter = <span class="keyword">new</span> IntentFilter(Intent.ACTION_SCREEN_OFF);</span><br><span class="line">		LockScreenService.<span class="keyword">this</span>.registerReceiver(mScreenOffReceiver, mScreenOffFilter);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">super</span>.onDestroy();</span><br><span class="line">           keyguardLock.reenableKeyguard();</span><br><span class="line">		LockScreenService.<span class="keyword">this</span>.unregisterReceiver(mScreenOffReceiver);</span><br><span class="line">		<span class="comment">//重新启动activity</span></span><br><span class="line">		startService(<span class="keyword">new</span> Intent(LockScreenService.<span class="keyword">this</span>, LockScreenService<span class="class">.<span class="keyword">class</span>))</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">onStartCommand</span><span class="params">(Intent intent, <span class="keyword">int</span> flags, <span class="keyword">int</span> startId)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> Service.START_STICKY;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 屏幕变亮的广播，这里要隐藏系统的锁屏界面</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">private</span> BroadcastReceiver mScreenOffReceiver = <span class="keyword">new</span> BroadcastReceiver() &#123;</span><br><span class="line">		<span class="meta">@Override</span></span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onReceive</span><span class="params">(Context context, Intent intent)</span> </span>&#123;</span><br><span class="line">			Log.i(TAG, intent.getAction());</span><br><span class="line">			<span class="keyword">if</span>(intent.getAction().equals(Intent.ACTION_SCREEN_OFF)</span><br><span class="line">					|| intent.getAction().equals(Intent.ACTION_SCREEN_ON))&#123;</span><br><span class="line">				</span><br><span class="line">				keyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);</span><br><span class="line">				keyguardLock = keyguardManager.newKeyguardLock(<span class="string">""</span>);</span><br><span class="line">				keyguardLock.disableKeyguard(); <span class="comment">//这里就是取消系统默认的锁屏</span></span><br><span class="line">				</span><br><span class="line">				startActivity(lockIntent); <span class="comment">//注意这里跳转的意图</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="注意：取消系统默认的锁屏代码出现一次就够了-出现两次就会失效……"><a href="#注意：取消系统默认的锁屏代码出现一次就够了-出现两次就会失效……" class="headerlink" title="注意：取消系统默认的锁屏代码出现一次就够了  出现两次就会失效……"></a>注意：取消系统默认的锁屏代码出现一次就够了  出现两次就会失效……</h3><p>锁屏的LockScreenActivity</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br></pre></td><td class="code"><pre><span class="line">	<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LockScreenActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String TAG = <span class="string">"LockScreenActivity"</span>;</span><br><span class="line">    <span class="keyword">private</span> SliderRelativeLayout sliderRelativeLayout;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> MSG_LOCK_SUCESS = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        requestWindowFeature(Window.FEATURE_NO_TITLE); <span class="comment">//不要title</span></span><br><span class="line">        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,</span><br><span class="line">                WindowManager.LayoutParams.FLAG_FULLSCREEN); <span class="comment">//全屏显示</span></span><br><span class="line">        setContentView(R.layout.activity_lock_screen);</span><br><span class="line">        LApplication.init(<span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//注册广播</span></span><br><span class="line">        registerReceiver(mHomeKeyEventReceiver, <span class="keyword">new</span> IntentFilter(</span><br><span class="line">                Intent.ACTION_CLOSE_SYSTEM_DIALOGS));</span><br><span class="line"></span><br><span class="line">        String targetPath = getIntent().getStringExtra(<span class="string">"targetPath"</span>);</span><br><span class="line">        <span class="keyword">if</span>(targetPath == <span class="keyword">null</span>)&#123;</span><br><span class="line">            targetPath= CacheUtil.getString(<span class="string">"targetLock"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        Drawable bg = Drawable.createFromPath(targetPath);</span><br><span class="line">        RelativeLayout lockBg = (RelativeLayout) findViewById(R.id.lock_bg);</span><br><span class="line">        lockBg.setBackgroundDrawable(bg);</span><br><span class="line"></span><br><span class="line">        StringData();</span><br><span class="line">        sliderRelativeLayout = (SliderRelativeLayout) findViewById(R.id.sliderLayout);</span><br><span class="line">        sliderRelativeLayout.setMainHandler(handler);</span><br><span class="line">        sliderRelativeLayout.getBackground().setAlpha(<span class="number">180</span>); <span class="comment">//设置背景的透明度</span></span><br><span class="line"></span><br><span class="line">        startService(<span class="keyword">new</span> Intent(LockScreenActivity.<span class="keyword">this</span>, LockScreenService<span class="class">.<span class="keyword">class</span>))</span>; <span class="comment">//这里要显示的调用服务</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">StringData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> Calendar c = Calendar.getInstance();</span><br><span class="line">        c.setTimeZone(TimeZone.getTimeZone(<span class="string">"GMT+8:00"</span>));</span><br><span class="line">        String mYear = String.valueOf(c.get(Calendar.YEAR)); <span class="comment">// 获取当前年份</span></span><br><span class="line">        String mMonth = String.valueOf(c.get(Calendar.MONTH) + <span class="number">1</span>);<span class="comment">// 获取当前月份</span></span><br><span class="line">        String mDay = String.valueOf(c.get(Calendar.DAY_OF_MONTH));<span class="comment">// 获取当前月份的日期号码</span></span><br><span class="line">        String mWay = String.valueOf(c.get(Calendar.DAY_OF_WEEK));</span><br><span class="line">        <span class="keyword">if</span> (<span class="string">"1"</span>.equals(mWay)) &#123;</span><br><span class="line">            mWay = <span class="string">"日"</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"2"</span>.equals(mWay)) &#123;</span><br><span class="line">            mWay = <span class="string">"一"</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"3"</span>.equals(mWay)) &#123;</span><br><span class="line">            mWay = <span class="string">"二"</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"4"</span>.equals(mWay)) &#123;</span><br><span class="line">            mWay = <span class="string">"三"</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"5"</span>.equals(mWay)) &#123;</span><br><span class="line">            mWay = <span class="string">"四"</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"6"</span>.equals(mWay)) &#123;</span><br><span class="line">            mWay = <span class="string">"五"</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"7"</span>.equals(mWay)) &#123;</span><br><span class="line">            mWay = <span class="string">"六"</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        ((TextView) findViewById(R.id.time_day)).setText(mMonth + <span class="string">"月"</span> + mDay + <span class="string">"日"</span>);</span><br><span class="line">        ((TextView) findViewById(R.id.time_week)).setText(<span class="string">"星期"</span> + mWay);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">new</span> Thread(<span class="keyword">this</span>).start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Handler handler = <span class="keyword">new</span> Handler() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (MSG_LOCK_SUCESS == msg.what) &#123;</span><br><span class="line">                <span class="comment">//Toast.makeText(getApplicationContext(), R.string.lockSuccess, 1).show();</span></span><br><span class="line"><span class="comment">//				virbate();</span></span><br><span class="line">                finish();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (msg.what == <span class="number">100</span>) &#123;</span><br><span class="line">                ((TextView) findViewById(R.id.time_hour)).setText((String) msg.obj);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(msg.what == <span class="number">99</span>)&#123;</span><br><span class="line">                Intent intent=<span class="keyword">new</span> Intent(LockScreenActivity.<span class="keyword">this</span>,LockScreenActivity<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">                startActivity(intent);</span><br><span class="line">                finish();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">                SimpleDateFormat sdf = <span class="keyword">new</span> SimpleDateFormat(<span class="string">"HH:mm"</span>);</span><br><span class="line">                String str = sdf.format(<span class="keyword">new</span> Date());</span><br><span class="line">                handler.sendMessage(handler.obtainMessage(<span class="number">100</span>, str));</span><br><span class="line">                Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 震动</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="comment">/*private void virbate()&#123;</span></span><br><span class="line"><span class="comment">		Vibrator vibrator = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);</span></span><br><span class="line"><span class="comment">		vibrator.vibrate(200);</span></span><br><span class="line"><span class="comment">	&#125;*/</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 屏蔽掉Home键   自从3.1之后 就不能屏蔽了</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">	<span class="comment">/*@Override</span></span><br><span class="line"><span class="comment">	public void onAttachedToWindow() &#123;</span></span><br><span class="line"><span class="comment">		this.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG);</span></span><br><span class="line"><span class="comment">		super.onAttachedToWindow();</span></span><br><span class="line"><span class="comment">	&#125;*/</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 屏蔽掉返回键</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onKeyDown</span><span class="params">(<span class="keyword">int</span> keyCode, KeyEvent event)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (event.getKeyCode() == KeyEvent.KEYCODE_BACK) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">super</span>.onKeyDown(keyCode, event);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 监听是否点击了home键将客户端推到后台</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> BroadcastReceiver mHomeKeyEventReceiver = <span class="keyword">new</span> BroadcastReceiver() &#123;</span><br><span class="line">        String SYSTEM_REASON = <span class="string">"reason"</span>;</span><br><span class="line">        String SYSTEM_HOME_KEY = <span class="string">"homekey"</span>;</span><br><span class="line">        String SYSTEM_HOME_KEY_LONG = <span class="string">"recentapps"</span>;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onReceive</span><span class="params">(Context context, Intent intent)</span> </span>&#123;</span><br><span class="line">            String action = intent.getAction();</span><br><span class="line">            <span class="keyword">if</span> (action.equals(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)) &#123;</span><br><span class="line">                String reason = intent.getStringExtra(SYSTEM_REASON);</span><br><span class="line">                <span class="keyword">if</span> (TextUtils.equals(reason, SYSTEM_HOME_KEY)) &#123;</span><br><span class="line">                    <span class="comment">//表示按了home键,程序到了后台</span></span><br><span class="line">                    Toast.makeText(getApplicationContext(), <span class="string">"home"</span>,Toast.LENGTH_SHORT).show();</span><br><span class="line">                    handler.sendEmptyMessageDelayed(<span class="number">99</span>,<span class="number">3</span>);</span><br><span class="line">                &#125;<span class="keyword">else</span> <span class="keyword">if</span>(TextUtils.equals(reason, SYSTEM_HOME_KEY_LONG))&#123;</span><br><span class="line">                    <span class="comment">//表示长按home键,显示最近使用的程序列表</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">   </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onDestroy();</span><br><span class="line">        unregisterReceiver(mHomeKeyEventReceiver);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>LockScreenActivity 锁屏Activity的布局文件</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br></pre></td><td class="code"><pre><span class="line">&lt;RelativeLayout xmlns:tools=<span class="string">"http://schemas.android.com/tools"</span></span><br><span class="line">    xmlns:android=<span class="string">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">    android:id=<span class="string">"@+id/lock_bg"</span></span><br><span class="line">    android:layout_width=<span class="string">"match_parent"</span></span><br><span class="line">    android:layout_height=<span class="string">"match_parent"</span></span><br><span class="line">    tools:context=<span class="string">".LockScreenActivity"</span> &gt;</span><br><span class="line"></span><br><span class="line">    &lt;LinearLayout</span><br><span class="line">        android:layout_width=<span class="string">"match_parent"</span></span><br><span class="line">        android:layout_height=<span class="string">"wrap_content"</span></span><br><span class="line">        android:layout_marginTop=<span class="string">"100dp"</span></span><br><span class="line">        android:orientation=<span class="string">"vertical"</span></span><br><span class="line">        android:gravity=<span class="string">"center_horizontal"</span></span><br><span class="line">        android:background=<span class="string">"@drawable/shape_locktime_bg"</span></span><br><span class="line">        android:padding=<span class="string">"20dp"</span> &gt;</span><br><span class="line"></span><br><span class="line">        &lt;TextView</span><br><span class="line">            android:id=<span class="string">"@+id/time_hour"</span></span><br><span class="line">            android:layout_width=<span class="string">"wrap_content"</span></span><br><span class="line">            android:layout_height=<span class="string">"wrap_content"</span></span><br><span class="line">            android:text=<span class="string">"11:30"</span></span><br><span class="line">            android:textColor=<span class="string">"@android:color/white"</span></span><br><span class="line">            android:textSize=<span class="string">"50sp"</span> /&gt;</span><br><span class="line"></span><br><span class="line">        &lt;LinearLayout</span><br><span class="line">            android:layout_width=<span class="string">"wrap_content"</span></span><br><span class="line">            android:layout_height=<span class="string">"wrap_content"</span></span><br><span class="line">            android:orientation=<span class="string">"horizontal"</span> &gt;</span><br><span class="line"></span><br><span class="line">            &lt;TextView</span><br><span class="line">                android:id=<span class="string">"@+id/time_day"</span></span><br><span class="line">                android:layout_width=<span class="string">"wrap_content"</span></span><br><span class="line">                android:layout_height=<span class="string">"wrap_content"</span></span><br><span class="line">                android:text=<span class="string">"07月07日"</span></span><br><span class="line">                android:textColor=<span class="string">"@android:color/white"</span></span><br><span class="line">                android:textSize=<span class="string">"30sp"</span> /&gt;</span><br><span class="line"></span><br><span class="line">            &lt;TextView</span><br><span class="line">                android:id=<span class="string">"@+id/time_week"</span></span><br><span class="line">                android:layout_width=<span class="string">"wrap_content"</span></span><br><span class="line">                android:layout_height=<span class="string">"wrap_content"</span></span><br><span class="line">                android:text=<span class="string">"星期日"</span></span><br><span class="line">                android:textColor=<span class="string">"@android:color/white"</span></span><br><span class="line">                android:textSize=<span class="string">"30sp"</span> /&gt;</span><br><span class="line">        &lt;/LinearLayout&gt;</span><br><span class="line">    &lt;/LinearLayout&gt;</span><br><span class="line"></span><br><span class="line">    &lt;com.klo.zz.bizhi.lock.SliderRelativeLayout</span><br><span class="line">        android:id=<span class="string">"@+id/sliderLayout"</span></span><br><span class="line">        android:layout_width=<span class="string">"fill_parent"</span></span><br><span class="line">        android:layout_height=<span class="string">"50dp"</span></span><br><span class="line">        android:layout_alignParentBottom=<span class="string">"true"</span></span><br><span class="line">        android:layout_marginBottom=<span class="string">"100dp"</span></span><br><span class="line">        android:background=<span class="string">"@drawable/shape_locktime_bg"</span></span><br><span class="line">         &gt;</span><br><span class="line"></span><br><span class="line">        &lt;RelativeLayout</span><br><span class="line">            android:id=<span class="string">"@+id/relativeLayout1"</span></span><br><span class="line">            android:layout_width=<span class="string">"wrap_content"</span></span><br><span class="line">            android:layout_height=<span class="string">"wrap_content"</span></span><br><span class="line">            android:layout_alignParentLeft=<span class="string">"true"</span></span><br><span class="line">            android:layout_centerHorizontal=<span class="string">"true"</span></span><br><span class="line">            android:layout_centerVertical=<span class="string">"true"</span> &gt;</span><br><span class="line"></span><br><span class="line">            &lt;ImageView</span><br><span class="line">                android:id=<span class="string">"@+id/leftRing"</span></span><br><span class="line">                android:layout_width=<span class="string">"wrap_content"</span></span><br><span class="line">                android:layout_height=<span class="string">"wrap_content"</span></span><br><span class="line">                android:src=<span class="string">"@mipmap/arrow_right"</span> /&gt;</span><br><span class="line"></span><br><span class="line">            &lt;TextView</span><br><span class="line">                android:layout_width=<span class="string">"wrap_content"</span></span><br><span class="line">                android:layout_height=<span class="string">"wrap_content"</span></span><br><span class="line">                android:layout_centerHorizontal=<span class="string">"true"</span></span><br><span class="line">                android:layout_centerVertical=<span class="string">"true"</span></span><br><span class="line">                android:textColor=<span class="string">"#FF0000"</span> /&gt;</span><br><span class="line">        &lt;/RelativeLayout&gt;</span><br><span class="line"></span><br><span class="line">        &lt;RelativeLayout</span><br><span class="line">            android:layout_width=<span class="string">"wrap_content"</span></span><br><span class="line">            android:layout_height=<span class="string">"wrap_content"</span></span><br><span class="line">            android:layout_alignParentRight=<span class="string">"true"</span></span><br><span class="line">            android:layout_centerHorizontal=<span class="string">"true"</span></span><br><span class="line">            android:layout_centerVertical=<span class="string">"true"</span> &gt;</span><br><span class="line"></span><br><span class="line">            &lt;ImageView</span><br><span class="line">                android:id=<span class="string">"@+id/rightRing"</span></span><br><span class="line">                android:layout_width=<span class="string">"wrap_content"</span></span><br><span class="line">                android:layout_height=<span class="string">"wrap_content"</span></span><br><span class="line">                android:src=<span class="string">"@mipmap/arrow_right"</span> /&gt;</span><br><span class="line"></span><br><span class="line">            &lt;TextView</span><br><span class="line">                android:layout_width=<span class="string">"wrap_content"</span></span><br><span class="line">                android:layout_height=<span class="string">"wrap_content"</span></span><br><span class="line">                android:layout_centerHorizontal=<span class="string">"true"</span></span><br><span class="line">                android:layout_centerVertical=<span class="string">"true"</span></span><br><span class="line">                android:textColor=<span class="string">"#FF0000"</span> /&gt;</span><br><span class="line">        &lt;/RelativeLayout&gt;</span><br><span class="line"></span><br><span class="line">        &lt;RelativeLayout</span><br><span class="line">            android:layout_width=<span class="string">"222dp"</span></span><br><span class="line">            android:layout_height=<span class="string">"wrap_content"</span></span><br><span class="line">            android:layout_marginLeft=<span class="string">"50dp"</span> &gt;</span><br><span class="line"></span><br><span class="line">            &lt;ImageView</span><br><span class="line">                android:id=<span class="string">"@+id/loveView"</span></span><br><span class="line">                android:layout_width=<span class="string">"wrap_content"</span></span><br><span class="line">                android:layout_height=<span class="string">"match_parent"</span></span><br><span class="line">                android:layout_alignParentLeft=<span class="string">"true"</span></span><br><span class="line">                android:layout_alignParentTop=<span class="string">"true"</span></span><br><span class="line">                android:src=<span class="string">"@mipmap/open_lock"</span> /&gt;</span><br><span class="line">        &lt;/RelativeLayout&gt;</span><br><span class="line">    &lt;/com.klo.zz.bizhi.lock.SliderRelativeLayout&gt;</span><br><span class="line"></span><br><span class="line">&lt;/RelativeLayout&gt;</span><br></pre></td></tr></table></figure>
+
+<p>滑动解锁屏幕的自定义view</p>
+<p>SliderRelativeLayout 这个是从从网上找的，就不列出代码了。</p>
+<h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><p>   不想写…….</p>
+<h3 id="源码敬请期待………"><a href="#源码敬请期待………" class="headerlink" title="源码敬请期待………"></a>源码敬请期待………</h3>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E5%A3%81%E7%BA%B8/" rel="tag"># 壁纸</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/07/23/Android%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%8B%E6%8B%89%E5%88%B7%E6%96%B0%E3%80%81%E4%B8%8A%E6%8B%89%E5%8A%A0%E8%BD%BD%E6%9B%B4%E5%A4%9A%E5%8F%8APullToRegresh%E6%A1%86%E6%9E%B6%E7%9A%84%E7%94%A8%E6%B3%95/" rel="next" title="Android自定义下拉刷新、上拉加载更多及PullToRefresh框架的用法">
+                <i class="fa fa-chevron-left"></i> Android自定义下拉刷新、上拉加载更多及PullToRefresh框架的用法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/07/25/android%E5%B0%86%E7%BB%99%E5%AE%9A%E5%9B%BE%E7%89%87%E7%BB%B4%E6%8C%81%E5%AE%BD%E9%AB%98%E6%AF%94%E4%BE%8B%E7%BC%A9%E6%94%BE%E5%90%8E%EF%BC%8C%E6%88%AA%E5%8F%96%E6%AD%A3%E4%B8%AD%E9%97%B4%E7%9A%84%E6%AD%A3%E6%96%B9%E5%BD%A2%E9%83%A8%E5%88%86/" rel="prev" title="android将给定图片维持宽高比例缩放后，截取正中间的正方形部分">
+                android将给定图片维持宽高比例缩放后，截取正中间的正方形部分 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">walkingCoder</p>
+              <p class="site-description motion-element" itemprop="description">专注技术,极速成长</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/walkingCoder" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="os_line@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#源码下载："><span class="nav-number">1.</span> <span class="nav-text">源码下载：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置壁纸"><span class="nav-number">2.</span> <span class="nav-text">设置壁纸</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#注意：设置单屏壁纸，不随着屏幕滑动而滑动"><span class="nav-number">2.0.1.</span> <span class="nav-text">注意：设置单屏壁纸，不随着屏幕滑动而滑动</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注意：取消系统默认的锁屏代码出现一次就够了-出现两次就会失效……"><span class="nav-number">2.1.</span> <span class="nav-text">注意：取消系统默认的锁屏代码出现一次就够了  出现两次就会失效……</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结："><span class="nav-number">2.2.</span> <span class="nav-text">总结：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#源码敬请期待………"><span class="nav-number">2.3.</span> <span class="nav-text">源码敬请期待………</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">walkingCoder</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://walkingCoder.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2015/07/23/%E5%BC%80%E5%8F%91Android%E5%A3%81%E7%BA%B8-%E8%AE%BE%E7%BD%AE%E5%A3%81%E7%BA%B8%E3%80%81%E8%AE%BE%E7%BD%AE%E9%94%81%E5%B1%8F%E5%BF%83%E5%BE%97/';
+          this.page.identifier = '2015/07/23/开发Android壁纸-设置壁纸、设置锁屏心得/';
+          this.page.title = '开发Android壁纸:设置壁纸、设置锁屏心得';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://walkingCoder.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

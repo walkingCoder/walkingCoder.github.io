@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="webview," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="本文主要讲的是 JS代码与Android代码的互相调用一、在WebView中使用JavaScript如果你想要载入的页面中用了JavaScript，你必须为你的WebView使用JavaScript。 一旦使用之后，你也可以自己创建接口在你的应用和JavaScript代码间进行交互。 前情提要：使用JavaScript上一篇文章已经说过，可以通过getSettings()获得WebSettings">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android中WebView使用之二（JavaScript代码使用）">
+<meta property="og:url" content="http://yoursite.com/2015/12/17/Android%E4%B8%ADWebView%E4%BD%BF%E7%94%A8%E4%B9%8B%E4%BA%8C%EF%BC%88JavaScript%E4%BB%A3%E7%A0%81%E4%BD%BF%E7%94%A8%EF%BC%89/index.html">
+<meta property="og:site_name" content="Build Your Dreams">
+<meta property="og:description" content="本文主要讲的是 JS代码与Android代码的互相调用一、在WebView中使用JavaScript如果你想要载入的页面中用了JavaScript，你必须为你的WebView使用JavaScript。 一旦使用之后，你也可以自己创建接口在你的应用和JavaScript代码间进行交互。 前情提要：使用JavaScript上一篇文章已经说过，可以通过getSettings()获得WebSettings">
+<meta property="article:published_time" content="2015-12-17T09:11:55.000Z">
+<meta property="article:modified_time" content="2017-05-25T03:29:09.000Z">
+<meta property="article:author" content="walkingCoder">
+<meta property="article:tag" content="webview">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/12/17/Android中WebView使用之二（JavaScript代码使用）/"/>
+
+
+
+
+
+  <title>Android中WebView使用之二（JavaScript代码使用） | Build Your Dreams</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d93547c1df1bf79570af4684f56090cf";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Build Your Dreams</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">专注技术,极速成长</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/12/17/Android%E4%B8%ADWebView%E4%BD%BF%E7%94%A8%E4%B9%8B%E4%BA%8C%EF%BC%88JavaScript%E4%BB%A3%E7%A0%81%E4%BD%BF%E7%94%A8%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="walkingCoder">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Build Your Dreams">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android中WebView使用之二（JavaScript代码使用）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-12-17T17:11:55+08:00">
+                2015-12-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/12/17/Android%E4%B8%ADWebView%E4%BD%BF%E7%94%A8%E4%B9%8B%E4%BA%8C%EF%BC%88JavaScript%E4%BB%A3%E7%A0%81%E4%BD%BF%E7%94%A8%EF%BC%89/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015/12/17/Android中WebView使用之二（JavaScript代码使用）/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="本文主要讲的是-JS代码与Android代码的互相调用"><a href="#本文主要讲的是-JS代码与Android代码的互相调用" class="headerlink" title="本文主要讲的是 JS代码与Android代码的互相调用"></a>本文主要讲的是 JS代码与Android代码的互相调用</h3><h4 id="一、在WebView中使用JavaScript"><a href="#一、在WebView中使用JavaScript" class="headerlink" title="一、在WebView中使用JavaScript"></a>一、在WebView中使用JavaScript</h4><p>如果你想要载入的页面中用了JavaScript，你必须为你的WebView使用JavaScript。</p>
+<p>一旦使用之后，你也可以自己创建接口在你的应用和JavaScript代码间进行交互。</p>
+<h5 id="前情提要：使用JavaScript"><a href="#前情提要：使用JavaScript" class="headerlink" title="前情提要：使用JavaScript"></a>前情提要：使用JavaScript</h5><p>上一篇文章已经说过，可以通过getSettings()获得WebSettings，然后用setJavaScriptEnabled()使能JavaScript：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">WebView myWebView = (WebView) findViewById(R.id.webview);</span><br><span class="line">WebSettings webSettings = myWebView.getSettings();</span><br><span class="line">webSettings.setJavaScriptEnabled(<span class="keyword">true</span>);</span><br></pre></td></tr></table></figure>
+
+<h5 id="绑定JavaScript与Android代码"><a href="#绑定JavaScript与Android代码" class="headerlink" title="绑定JavaScript与Android代码"></a>绑定JavaScript与Android代码</h5><p>当你为你的Android应用中的WebView专门开发一个网页应用时，你可以创建你的JavaScript代码和你的客户端的Android代码之间的接口。</p>
+<p>比如，你可以用JavaScript代码调用Android代码中的方法，来展现一个对话框之类，而不是使用alert()方法（JS中的对话框方法）。</p>
+<p>在JS和Android代码间绑定一个新的接口，需要调用 addJavascriptInterface()方法。</p>
+<p>方法参数传入一个Java对象实例和一个字符串，该字符串是一个名字（interface name，注意此接口不是通常所说的那个用来实现的接口，而是传入的这个对象在JS中的别名），在JS代码中用此名字调用该Java对象的方法。</p>
+<p>注意这个方法可以让JS代码控制宿主程序，这是一个非常有力的特性，但是同时也存在一些安全问题，因为进一步JS代码可以通过反射访问到注入对象的公有域。攻击者可能会在HTML和JavaScript中包含了有威胁性的代码。</p>
+<p>所以Android 4.1，API 17，也就是JELLY_BEAN 开始，只有被JavascriptInterface 注解标识的公有方法可以被JS代码访问。</p>
+<p>另外，因为JS代码和Java对象在这个WebView所私有的后台线程交互，所以还需要注意线程安全性问题。</p>
+<p>注意，与JS代码绑定的的这个Java对象运行在另一个线程中，与创建它的线程不是一个线程。</p>
+<p>注意，这个Java对象的域是不可访问的。</p>
+<h5 id="绑定JavaScript与Android代码的例子"><a href="#绑定JavaScript与Android代码的例子" class="headerlink" title="绑定JavaScript与Android代码的例子"></a>绑定JavaScript与Android代码的例子</h5><p>比如可以定义这么一个类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 自定义的Android代码和JavaScript代码之间的桥梁类</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> 1</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebAppInterface</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    Context mContext;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Instantiate the interface and set the context */</span></span><br><span class="line">    WebAppInterface(Context c)</span><br><span class="line">    &#123;</span><br><span class="line">        mContext = c;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Show a toast from the web page */</span></span><br><span class="line">    <span class="comment">// 如果target 大于等于API 17，则需要加上如下注解</span></span><br><span class="line">    <span class="comment">// @JavascriptInterface</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">showToast</span><span class="params">(String toast)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">// Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show();</span></span><br><span class="line">        Toast.makeText(mContext, toast, Toast.LENGTH_LONG).show();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>然后将这个类和你的WebView中的JS代码绑定：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">WebView webView = (WebView) findViewById(R.id.webview);</span><br><span class="line">webView.addJavascriptInterface(<span class="keyword">new</span> WebAppInterface(<span class="keyword">this</span>), <span class="string">"Android"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>　　给这个对象起的别名叫“Android”。</p>
+<p>　　这个就创立了一个接口名，叫“Android”，运行在WebView中的JS代码可以通过这个名字调用WebAppInterface类中的showToast()方法：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;input type=<span class="string">"button"</span> value=<span class="string">"Say hello"</span> onClick=<span class="string">"showAndroidToast('Hello Android!')"</span> /&gt;</span><br><span class="line"></span><br><span class="line">&lt;script type=<span class="string">"text/javascript"</span>&gt;</span><br><span class="line">    <span class="function">function <span class="title">showAndroidToast</span><span class="params">(toast)</span> </span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Android.showToast(toast);</span><br><span class="line">    &#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<h5 id="特别注意：需要设置chrome-handler"><a href="#特别注意：需要设置chrome-handler" class="headerlink" title="特别注意：需要设置chrome handler"></a>特别注意：需要设置chrome handler</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 如果不设置这个，JS代码中的按钮会显示，但是按下去却不弹出对话框</span></span><br><span class="line">  <span class="comment">// Sets the chrome handler. This is an implementation of WebChromeClient</span></span><br><span class="line">  <span class="comment">// for use in handling JavaScript dialogs, favicons, titles, and the</span></span><br><span class="line">  <span class="comment">// progress. This will replace the current handler.</span></span><br><span class="line">  myWebView.setWebChromeClient(<span class="keyword">new</span> WebChromeClient()</span><br><span class="line">  &#123;</span><br><span class="line">	</span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onJsAlert</span><span class="params">(WebView view, String url, String message,</span></span></span><br><span class="line"><span class="function"><span class="params">              JsResult result)</span></span></span><br><span class="line"><span class="function">      </span>&#123;</span><br><span class="line">          <span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">          <span class="keyword">return</span> <span class="keyword">super</span>.onJsAlert(view, url, message, result);</span><br><span class="line">      &#125;</span><br><span class="line">	</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+<h4 id="二、Android-调用JavaScript代码"><a href="#二、Android-调用JavaScript代码" class="headerlink" title="二、Android 调用JavaScript代码"></a>二、Android 调用JavaScript代码</h4><p>这个还比较简单，需要调用的时候只需要一行代码：　　</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">myWebView.loadUrl(<span class="string">"javascript:myFunction()"</span>);<span class="comment">//其中myFunction()是JS函数。</span></span><br></pre></td></tr></table></figure>
+<p>　　这里要补充一下，如果JavaScript函数是带参数的，那么调用时要特别注意。</p>
+<p>　　比如下面这个JS函数，在原来内容上加入一行：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">    <span class="function">function <span class="title">writeLine</span><span class="params">(string)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        console.log(<span class="string">"Write a new Line"</span>);<span class="comment">//调试信息</span></span><br><span class="line">        document.getElementById(<span class="string">"content"</span>).innerHTML += string + <span class="string">"&lt;br /&gt;"</span>;<span class="comment">//在content标签段落加入新行</span></span><br><span class="line">    &#125;</span><br><span class="line">```    </span><br><span class="line">    </span><br><span class="line">　　注：其中content是自定义的标签，html中有一个段落是：</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">    &lt;p id="content"&gt;&lt;/p&gt;</span><br></pre></td></tr></table></figure>
+<p>那么在Android代码中调用这个writeLine()函数时，需要传入一个字符串参数，比如，想要传入一个叫name的String：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">myWebView.loadUrl(<span class="string">"javascript:writeLine('"</span>+name+<span class="string">"')"</span>);<span class="comment">//JS代码要是带参数</span></span><br></pre></td></tr></table></figure>
+<p>　　还有就是要注意双引号中的函数名一定不要写错。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/webview/" rel="tag"># webview</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/12/17/Android%E4%B8%ADWebView%E4%BD%BF%E7%94%A8%E4%B9%8B%E4%B8%80%EF%BC%88%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95%EF%BC%89/" rel="next" title="Android中WebView使用之一（基础用法）">
+                <i class="fa fa-chevron-left"></i> Android中WebView使用之一（基础用法）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/01/18/Android-Listview%E5%88%97%E8%A1%A8%E4%B8%AD%E8%A7%86%E9%A2%91%E7%9A%84%E6%92%AD%E6%94%BE%E4%B8%8E%E6%9A%82%E5%81%9C%E5%8F%8A%E4%B9%8B%E9%97%B4%E7%9A%84%E7%89%B5%E5%88%B6/" rel="prev" title="Android Listview列表中视频的播放与暂停及之间的牵制">
+                Android Listview列表中视频的播放与暂停及之间的牵制 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">walkingCoder</p>
+              <p class="site-description motion-element" itemprop="description">专注技术,极速成长</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/walkingCoder" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="os_line@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#本文主要讲的是-JS代码与Android代码的互相调用"><span class="nav-number">1.</span> <span class="nav-text">本文主要讲的是 JS代码与Android代码的互相调用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一、在WebView中使用JavaScript"><span class="nav-number">1.1.</span> <span class="nav-text">一、在WebView中使用JavaScript</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#前情提要：使用JavaScript"><span class="nav-number">1.1.1.</span> <span class="nav-text">前情提要：使用JavaScript</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#绑定JavaScript与Android代码"><span class="nav-number">1.1.2.</span> <span class="nav-text">绑定JavaScript与Android代码</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#绑定JavaScript与Android代码的例子"><span class="nav-number">1.1.3.</span> <span class="nav-text">绑定JavaScript与Android代码的例子</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#特别注意：需要设置chrome-handler"><span class="nav-number">1.1.4.</span> <span class="nav-text">特别注意：需要设置chrome handler</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二、Android-调用JavaScript代码"><span class="nav-number">1.2.</span> <span class="nav-text">二、Android 调用JavaScript代码</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">walkingCoder</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://walkingCoder.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2015/12/17/Android%E4%B8%ADWebView%E4%BD%BF%E7%94%A8%E4%B9%8B%E4%BA%8C%EF%BC%88JavaScript%E4%BB%A3%E7%A0%81%E4%BD%BF%E7%94%A8%EF%BC%89/';
+          this.page.identifier = '2015/12/17/Android中WebView使用之二（JavaScript代码使用）/';
+          this.page.title = 'Android中WebView使用之二（JavaScript代码使用）';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://walkingCoder.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

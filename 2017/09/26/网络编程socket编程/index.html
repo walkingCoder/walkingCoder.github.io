@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="socket," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="常说socket编程，那么socket编程到底是什么？ 提及socket, Tcp&#x2F;Ip、Udp自然会被提及。他们之间有什么关系呢？ Socket编程实现的服务器与客户端（我们这里是手机端）之间的通信。 概念Tcp:传输控制协议  传输层      端与端的连接 Ip: 网际协议      网络层     寻址和路由 Udp: 用户数据包协议   传输层   端与端的连接 Tcp&#x2F;Ip 是一组协议">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络编程socket编程">
+<meta property="og:url" content="http://yoursite.com/2017/09/26/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8Bsocket%E7%BC%96%E7%A8%8B/index.html">
+<meta property="og:site_name" content="Build Your Dreams">
+<meta property="og:description" content="常说socket编程，那么socket编程到底是什么？ 提及socket, Tcp&#x2F;Ip、Udp自然会被提及。他们之间有什么关系呢？ Socket编程实现的服务器与客户端（我们这里是手机端）之间的通信。 概念Tcp:传输控制协议  传输层      端与端的连接 Ip: 网际协议      网络层     寻址和路由 Udp: 用户数据包协议   传输层   端与端的连接 Tcp&#x2F;Ip 是一组协议">
+<meta property="article:published_time" content="2017-09-26T10:55:12.000Z">
+<meta property="article:modified_time" content="2018-04-17T09:24:58.000Z">
+<meta property="article:author" content="walkingCoder">
+<meta property="article:tag" content="socket">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/09/26/网络编程socket编程/"/>
+
+
+
+
+
+  <title>网络编程socket编程 | Build Your Dreams</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d93547c1df1bf79570af4684f56090cf";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Build Your Dreams</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">专注技术,极速成长</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/26/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8Bsocket%E7%BC%96%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="walkingCoder">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Build Your Dreams">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">网络编程socket编程</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-26T18:55:12+08:00">
+                2017-09-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/09/26/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8Bsocket%E7%BC%96%E7%A8%8B/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/09/26/网络编程socket编程/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>常说socket编程，那么socket编程到底是什么？</p>
+<p>提及socket, Tcp/Ip、Udp自然会被提及。他们之间有什么关系呢？</p>
+<p>Socket编程实现的服务器与客户端（我们这里是手机端）之间的通信。</p>
+<h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><p>Tcp:传输控制协议  传输层      端与端的连接</p>
+<p>Ip: 网际协议      网络层     寻址和路由</p>
+<p>Udp: 用户数据包协议   传输层   端与端的连接</p>
+<p>Tcp/Ip 是一组协议，是很多协议的集合，一组协议集合的简称。</p>
+<p>名称    协议    功能</p>
+<p>应用层    HTTP、Telnet、FTP、TFTP    提供应用程序网络接口</p>
+<p>传输层    TCP、UDP    建立端到端的连接</p>
+<p>网络层    IP    寻址和路由</p>
+<p>数据链路层    Ethernet、802.3、PPP    物理介质访问</p>
+<p>物理层    接口和电缆    二进制数据流传输</p>
+<p><b>Ip地址和端口号组成了我们的socket.IP地址用来标记唯一的计算机位置，端口号用来标记一台电脑中的不同应用程序。<br>socket,套接字，只是一个API,将内部的Tcp/Ip进行了封装。<br></b></p>
+<p>Socket原理机制：</p>
+<li>通信的两端都有Socket
+<li>网络通信其实就是Socket间的通信
+<li>数据在两个Socket间通过IO传输
+
+<p>单独的Socke是没用任何作用的,基于一定的协议（比如：TCP、UDP协议）下的socket编程才能使得数据畅通传输。</p>
+<h4 id="基于TCP协议的socket编程-TCP编程"><a href="#基于TCP协议的socket编程-TCP编程" class="headerlink" title="基于TCP协议的socket编程(TCP编程)"></a>基于TCP协议的socket编程(TCP编程)</h4><p>其实，socket 对这一系列协议进行了封装，我们使用socket api就能进行socket编程。</p>
+<p>主要API:</p>
+<p><b>Socket,客户端相关</b></p>
+<li> 构造方法
+
+<p>public Socket(String host,int port)创建一个流套接字并将其连接到指定主机上的指定端口号</p>
+<li>方法
+
+<p>getInputStream()  拿到套接字的输入流，收到的数据都在这里。</p>
+<p>getOutputStream() 返回此套接字的输出流，要发送的数据放在这里。</p>
+<p><b>ServerSocket,服务器相关</b></p>
+<li>构造方法
+
+<p>ServerSocket(int port)创建服务端的监听port端口的套接字</p>
+<li>方法
+
+<p>Socket accept()侦听并接受此套接字的连接。此方法再连接传入之前一直阻塞。服务端通过这个方法拿到与客户端建立连接的socket。</p>
+<li>TCP编程的服务端流程
+
+<p>1.创建ServerSocket类对象，serverSocket</p>
+<p>2.使用serverSocket开始一直阻塞监听，Socket socket=serverSocket.accept(),等待客户端连接发来数据并且得到socket。</p>
+<p>3.根据socket的输入流读取客户端的数据，根据socket的输出流返回给客户端数据。</p>
+<p>4.关闭socket以及IO流。</p>
+<li>TCP编程的客户端流程
+
+<p>1.创建客户端的socket对象</p>
+<p>2.使用客户端的socket对象的输出流发送给服务器数据，使用客户端的socket对象的输入流得到服务端的数据</p>
+<h4 id="TCP编程代码演示"><a href="#TCP编程代码演示" class="headerlink" title="TCP编程代码演示"></a>TCP编程代码演示</h4><p>服务端的话，这里使用eclipse。使用Eclipse新建一个Server.java来处理服务器端的逻辑。客户端的话使用AS来新建MainActivity发送和接收数据。然后运行服务器，在运行手机上的程序，从手机上发送一段内容到服务器端接收。</p>
+<h5 id="服务器端"><a href="#服务器端" class="headerlink" title="服务器端"></a>服务器端</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sever</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">    	<span class="keyword">try</span> &#123;</span><br><span class="line">			ServerSocket serverSocket=<span class="keyword">new</span> ServerSocket(<span class="number">12308</span>);</span><br><span class="line">			</span><br><span class="line">			System.out.println(<span class="string">"开始监听了哦~~~~"</span>);</span><br><span class="line">			Socket socket = serverSocket.accept();</span><br><span class="line">		    InputStream is=socket.getInputStream();</span><br><span class="line">			InputStreamReader isr=<span class="keyword">new</span> InputStreamReader(is);</span><br><span class="line">			BufferedReader reader=<span class="keyword">new</span> BufferedReader(isr);</span><br><span class="line">			String s=<span class="keyword">null</span>;</span><br><span class="line">			StringBuffer stringbuffer=<span class="keyword">new</span> StringBuffer();</span><br><span class="line">			<span class="keyword">while</span>((s = reader.readLine()) != <span class="keyword">null</span>)&#123;</span><br><span class="line">				stringbuffer.append(s);</span><br><span class="line">			&#125;</span><br><span class="line">			</span><br><span class="line">			System.out.println(<span class="string">"服务器"</span>+stringbuffer.toString());</span><br><span class="line">			<span class="comment">//关闭输入流</span></span><br><span class="line">			socket.shutdownInput();</span><br><span class="line">			</span><br><span class="line">			OutputStream os = socket.getOutputStream();</span><br><span class="line">			os.write((<span class="string">"我是服务器，客户端发给我的是"</span>+stringbuffer.toString()).getBytes());</span><br><span class="line">			os.flush();</span><br><span class="line">			</span><br><span class="line">			<span class="comment">//关闭输出流</span></span><br><span class="line">			socket.shutdownOutput();</span><br><span class="line">			os.close();</span><br><span class="line">			</span><br><span class="line">			<span class="comment">//关闭IO资源</span></span><br><span class="line">			reader.close();</span><br><span class="line">			isr.close();</span><br><span class="line">			is.close();</span><br><span class="line">			</span><br><span class="line">			<span class="comment">//关闭socket</span></span><br><span class="line">			serverSocket.close();</span><br><span class="line">			socket.close();</span><br><span class="line">			</span><br><span class="line">		&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">			<span class="comment">// TODO Auto-generated catch block</span></span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><b>注意：</b></p>
+<p>在使用TCP编程的时候，最后需要释放资源，关闭socket(socket.close())；</p>
+<p>关闭socket输入输出流（socket.shutdownInput()以及socket.shutdownOutput()）；</p>
+<p>关闭IO流(is.close() os.close())。</p>
+<p>需要注意的是：</p>
+<p><b>关闭socket的输入输出流需要放在关闭io流之前。</b></p>
+<p>因为， 关闭IO流会同时关闭socket，一旦关闭了socket的，就不能再进行socket的相关操作了。而，只关闭socket输入输出流（socket.shutdownInput()以及socket.shutdownOutput()）不会完全关闭socket，此时任然可以进行socket方面的操作。</p>
+<p><b>所以要先调用socket.shutdownXXX，然后再调用io.close();</b></p>
+<h5 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h5><p>Mac查本机Ip</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ifconfig en0</span><br></pre></td></tr></table></figure>
+
+<p>注意socket的创建及流的读写放在子线程中来操作。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"> String ip = <span class="string">"192.168.199.11"</span>;   <span class="comment">//本机IP</span></span><br><span class="line"> <span class="keyword">int</span> port = <span class="number">12308</span>;               <span class="comment">//端口号</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">tcp</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> Thread() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">super</span>.run();</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    Socket socket = <span class="keyword">new</span> Socket(ip, port);</span><br><span class="line">                    OutputStream os = socket.getOutputStream();</span><br><span class="line">                    os.write((editText.getText().toString().getBytes()));</span><br><span class="line">                    os.flush();</span><br><span class="line"></span><br><span class="line">                    socket.shutdownOutput();</span><br><span class="line"></span><br><span class="line">                    InputStream is = socket.getInputStream();</span><br><span class="line">                    InputStreamReader isr = <span class="keyword">new</span> InputStreamReader(is);</span><br><span class="line">                    BufferedReader reader = <span class="keyword">new</span> BufferedReader(isr);</span><br><span class="line">                    String s = <span class="keyword">null</span>;</span><br><span class="line">                    <span class="keyword">final</span> StringBuffer stringBuffer = <span class="keyword">new</span> StringBuffer();</span><br><span class="line">                    <span class="keyword">while</span> ((s = reader.readLine()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">                        stringBuffer.append(s);</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    runOnUiThread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">                        <span class="meta">@Override</span></span><br><span class="line">                        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                            ((TextView) findViewById(R.id.text)).setText(stringBuffer.toString());</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;);</span><br><span class="line"></span><br><span class="line">                    socket.shutdownInput();</span><br><span class="line"></span><br><span class="line">                    os.close();</span><br><span class="line">                    reader.close();</span><br><span class="line">                    isr.close();</span><br><span class="line">                    is.close();</span><br><span class="line"></span><br><span class="line">                    socket.close();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;.start();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p><b>实际开发中的关闭IO资源需要放到finally中。</b></p>
+<p>我们手机端发送完一个请求后，服务端（Server）拿到数据，解析数据，返回给客户端数据，关闭所有资源，也就是服务器关闭了。这时，如果另一个客户端再想跟服务器进行通信时，发现服务器已经关闭了，无法与服务器再次进行通信。换句话说，只能跟服务器通信一次，服务端 只能支持单线程数据处理。也就是说，上面的服务器的代码无法实现多线程编程，只能进行一次通信。</p>
+<h4 id="TCP的多线程编程"><a href="#TCP的多线程编程" class="headerlink" title="TCP的多线程编程"></a>TCP的多线程编程</h4><h5 id="实现方法"><a href="#实现方法" class="headerlink" title="实现方法"></a>实现方法</h5><p>我们执行serversocket.accept()等待客户端去连接，与客户建立完连接后，拿到对应的socket，然后进行相应的处理。那么多个客户端的请求，我们就一直不关闭ServerSocket，一直等待客户端连接，一旦建立连接拿到socket，就可以吧这个socket放到单独的线程中，从而实现这个建立连接的端到端通信的socket在自己单独的线程中处理。这样就能实现Socket的多线程处理。</p>
+<h5 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h5><p>创建ServerThread，单独处理拿到的socket，使得客户端到服务器端的这个socket会话在一个单独的线程中。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ServerThread</span> <span class="keyword">extends</span> <span class="title">Thread</span></span>&#123;</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">private</span> Socket socket;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">//在构造中获得要单独会话的socket</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">ServerThread</span><span class="params">(Socket socket)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.socket=socket;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">super</span>.run();</span><br><span class="line">		InputStream is=<span class="keyword">null</span>;</span><br><span class="line">		InputStreamReader isr=<span class="keyword">null</span>;</span><br><span class="line">		BufferedReader bufferReader = <span class="keyword">null</span>;</span><br><span class="line">		OutputStream os=<span class="keyword">null</span>;</span><br><span class="line">		String s= <span class="keyword">null</span>;</span><br><span class="line">		StringBuffer sb=<span class="keyword">new</span> StringBuffer();</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			 is=socket.getInputStream();</span><br><span class="line">			 isr=<span class="keyword">new</span> InputStreamReader(is);</span><br><span class="line">			 bufferReader=<span class="keyword">new</span> BufferedReader(isr);</span><br><span class="line">			 <span class="keyword">while</span>((s=bufferReader.readLine()) != <span class="keyword">null</span>)&#123;</span><br><span class="line">				 sb.append(s);</span><br><span class="line">			 &#125;</span><br><span class="line">			 </span><br><span class="line">			 System.out.println(<span class="string">"服务端数据"</span>+sb.toString());</span><br><span class="line">			 socket.shutdownInput();</span><br><span class="line">			 </span><br><span class="line">			 os=socket.getOutputStream();</span><br><span class="line">			 os.write((<span class="string">"服务端接收数据"</span>+sb.toString()).getBytes());</span><br><span class="line">			 os.flush();</span><br><span class="line">			 socket.shutdownOutput();</span><br><span class="line"></span><br><span class="line">		&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">			<span class="comment">// TODO Auto-generated catch block</span></span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;<span class="keyword">finally</span>&#123;</span><br><span class="line">			<span class="keyword">if</span>(bufferReader != <span class="keyword">null</span>)&#123;</span><br><span class="line">				<span class="keyword">try</span> &#123;</span><br><span class="line">					bufferReader.close();</span><br><span class="line">					&#125;</span><br><span class="line">				 <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">					<span class="comment">// TODO Auto-generated catch block</span></span><br><span class="line">					e.printStackTrace();</span><br><span class="line">				 &#125;</span><br><span class="line">				&#125;</span><br><span class="line">				</span><br><span class="line">				<span class="keyword">if</span>(isr != <span class="keyword">null</span>)&#123;</span><br><span class="line">					<span class="keyword">try</span> &#123;</span><br><span class="line">						isr.close();</span><br><span class="line">					&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">						<span class="comment">// TODO Auto-generated catch block</span></span><br><span class="line">						e.printStackTrace();</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">				</span><br><span class="line">				<span class="keyword">if</span>(is != <span class="keyword">null</span>)&#123;</span><br><span class="line">					<span class="keyword">try</span> &#123;</span><br><span class="line">						is.close();</span><br><span class="line">					&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">						<span class="comment">// TODO Auto-generated catch block</span></span><br><span class="line">						e.printStackTrace();</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">				</span><br><span class="line">				<span class="keyword">if</span>(os != <span class="keyword">null</span>)&#123;</span><br><span class="line">					<span class="keyword">try</span> &#123;</span><br><span class="line">						os.close();</span><br><span class="line">					&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">						<span class="comment">// TODO Auto-generated catch block</span></span><br><span class="line">						e.printStackTrace();</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="第二步，创建MultiThreadServer"><a href="#第二步，创建MultiThreadServer" class="headerlink" title="第二步，创建MultiThreadServer"></a>第二步，创建MultiThreadServer</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MultiThreadServer</span> </span>&#123;</span><br><span class="line">   </span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			ServerSocket serverSocker=<span class="keyword">new</span> ServerSocket(<span class="number">12308</span>);</span><br><span class="line">			</span><br><span class="line">			<span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">				System.out.println(<span class="string">"multi thread servier 监听~~"</span>);</span><br><span class="line">				Socket socket = serverSocker.accept();</span><br><span class="line">				ServerThread serverThread=<span class="keyword">new</span> ServerThread(socket);</span><br><span class="line">				serverThread.start();</span><br><span class="line">			&#125;</span><br><span class="line">			</span><br><span class="line">		&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">			<span class="comment">// TODO Auto-generated catch block</span></span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样就实现TCP的多线程通信了。</p>
+<h4 id="UDP编程"><a href="#UDP编程" class="headerlink" title="UDP编程"></a>UDP编程</h4><p>UDP，是User Datagram Protocol，也就是用户数据包协议。关键点在于“数据包”。主要就是把数据进行打包然后丢给目标，而不管目标是否接收到数据。</p>
+<p>主要的流程就是：发送者打包数据（DatagramPacket）然后通过DatagramSocket发送，接收者收到数据包解开数据。</p>
+<p>主要API：</p>
+<p><b>DatagramPacket,用来包装发送的数据</p>
+<p>构造方法</b></p>
+<li>发送数据的构造
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">DatagramPacket(<span class="keyword">byte</span>[] buf, <span class="keyword">int</span> length,SocketAddress address)</span><br><span class="line">DatagramPacket(<span class="keyword">byte</span>[] buf,  <span class="keyword">int</span> length,  InetAddress address,  <span class="keyword">int</span> port)</span><br></pre></td></tr></table></figure>
+<p>用来将长度为 length 的包发送到指定主机上的指定端口号。</p>
+<li>接收数据的构造
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">DatagramPacket</span><span class="params">(<span class="keyword">byte</span>[] buf,  <span class="keyword">int</span> length)</span></span></span><br></pre></td></tr></table></figure>
+<p>用来接收长度为 length 的数据包。</p>
+<p><b>DatagramSocket   API</p>
+<p>构造方法</b></p>
+<p>DatagramSocket()</p>
+<p>构造数据报套接字并将其绑定到本地主机上任何可用的端口</p>
+<p>DatagramSocket(int port)</p>
+<p>构造数据报套接字并将其绑定到本地主机上的指定端口</p>
+<p><b>发送数据</b></p>
+<p>send(DatagramPacket p)</p>
+<p>此套接字发送数据包。DatagramPacket包含的信息指示：将要发送的数据、其长度、远程主机的IP地址和端口号。</p>
+<p><b>接收数据</b></p>
+<p>receiver(DatagramPacket p)</p>
+<p>此套接字接收数据包。当此方法返回时，DatagramPacket的缓冲区填充了接收的数据。数据包也包含发送方的Ip地址和端口号。</p>
+<h4 id="UDP编程代码"><a href="#UDP编程代码" class="headerlink" title="UDP编程代码"></a>UDP编程代码</h4><h5 id="客户端-1"><a href="#客户端-1" class="headerlink" title="客户端"></a>客户端</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">udp</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> Thread()&#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">super</span>.run();</span><br><span class="line">                <span class="keyword">byte</span>[] bytes = editText.getText().toString().getBytes();</span><br><span class="line">                InetAddress inetAddress = <span class="keyword">null</span>;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line"></span><br><span class="line">                    <span class="comment">//发送数据</span></span><br><span class="line">                    inetAddress = InetAddress.getByName(ip);</span><br><span class="line">                    DatagramPacket datagramPacket = <span class="keyword">new</span> DatagramPacket(bytes, bytes.length, inetAddress, port);</span><br><span class="line">                    DatagramSocket socket = <span class="keyword">new</span> DatagramSocket();</span><br><span class="line">                    socket.send(datagramPacket);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                    <span class="comment">//接收数据</span></span><br><span class="line">                    <span class="keyword">final</span> <span class="keyword">byte</span>[] bytes1=<span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">                    DatagramPacket datagramPacket1=<span class="keyword">new</span> DatagramPacket(bytes1,bytes1.length);</span><br><span class="line">                    socket.receive(datagramPacket1);</span><br><span class="line"></span><br><span class="line">                    runOnUiThread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">                        <span class="meta">@Override</span></span><br><span class="line">                        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                            ((TextView) findViewById(R.id.text)).setText(<span class="keyword">new</span> String(bytes1,<span class="number">0</span>,bytes1.length));</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;);</span><br><span class="line"></span><br><span class="line">                &#125; <span class="keyword">catch</span> (UnknownHostException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (SocketException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;.start();</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UdpServer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//接收数据</span></span><br><span class="line">		<span class="keyword">byte</span>[] bytes=<span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">		DatagramPacket receiverPacket=<span class="keyword">new</span> DatagramPacket(bytes, bytes.length);</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			DatagramSocket socket=<span class="keyword">new</span> DatagramSocket(<span class="number">12308</span>);</span><br><span class="line">			</span><br><span class="line">			System.out.println(<span class="string">"服务端开始监听~~"</span>);</span><br><span class="line">			socket.receive(receiverPacket);</span><br><span class="line">			</span><br><span class="line">			System.out.println(<span class="string">"=====接受到数据"</span>+<span class="keyword">new</span> String(bytes,<span class="number">0</span>,bytes.length));</span><br><span class="line">			</span><br><span class="line">			</span><br><span class="line">			<span class="comment">//发送数据</span></span><br><span class="line"></span><br><span class="line">			DatagramPacket sendPacket=<span class="keyword">new</span> DatagramPacket(bytes, bytes.length,receiverPacket.getAddress(),receiverPacket.getPort());</span><br><span class="line">			socket.send(sendPacket);</span><br><span class="line">			socket.close();</span><br><span class="line">			</span><br><span class="line">		&#125; <span class="keyword">catch</span> (SocketException e) &#123;</span><br><span class="line">			<span class="comment">// TODO Auto-generated catch block</span></span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;<span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">			<span class="comment">// TODO Auto-generated catch block</span></span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="TCP与UDP区别与使用场景"><a href="#TCP与UDP区别与使用场景" class="headerlink" title="TCP与UDP区别与使用场景"></a>TCP与UDP区别与使用场景</h4><h5 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h5><p>对于TCP的数据传输而言，传输数据之前需要进行三次握手建立稳定的连接。建立连接通道后，数据包会在这个通道中以字节流的形式进行数据的传输。由于建立稳定连接后才开始传输数据，而同时还是以字节流的形式发送数据，所以发送数据速度较慢，但是不会造成数据包丢失。即使数据包丢失了，会进行数据重发。同时，如果收到的数据包顺序错乱，会进行排序纠正。</p>
+<p><b>面向连接、数据可靠，速度慢，有序的。</b></p>
+<h5 id="UDP"><a href="#UDP" class="headerlink" title="UDP"></a>UDP</h5><p>对于UDP的数据传输而言，UDP不会去建立连接。它不管目的地是否存在，直接将数据发送给目的地，同时不会过问发送的数据是否丢失，到达的数据是否顺序错乱。如果你想处理这些问题的话，需要自己在应用层自行处理。</p>
+<p><b>不面向连接、数据不可靠、速度快、无序的</b></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/socket/" rel="tag"># socket</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/17/Java%E7%AE%97%E6%B3%95%E4%B9%8B%E9%9A%8F%E6%9C%BA%E6%B4%97%E7%89%8C/" rel="next" title="Java算法之随机洗牌">
+                <i class="fa fa-chevron-left"></i> Java算法之随机洗牌
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/27/Android%E6%8F%92%E4%BB%B6%E5%8C%96%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BDAPK/" rel="prev" title="Android插件化动态加载APK">
+                Android插件化动态加载APK <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">walkingCoder</p>
+              <p class="site-description motion-element" itemprop="description">专注技术,极速成长</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/walkingCoder" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="os_line@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#概念"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#基于TCP协议的socket编程-TCP编程"><span class="nav-number">2.</span> <span class="nav-text">基于TCP协议的socket编程(TCP编程)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TCP编程代码演示"><span class="nav-number">3.</span> <span class="nav-text">TCP编程代码演示</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#服务器端"><span class="nav-number">3.1.</span> <span class="nav-text">服务器端</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#客户端"><span class="nav-number">3.2.</span> <span class="nav-text">客户端</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TCP的多线程编程"><span class="nav-number">4.</span> <span class="nav-text">TCP的多线程编程</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#实现方法"><span class="nav-number">4.1.</span> <span class="nav-text">实现方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#第一步"><span class="nav-number">4.2.</span> <span class="nav-text">第一步</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#第二步，创建MultiThreadServer"><span class="nav-number">4.3.</span> <span class="nav-text">第二步，创建MultiThreadServer</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#UDP编程"><span class="nav-number">5.</span> <span class="nav-text">UDP编程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#UDP编程代码"><span class="nav-number">6.</span> <span class="nav-text">UDP编程代码</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#客户端-1"><span class="nav-number">6.1.</span> <span class="nav-text">客户端</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#服务端"><span class="nav-number">6.2.</span> <span class="nav-text">服务端</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TCP与UDP区别与使用场景"><span class="nav-number">7.</span> <span class="nav-text">TCP与UDP区别与使用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#TCP"><span class="nav-number">7.1.</span> <span class="nav-text">TCP</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#UDP"><span class="nav-number">7.2.</span> <span class="nav-text">UDP</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">walkingCoder</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://walkingCoder.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2017/09/26/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8Bsocket%E7%BC%96%E7%A8%8B/';
+          this.page.identifier = '2017/09/26/网络编程socket编程/';
+          this.page.title = '网络编程socket编程';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://walkingCoder.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

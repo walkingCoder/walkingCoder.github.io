@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="注解," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、配置（Android Studio）1.在Model的build.gradle中添加  1234567891011121314apply plugin: &#39;com.android.application&#39;apply plugin: &#39;android-apt&#39;def AAVersion &#x3D; &#39;XXX&#39;dependencies &amp;#123;    apt &quot;org.androidannotatio">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 最火的快速开发框架AndroidAnnotations使用详解">
+<meta property="og:url" content="http://yoursite.com/2015/10/14/Android-%E6%9C%80%E7%81%AB%E7%9A%84%E5%BF%AB%E9%80%9F%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6AndroidAnnotations%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="Build Your Dreams">
+<meta property="og:description" content="一、配置（Android Studio）1.在Model的build.gradle中添加  1234567891011121314apply plugin: &#39;com.android.application&#39;apply plugin: &#39;android-apt&#39;def AAVersion &#x3D; &#39;XXX&#39;dependencies &amp;#123;    apt &quot;org.androidannotatio">
+<meta property="article:published_time" content="2015-10-14T08:47:48.000Z">
+<meta property="article:modified_time" content="2017-05-24T08:17:47.000Z">
+<meta property="article:author" content="walkingCoder">
+<meta property="article:tag" content="注解">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/10/14/Android-最火的快速开发框架AndroidAnnotations使用详解/"/>
+
+
+
+
+
+  <title>Android 最火的快速开发框架AndroidAnnotations使用详解 | Build Your Dreams</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d93547c1df1bf79570af4684f56090cf";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Build Your Dreams</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">专注技术,极速成长</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/10/14/Android-%E6%9C%80%E7%81%AB%E7%9A%84%E5%BF%AB%E9%80%9F%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6AndroidAnnotations%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="walkingCoder">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Build Your Dreams">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android 最火的快速开发框架AndroidAnnotations使用详解</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-10-14T16:47:48+08:00">
+                2015-10-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/10/14/Android-%E6%9C%80%E7%81%AB%E7%9A%84%E5%BF%AB%E9%80%9F%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6AndroidAnnotations%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015/10/14/Android-最火的快速开发框架AndroidAnnotations使用详解/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="一、配置（Android-Studio）"><a href="#一、配置（Android-Studio）" class="headerlink" title="一、配置（Android Studio）"></a>一、配置（Android Studio）</h3><li>1.在Model的build.gradle中添加
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">apply plugin: <span class="string">'com.android.application'</span></span><br><span class="line">apply plugin: <span class="string">'android-apt'</span></span><br><span class="line">def AAVersion = <span class="string">'XXX'</span></span><br><span class="line"></span><br><span class="line">dependencies &#123;</span><br><span class="line">    apt <span class="string">"org.androidannotations:androidannotations:$AAVersion"</span></span><br><span class="line">    compile <span class="string">"org.androidannotations:androidannotations-api:$AAVersion"</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">apt &#123;</span><br><span class="line">    arguments &#123;</span><br><span class="line">        androidManifestFile variant.outputs[<span class="number">0</span>].processResources.manifestFile</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<li>2.在Project的build.gradle中添加 （就一行）
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">buildscript &#123;</span><br><span class="line">    repositories &#123;</span><br><span class="line">      mavenCentral()</span><br><span class="line">    &#125;</span><br><span class="line">    dependencies &#123;</span><br><span class="line">        <span class="comment">// replace with the current version of the Android plugin</span></span><br><span class="line">        classpath <span class="string">'com.android.tools.build:gradle:1.2.2'</span></span><br><span class="line">        <span class="comment">// replace with the current version of the android-apt plugin</span></span><br><span class="line">        classpath <span class="string">'com.neenbedankt.gradle.plugins:android-apt:1.4'</span>    <span class="comment">//就这一行</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">repositories &#123;</span><br><span class="line">    mavenCentral()</span><br><span class="line">    mavenLocal()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="二、使用"><a href="#二、使用" class="headerlink" title="二、使用"></a>二、使用</h3><p>详细使用看github上的中文介绍：<a href="https://github.com/mrljdx/AndroidAnnotaions/blob/master/androidannotation_zh_CN/1.0.1_%E5%B8%B8%E7%94%A8%E6%B3%A8%E9%87%8A.markdown" target="_blank" rel="noopener">简单使用</a></p>
+<p>最最最要注意的一点就是：</p>
+<p>使用AndroidAnnotations千万要记得，编译的时候会生成一个子类，这个子类的名称就是在<br>原来的类之后加了一个下划线“<em>”，比如这个例子产生的子类名称为“MyActivity_”，这就需要你在注册这个Activity的时候，在<br>AndroidManifest.xml中将 MyActivity 改为 MyActivity</em> ，使用的时候也是使用MyActivity_来表示此类，如从另一个Activity跳转<br>到此节目就要这样用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">startActivity(<span class="keyword">new</span> Intent(<span class="keyword">this</span>,MyActivity_<span class="class">.<span class="keyword">class</span>))</span>;</span><br></pre></td></tr></table></figure>
+
+<p>注意，是MyActivity_.class 不是 MyActivity.class;</p>
+<h4 id="EActivity"><a href="#EActivity" class="headerlink" title="@EActivity"></a>@EActivity</h4><p>示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EActivity</span>(R.layout.main)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意：清单文件中Activity的注册(Service、Receiver、Provider的注册一样)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Activity name=<span class="string">"com.quwenleiqi.ui.MyActivity_.class"</span>/&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="EFragment"><a href="#EFragment" class="headerlink" title="@EFragment"></a>@EFragment</h4><p>示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EFragment</span>(R.layout.my_fragment_layout)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyFragment</span> <span class="keyword">extends</span> <span class="title">Fragment</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注册：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;fragment</span><br><span class="line">        android:id=<span class="string">"@+id/myFragment"</span></span><br><span class="line">        android:name=<span class="string">"com.company.MyFragment_"</span></span><br><span class="line">        android:layout_width=<span class="string">"fill_parent"</span></span><br><span class="line">        android:layout_height=<span class="string">"fill_parent"</span> /&gt;</span><br></pre></td></tr></table></figure>
+
+<p>创建：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MyFragment fragment = <span class="keyword">new</span> MyFragment_();</span><br></pre></td></tr></table></figure>
+
+<h4 id="FragmentArg"><a href="#FragmentArg" class="headerlink" title="@FragmentArg"></a>@FragmentArg</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@EFragment</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyFragment</span> <span class="keyword">extends</span> <span class="title">Fragment</span> </span>&#123;<span class="comment">//等同于 Fragment Argument</span></span><br><span class="line"></span><br><span class="line">  <span class="meta">@FragmentArg</span>(<span class="string">"myStringArgument"</span>)</span><br><span class="line">  String myMessage;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@FragmentArg</span></span><br><span class="line">  String anotherStringArgument;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@FragmentArg</span>(<span class="string">"myDateExtra"</span>)</span><br><span class="line">  Date myDateArgumentWithDefaultValue = <span class="keyword">new</span> Date();</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">MyFragment myFragment = MyFragment_.builder()</span><br><span class="line">  .myMessage(<span class="string">"Hello"</span>)</span><br><span class="line">  .anotherStringArgument(<span class="string">"World"</span>)</span><br><span class="line">  .build();</span><br></pre></td></tr></table></figure>
+
+<h4 id="OptionsMenu和OptionsItem"><a href="#OptionsMenu和OptionsItem" class="headerlink" title="@OptionsMenu和OptionsItem"></a>@OptionsMenu和OptionsItem</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@EActivity</span></span><br><span class="line"><span class="meta">@OptionsMenu</span>(R.menu.my_menu)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@OptionMenuItem</span></span><br><span class="line">    MenuItem menuSearch;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@OptionsItem</span>(R.id.menuShare)</span><br><span class="line">        <span class="function"><span class="keyword">void</span> <span class="title">myMethod</span><span class="params">()</span> </span>&#123;</span><br><span class="line">          <span class="comment">// You can specify the ID in the annotation, or use the naming convention</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@OptionsItem</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">homeSelected</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="comment">// home was selected in the action bar</span></span><br><span class="line">          <span class="comment">// The "Selected" keyword is optional</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@OptionsItem</span></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">menuSearch</span><span class="params">()</span> </span>&#123;</span><br><span class="line">          menuSearch.setVisible(<span class="keyword">false</span>);</span><br><span class="line">          <span class="comment">// menuSearch was selected</span></span><br><span class="line">          <span class="comment">// the return type may be void or boolean (false to allow normal menu processing to proceed, true to consume it here)</span></span><br><span class="line">          <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@OptionsItem</span>(&#123; R.id.menu_search, R.id.menu_delete &#125;)</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">multipleMenuItems</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="comment">// You can specify multiple menu item IDs in @OptionsItem</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@OptionsItem</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">menu_add</span><span class="params">(MenuItem item)</span> </span>&#123;</span><br><span class="line">      <span class="comment">// You can add a MenuItem parameter to access it</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>或者：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@EActivity</span></span><br><span class="line"><span class="meta">@OptionsMenu</span>(&#123;R.menu.my_menu1, R.menu.my_menu2&#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="RestService"><a href="#RestService" class="headerlink" title="@RestService"></a>@RestService</h4><p>声明：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestService</span></span><br><span class="line">BookmarkClient restClient;</span><br></pre></td></tr></table></figure>
+
+<p>请求数据的url获取数据的服务</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Rest</span>(<span class="string">"http://www.bookmarks.com"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">BookmarkClient</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@Get</span>(<span class="string">"/bookmarks/&#123;userId&#125;?search=&#123;search&#125;"</span>)</span><br><span class="line">  <span class="function">Bookmarks <span class="title">getBookmarks</span><span class="params">(String search, String userId)</span></span>;</span><br><span class="line"> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在background中执行 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">restClient.getBookmarks();</span><br></pre></td></tr></table></figure>
+
+<h4 id="Background"><a href="#Background" class="headerlink" title="@Background"></a>@Background</h4><p>执行：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">void</span> <span class="title">myMethod</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    someBackgroundWork(<span class="string">"hello"</span>, <span class="number">42</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Background</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">someBackgroundWork</span><span class="params">(String aParam, <span class="keyword">long</span> anotherParam)</span> </span>&#123;</span><br><span class="line">    [...]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>取消：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">void</span> <span class="title">myMethod</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    someCancellableBackground(<span class="string">"hello"</span>, <span class="number">42</span>);</span><br><span class="line">    [...]</span><br><span class="line">    <span class="keyword">boolean</span> mayInterruptIfRunning = <span class="keyword">true</span>;</span><br><span class="line">    BackgroundExecutor.cancelAll(<span class="string">"cancellable_task"</span>, mayInterruptIfRunning);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Background</span>(id=<span class="string">"cancellable_task"</span>)</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">someCancellableBackground</span><span class="params">(String aParam, <span class="keyword">long</span> anotherParam)</span> </span>&#123;</span><br><span class="line">    [...]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>非并发执行：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">void</span> <span class="title">myMethod</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)</span><br><span class="line">        someSequentialBackgroundMethod(i);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Background</span>(serial = <span class="string">"test"</span>)</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">someSequentialBackgroundMethod</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">    SystemClock.sleep(<span class="keyword">new</span> Random().nextInt(<span class="number">2000</span>)+<span class="number">1000</span>);</span><br><span class="line">    Log.d(<span class="string">"AA"</span>, <span class="string">"value : "</span> + i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>延迟：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@Background</span>(delay=<span class="number">2000</span>)</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">doInBackgroundAfterTwoSeconds</span><span class="params">()</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="UiThread"><a href="#UiThread" class="headerlink" title="@UiThread"></a>@UiThread</h4><p>UI线程：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">void</span> <span class="title">myMethod</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    doInUiThread(<span class="string">"hello"</span>, <span class="number">42</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@UiThread</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">doInUiThread</span><span class="params">(String aParam, <span class="keyword">long</span> anotherParam)</span> </span>&#123;</span><br><span class="line">    [...]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>延迟：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"> <span class="meta">@UiThread</span>(delay=<span class="number">2000</span>)</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">doInUiThreadAfterTwoSeconds</span><span class="params">()</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>优化UI线程：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@UiThread</span>(propagation = Propagation.REUSE)</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">runInSameThreadIfOnUiThread</span><span class="params">()</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>进度值改变：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@EActivity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Background</span></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">doSomeStuffInBackground</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    publishProgress(<span class="number">0</span>);</span><br><span class="line">    <span class="comment">// Do some stuff</span></span><br><span class="line">    publishProgress(<span class="number">10</span>);</span><br><span class="line">    <span class="comment">// Do some stuff</span></span><br><span class="line">    publishProgress(<span class="number">100</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@UiThread</span></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">publishProgress</span><span class="params">(<span class="keyword">int</span> progress)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Update progress views</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="OnActivityResult"><a href="#OnActivityResult" class="headerlink" title="@OnActivityResult"></a>@OnActivityResult</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@OnActivityResult</span>(REQUEST_CODE)</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">onResult</span><span class="params">(<span class="keyword">int</span> resultCode, Intent data)</span> </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line">	</span><br><span class="line"><span class="meta">@OnActivityResult</span>(REQUEST_CODE)</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">onResult</span><span class="params">(<span class="keyword">int</span> resultCode)</span> </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line">	</span><br><span class="line"><span class="meta">@OnActivityResult</span>(ANOTHER_REQUEST_CODE)</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">onResult</span><span class="params">(Intent data)</span> </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line">	</span><br><span class="line"><span class="meta">@OnActivityResult</span>(ANOTHER_REQUEST_CODE)</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">onResult</span><span class="params">()</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="EBean"><a href="#EBean" class="headerlink" title="@EBean"></a>@EBean</h4><p>普通类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EBean</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyClass</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意：这个类必须仅仅只能有一个构造函数，参数最多有一个context。</p>
+<p>Activity中使用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EActivity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Bean</span></span><br><span class="line">  MyOtherClass myOtherClass;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>也可以用来声明接口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span>(MyImplementation<span class="class">.<span class="keyword">class</span>)   //接口的实现类</span></span><br><span class="line"><span class="class"><span class="title">MyInterface</span> <span class="title">myInterface</span></span>;        <span class="comment">//接口</span></span><br></pre></td></tr></table></figure>
+
+<p>在普通类中还可以注入根环境:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EBean</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyClass</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@RootContext</span></span><br><span class="line">  Context context;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Only injected if the root context is an activity</span></span><br><span class="line">  <span class="meta">@RootContext</span></span><br><span class="line">  Activity activity;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Only injected if the root context is a service</span></span><br><span class="line">  <span class="meta">@RootContext</span></span><br><span class="line">  Service service;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Only injected if the root context is an instance of MyActivity</span></span><br><span class="line">  <span class="meta">@RootContext</span></span><br><span class="line">  MyActivity myActivity;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果想在类创建时期做一些操作可以：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">	<span class="meta">@AfterInject</span></span><br><span class="line">	  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSomethingAfterInjection</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	    <span class="comment">// notificationManager and dependency are set</span></span><br><span class="line">	  &#125;</span><br><span class="line"></span><br><span class="line">单例类需要如下声明：</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="meta">@EBean</span>(scope = Scope.Singleton)</span><br><span class="line">	<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MySingleton</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意：在单例类里面不可以注入view和事件绑定，因为单例的生命周期比Activity和Service的要长，以免发生内存溢出。</p>
+<h4 id="EView"><a href="#EView" class="headerlink" title="@EView"></a>@EView</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EView</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomButton</span> <span class="keyword">extends</span> <span class="title">Button</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@App</span></span><br><span class="line">        MyApplication application;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@StringRes</span></span><br><span class="line">        String someStringResource;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CustomButton</span><span class="params">(Context context, AttributeSet attrs)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context, attrs);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注册：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;com.androidannotations.view.CustomButton_</span><br><span class="line">        android:layout_width=<span class="string">"match_parent"</span></span><br><span class="line">        android:layout_height=<span class="string">"wrap_content"</span> /&gt;</span><br></pre></td></tr></table></figure>
+
+<p>创建：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CustomButton button = CustomButton_.build(context);</span><br></pre></td></tr></table></figure>
+
+<h4 id="EViewGroup"><a href="#EViewGroup" class="headerlink" title="@EViewGroup"></a>@EViewGroup</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EViewGroup</span>(R.layout.title_with_subtitle)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TitleWithSubtitle</span> <span class="keyword">extends</span> <span class="title">RelativeLayout</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@ViewById</span></span><br><span class="line">    <span class="keyword">protected</span> TextView title, subtitle;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TitleWithSubtitle</span><span class="params">(Context context, AttributeSet attrs)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context, attrs);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTexts</span><span class="params">(String titleText, String subTitleText)</span> </span>&#123;</span><br><span class="line">        title.setText(titleText);</span><br><span class="line">        subtitle.setText(subTitleText);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注册：</p>
+<figure class="highlight java"><figcaption><span><com.androidannotations.viewgroup.TitleWithSubtitle_</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">android:id=<span class="string">"@+id/firstTitle"</span></span><br><span class="line">android:layout_width=<span class="string">"match_parent"</span></span><br><span class="line">android:layout_height=<span class="string">"wrap_content"</span> /&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="EApplication"><a href="#EApplication" class="headerlink" title="@EApplication"></a>@EApplication</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyApplication</span> <span class="keyword">extends</span> <span class="title">Application</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Activity中使用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@EActivity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@App</span></span><br><span class="line">  MyApplication application;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="EService"><a href="#EService" class="headerlink" title="@EService"></a>@EService</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@EService</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyService</span> <span class="keyword">extends</span> <span class="title">Service</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>跳转service：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MyService_.intent(getApplication()).start();</span><br></pre></td></tr></table></figure>
+
+<p>停止service：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MyService_.intent(getApplication()).stop();</span><br></pre></td></tr></table></figure>
+
+<h4 id="EReceiver"><a href="#EReceiver" class="headerlink" title="@EReceiver"></a>@EReceiver</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@EReceiver</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyReceiver</span> <span class="keyword">extends</span> <span class="title">BroadcastReceiver</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Receiver"><a href="#Receiver" class="headerlink" title="@Receiver"></a>@Receiver</h4><p>可以替代声明BroadcastReceiver</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@EActivity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Receiver</span>(actions = <span class="string">"org.androidannotations.ACTION_1"</span>)</span><br><span class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onAction1</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="EProvider"><a href="#EProvider" class="headerlink" title="@EProvider"></a>@EProvider</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@EProvider</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyContentProvider</span> <span class="keyword">extends</span> <span class="title">ContentProvider</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="ViewById"><a href="#ViewById" class="headerlink" title="@ViewById"></a>@ViewById</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@EActivity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Injects R.id.myEditText，变量名称必须和布局的id名称一致</span></span><br><span class="line">  <span class="meta">@ViewById</span></span><br><span class="line">  EditText myEditText;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@ViewById</span>(R.id.myTextView)</span><br><span class="line">  TextView textView;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="AfterViews"><a href="#AfterViews" class="headerlink" title="@AfterViews"></a>@AfterViews</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@EActivity</span>(R.layout.main)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@ViewById</span></span><br><span class="line">    TextView myTextView;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@AfterViews</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">updateTextWithDate</span><span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="comment">//一定要在这里进行view的一些设置，不要在oncreate()中设置，因为oncreate()在执行时 view还没有注入</span></span><br><span class="line">        myTextView.setText(<span class="string">"Date: "</span> + <span class="keyword">new</span> Date());    &#125;[...]</span><br></pre></td></tr></table></figure>
+
+<h4 id="StringRes"><a href="#StringRes" class="headerlink" title="@StringRes"></a>@StringRes</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@EActivity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@StringRes</span>(R.string.hello)</span><br><span class="line">  String myHelloString;<span class="comment">//不能设置成私有变量</span></span><br><span class="line"></span><br><span class="line">  <span class="meta">@StringRes</span></span><br><span class="line">  String hello;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="ColorRes"><a href="#ColorRes" class="headerlink" title="@ColorRes"></a>@ColorRes</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@EActivity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@ColorRes</span>(R.color.backgroundColor)</span><br><span class="line">  <span class="keyword">int</span> someColor;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@ColorRes</span></span><br><span class="line">  <span class="keyword">int</span> backgroundColor;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="AnimationRes"><a href="#AnimationRes" class="headerlink" title="@AnimationRes"></a>@AnimationRes</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@EActivity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@AnimationRes</span>(R.anim.fadein)</span><br><span class="line">  XmlResourceParser xmlResAnim;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@AnimationRes</span></span><br><span class="line">  Animation fadein;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="DimensionRes"><a href="#DimensionRes" class="headerlink" title="@DimensionRes"></a>@DimensionRes</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@EActivity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@DimensionRes</span>(R.dimen.fontsize)</span><br><span class="line">  <span class="keyword">float</span> fontSizeDimension;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@DimensionRes</span></span><br><span class="line">  <span class="keyword">float</span> fontsize;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="DImensionPixelOffsetRes"><a href="#DImensionPixelOffsetRes" class="headerlink" title="@DImensionPixelOffsetRes"></a>@DImensionPixelOffsetRes</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@EActivity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@DimensionPixelOffsetRes</span>(R.string.fontsize)</span><br><span class="line">  <span class="keyword">int</span> fontSizeDimension;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@DimensionPixelOffsetRes</span></span><br><span class="line">  <span class="keyword">int</span> fontsize;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="DimensionPixelSizeRes"><a href="#DimensionPixelSizeRes" class="headerlink" title="@DimensionPixelSizeRes"></a>@DimensionPixelSizeRes</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@EActivity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@DimensionPixelSizeRes</span>(R.string.fontsize)</span><br><span class="line">  <span class="keyword">int</span> fontSizeDimension;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@DimensionPixelSizeRes</span></span><br><span class="line">  <span class="keyword">int</span> fontsize;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="其他的Res："><a href="#其他的Res：" class="headerlink" title="其他的Res："></a>其他的Res：</h4><li>@BooleanRes
+<li>@ColorStateListRes
+<li>@DrawableRes
+<li>@IntArrayRes
+<li>@IntegerRes
+<li>@LayoutRes
+<li>@MovieRes
+<li>@TextRes
+<li>@TextArrayRes
+<li>@StringArrayRes
+#### @Extra
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@EActivity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Extra</span>(<span class="string">"myStringExtra"</span>)</span><br><span class="line">  String myMessage;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Extra</span>(<span class="string">"myDateExtra"</span>)</span><br><span class="line">  Date myDateExtraWithDefaultValue = <span class="keyword">new</span> Date();</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>或者：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@EActivity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// The name of the extra will be "myMessage"，名字必须一致</span></span><br><span class="line">  <span class="meta">@Extra</span></span><br><span class="line">  String myMessage;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>传值：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MyActivity_.intent().myMessage(<span class="string">"hello"</span>).start() ;</span><br></pre></td></tr></table></figure>
+
+<h4 id="SystemService"><a href="#SystemService" class="headerlink" title="@SystemService"></a>@SystemService</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> @EActivity</span><br><span class="line">public class MyActivity extends Activity &#123;&#x2F;&#x2F;</span><br><span class="line">  @SystemService</span><br><span class="line">  NotificationManager notificationManager;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Click"><a href="#Click" class="headerlink" title="@Click"></a>@Click</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@Click</span>(R.id.myButton)</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">myButtonWasClicked</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    [...]</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Click</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">anotherButton</span><span class="params">()</span> </span>&#123;<span class="comment">//如果不指定则函数名和id对应</span></span><br><span class="line">    [...]</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Click</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">yetAnotherButton</span><span class="params">(View clickedView)</span> </span>&#123;</span><br><span class="line">    [...]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其他点击事件：</p>
+<li>Clicks with @Click
+<li>Long clicks with @LongClick
+<li>Touches with @Touch
+
+<h4 id="AdapterViewEvents"><a href="#AdapterViewEvents" class="headerlink" title="AdapterViewEvents"></a>AdapterViewEvents</h4><li>Item clicks with @ItemClick
+<li>Long item clicks with @ItemLongClick
+<li>Item selection with @ItemSelect
+
+<p>有两种方式调用：</p>
+<li>1.
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@EActivity</span>(R.layout.my_list)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyListActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@ItemClick</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">myListItemClicked</span><span class="params">(MyItem clickedItem)</span> </span>&#123;<span class="comment">//MyItem是adapter的实体类，等同于adapter.getItem(position)</span></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@ItemLongClick</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">myListItemLongClicked</span><span class="params">(MyItem clickedItem)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@ItemSelect</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">myListItemSelected</span><span class="params">(<span class="keyword">boolean</span> selected, MyItem selectedItem)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<li>2.
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@EActivity</span>(R.layout.my_list)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyListActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@ItemClick</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">myListItemClicked</span><span class="params">(<span class="keyword">int</span> position)</span> </span>&#123;<span class="comment">//位置id</span></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@ItemLongClick</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">myListItemLongClicked</span><span class="params">(<span class="keyword">int</span> position)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@ItemSelect</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">myListItemSelected</span><span class="params">(<span class="keyword">boolean</span> selected, <span class="keyword">int</span> position)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="SeekBarProgressChange"><a href="#SeekBarProgressChange" class="headerlink" title="@SeekBarProgressChange"></a>@SeekBarProgressChange</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//等同于SeekBar.OnSeekBarChangeListener.onProgressChanged(SeekBar, int, boolean)</span></span><br><span class="line">    <span class="meta">@SeekBarProgressChange</span>(R.id.seekBar)</span><br><span class="line"> <span class="function"><span class="keyword">void</span> <span class="title">onProgressChangeOnSeekBar</span><span class="params">(SeekBar seekBar, <span class="keyword">int</span> progress, <span class="keyword">boolean</span> fromUser)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Something Here</span></span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="meta">@SeekBarProgressChange</span>(R.id.seekBar)</span><br><span class="line"> <span class="function"><span class="keyword">void</span> <span class="title">onProgressChangeOnSeekBar</span><span class="params">(SeekBar seekBar, <span class="keyword">int</span> progress)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Something Here</span></span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="meta">@SeekBarProgressChange</span>(&#123;R.id.seekBar1, R.id.seekBar2&#125;)</span><br><span class="line"> <span class="function"><span class="keyword">void</span> <span class="title">onProgressChangeOnSeekBar</span><span class="params">(SeekBar seekBar)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Something Here</span></span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="meta">@SeekBarProgressChange</span>(&#123;R.id.seekBar1, R.id.seekBar2&#125;)</span><br><span class="line"> <span class="function"><span class="keyword">void</span> <span class="title">onProgressChangeOnSeekBar</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Something Here</span></span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>@SeekBarTouchStart 和 @SeekBarTouchStop<br>接受开始和结束事件的监听</p>
+<h4 id="HttpsClient"><a href="#HttpsClient" class="headerlink" title="@HttpsClient"></a>@HttpsClient</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@HttpsClient</span></span><br><span class="line">HttpClient httpsClient;</span><br></pre></td></tr></table></figure>
+
+<p>示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"> <span class="meta">@EActivity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@HttpsClient</span>(trustStore=R.raw.cacerts,</span><br><span class="line">        trustStorePwd=<span class="string">"changeit"</span>, </span><br><span class="line">        hostnameVerif=<span class="keyword">true</span>)</span><br><span class="line">    HttpClient httpsClient;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@AfterInject</span></span><br><span class="line">    <span class="meta">@Background</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">securedRequest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            HttpGet httpget = <span class="keyword">new</span> HttpGet(<span class="string">"https://www.verisign.com/"</span>);</span><br><span class="line">            HttpResponse response = httpsClient.execute(httpget);</span><br><span class="line">            doSomethingWithResponse(response);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@UiThread</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSomethingWithResponse</span><span class="params">(HttpResponse resp)</span> </span>&#123;</span><br><span class="line">        Toast.makeText(<span class="keyword">this</span>, <span class="string">"HTTP status "</span> + resp.getStatusLine().getStatusCode(), Toast.LENGTH_LONG).show();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="TextChange"><a href="#TextChange" class="headerlink" title="@TextChange"></a>@TextChange</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@TextChange</span>(R.id.helloTextView)</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">onTextChangesOnHelloTextView</span><span class="params">(CharSequence text, TextView hello, <span class="keyword">int</span> before, <span class="keyword">int</span> start, <span class="keyword">int</span> count)</span> </span>&#123;</span><br><span class="line">   <span class="comment">// Something Here</span></span><br><span class="line">&#125;</span><br><span class="line">	</span><br><span class="line"><span class="meta">@TextChange</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">helloTextViewTextChanged</span><span class="params">(TextView hello)</span> </span>&#123;</span><br><span class="line">   <span class="comment">// Something Here</span></span><br><span class="line">&#125;</span><br><span class="line">	</span><br><span class="line"><span class="meta">@TextChange</span>(&#123;R.id.editText, R.id.helloTextView&#125;)</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">onTextChangesOnSomeTextViews</span><span class="params">(TextView tv, CharSequence text)</span> </span>&#123;</span><br><span class="line">   <span class="comment">// Something Here</span></span><br><span class="line">&#125;</span><br><span class="line">	</span><br><span class="line"><span class="meta">@TextChange</span>(R.id.helloTextView)</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">onTextChangesOnHelloTextView</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   <span class="comment">// Something Here</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="BeforeTextChange"><a href="#BeforeTextChange" class="headerlink" title="@BeforeTextChange"></a>@BeforeTextChange</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@BeforeTextChange</span>(R.id.helloTextView)</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">beforeTextChangedOnHelloTextView</span><span class="params">(TextView hello, CharSequence text, <span class="keyword">int</span> start, <span class="keyword">int</span> count, <span class="keyword">int</span> after)</span> </span>&#123;</span><br><span class="line">   <span class="comment">// Something Here</span></span><br><span class="line">&#125;</span><br><span class="line">	</span><br><span class="line"><span class="meta">@BeforeTextChange</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">helloTextViewBeforeTextChanged</span><span class="params">(TextView hello)</span> </span>&#123;</span><br><span class="line">   <span class="comment">// Something Here</span></span><br><span class="line">&#125;</span><br><span class="line">	</span><br><span class="line"><span class="meta">@BeforeTextChange</span>(&#123;R.id.editText, R.id.helloTextView&#125;)</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">beforeTextChangedOnSomeTextViews</span><span class="params">(TextView tv, CharSequence text)</span> </span>&#123;</span><br><span class="line">   <span class="comment">// Something Here</span></span><br><span class="line">&#125;</span><br><span class="line">	</span><br><span class="line"><span class="meta">@BeforeTextChange</span>(R.id.helloTextView)</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">beforeTextChangedOnHelloTextView</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   <span class="comment">// Something Here</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="AfterTextChange"><a href="#AfterTextChange" class="headerlink" title="@AfterTextChange"></a>@AfterTextChange</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@AfterTextChange</span>(R.id.helloTextView)</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">afterTextChangedOnHelloTextView</span><span class="params">(Editable text, TextView hello)</span> </span>&#123;</span><br><span class="line">   <span class="comment">// Something Here</span></span><br><span class="line">&#125;</span><br><span class="line">	</span><br><span class="line"><span class="meta">@AfterTextChange</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">helloTextViewAfterTextChanged</span><span class="params">(TextView hello)</span> </span>&#123;</span><br><span class="line">   <span class="comment">// Something Here</span></span><br><span class="line">&#125;</span><br><span class="line">	</span><br><span class="line"><span class="meta">@AfterTextChange</span>(&#123;R.id.editText, R.id.helloTextView&#125;)</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">afterTextChangedOnSomeTextViews</span><span class="params">(TextView tv, Editable text)</span> </span>&#123;</span><br><span class="line">   <span class="comment">// Something Here</span></span><br><span class="line">&#125;</span><br><span class="line">	</span><br><span class="line"><span class="meta">@AfterTextChange</span>(R.id.helloTextView)</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">afterTextChangedOnHelloTextView</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   <span class="comment">// Something Here</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>书写参考：<a href="http://www.csdn123.com/html/topnews201408/29/729.htm" target="_blank" rel="noopener">出处</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%B3%A8%E8%A7%A3/" rel="tag"># 注解</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/10/13/SwipeRefreshLayout-RecyclerView-%E5%AE%9E%E7%8E%B0%E4%B8%8B%E6%8B%89%E5%88%B7%E6%96%B0%E5%92%8C%E4%B8%8A%E6%8B%89%E5%8A%A0%E8%BD%BD%E6%9B%B4%E5%A4%9A/" rel="next" title="SwipeRefreshLayout + RecyclerView 实现下拉刷新和上拉加载更多">
+                <i class="fa fa-chevron-left"></i> SwipeRefreshLayout + RecyclerView 实现下拉刷新和上拉加载更多
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/10/17/Android-Studio%E5%A6%82%E4%BD%95%E5%AF%BC%E5%85%A5%E7%AC%AC%E4%B8%89%E6%96%B9%E7%B1%BB%E5%BA%93/" rel="prev" title="Android Studio如何导入第三方类库">
+                Android Studio如何导入第三方类库 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">walkingCoder</p>
+              <p class="site-description motion-element" itemprop="description">专注技术,极速成长</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/walkingCoder" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="os_line@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、配置（Android-Studio）"><span class="nav-number">1.</span> <span class="nav-text">一、配置（Android Studio）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、使用"><span class="nav-number">2.</span> <span class="nav-text">二、使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#EActivity"><span class="nav-number">2.1.</span> <span class="nav-text">@EActivity</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#EFragment"><span class="nav-number">2.2.</span> <span class="nav-text">@EFragment</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#FragmentArg"><span class="nav-number">2.3.</span> <span class="nav-text">@FragmentArg</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#OptionsMenu和OptionsItem"><span class="nav-number">2.4.</span> <span class="nav-text">@OptionsMenu和OptionsItem</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RestService"><span class="nav-number">2.5.</span> <span class="nav-text">@RestService</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Background"><span class="nav-number">2.6.</span> <span class="nav-text">@Background</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#UiThread"><span class="nav-number">2.7.</span> <span class="nav-text">@UiThread</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#OnActivityResult"><span class="nav-number">2.8.</span> <span class="nav-text">@OnActivityResult</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#EBean"><span class="nav-number">2.9.</span> <span class="nav-text">@EBean</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#EView"><span class="nav-number">2.10.</span> <span class="nav-text">@EView</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#EViewGroup"><span class="nav-number">2.11.</span> <span class="nav-text">@EViewGroup</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#EApplication"><span class="nav-number">2.12.</span> <span class="nav-text">@EApplication</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#EService"><span class="nav-number">2.13.</span> <span class="nav-text">@EService</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#EReceiver"><span class="nav-number">2.14.</span> <span class="nav-text">@EReceiver</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Receiver"><span class="nav-number">2.15.</span> <span class="nav-text">@Receiver</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#EProvider"><span class="nav-number">2.16.</span> <span class="nav-text">@EProvider</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ViewById"><span class="nav-number">2.17.</span> <span class="nav-text">@ViewById</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AfterViews"><span class="nav-number">2.18.</span> <span class="nav-text">@AfterViews</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#StringRes"><span class="nav-number">2.19.</span> <span class="nav-text">@StringRes</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ColorRes"><span class="nav-number">2.20.</span> <span class="nav-text">@ColorRes</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AnimationRes"><span class="nav-number">2.21.</span> <span class="nav-text">@AnimationRes</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DimensionRes"><span class="nav-number">2.22.</span> <span class="nav-text">@DimensionRes</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DImensionPixelOffsetRes"><span class="nav-number">2.23.</span> <span class="nav-text">@DImensionPixelOffsetRes</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DimensionPixelSizeRes"><span class="nav-number">2.24.</span> <span class="nav-text">@DimensionPixelSizeRes</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#其他的Res："><span class="nav-number">2.25.</span> <span class="nav-text">其他的Res：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SystemService"><span class="nav-number">2.26.</span> <span class="nav-text">@SystemService</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Click"><span class="nav-number">2.27.</span> <span class="nav-text">@Click</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AdapterViewEvents"><span class="nav-number">2.28.</span> <span class="nav-text">AdapterViewEvents</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SeekBarProgressChange"><span class="nav-number">2.29.</span> <span class="nav-text">@SeekBarProgressChange</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#HttpsClient"><span class="nav-number">2.30.</span> <span class="nav-text">@HttpsClient</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TextChange"><span class="nav-number">2.31.</span> <span class="nav-text">@TextChange</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#BeforeTextChange"><span class="nav-number">2.32.</span> <span class="nav-text">@BeforeTextChange</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AfterTextChange"><span class="nav-number">2.33.</span> <span class="nav-text">@AfterTextChange</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">walkingCoder</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://walkingCoder.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2015/10/14/Android-%E6%9C%80%E7%81%AB%E7%9A%84%E5%BF%AB%E9%80%9F%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6AndroidAnnotations%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/';
+          this.page.identifier = '2015/10/14/Android-最火的快速开发框架AndroidAnnotations使用详解/';
+          this.page.title = 'Android 最火的快速开发框架AndroidAnnotations使用详解';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://walkingCoder.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

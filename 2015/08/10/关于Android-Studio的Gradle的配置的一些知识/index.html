@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="AndroidStudio," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、采用签名不再是debug的签名  直接在编辑环境中运行app默认是debug签名的，我们想更改签名不是debug（例如，微信sdk接入分享的使用要求apk文件不能是debug签名，否则不生效）。   我们需要在项目的build.gradle中android{} 根目录中添加： 12345678910111213141516171819202122232425262728293031323334">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于Android Studio的Gradle文件配置的一些知识">
+<meta property="og:url" content="http://yoursite.com/2015/08/10/%E5%85%B3%E4%BA%8EAndroid-Studio%E7%9A%84Gradle%E7%9A%84%E9%85%8D%E7%BD%AE%E7%9A%84%E4%B8%80%E4%BA%9B%E7%9F%A5%E8%AF%86/index.html">
+<meta property="og:site_name" content="Build Your Dreams">
+<meta property="og:description" content="一、采用签名不再是debug的签名  直接在编辑环境中运行app默认是debug签名的，我们想更改签名不是debug（例如，微信sdk接入分享的使用要求apk文件不能是debug签名，否则不生效）。   我们需要在项目的build.gradle中android{} 根目录中添加： 12345678910111213141516171819202122232425262728293031323334">
+<meta property="article:published_time" content="2015-08-10T06:17:05.000Z">
+<meta property="article:modified_time" content="2016-11-07T06:36:43.000Z">
+<meta property="article:author" content="walkingCoder">
+<meta property="article:tag" content="AndroidStudio">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/08/10/关于Android-Studio的Gradle的配置的一些知识/"/>
+
+
+
+
+
+  <title>关于Android Studio的Gradle文件配置的一些知识 | Build Your Dreams</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d93547c1df1bf79570af4684f56090cf";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Build Your Dreams</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">专注技术,极速成长</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/08/10/%E5%85%B3%E4%BA%8EAndroid-Studio%E7%9A%84Gradle%E7%9A%84%E9%85%8D%E7%BD%AE%E7%9A%84%E4%B8%80%E4%BA%9B%E7%9F%A5%E8%AF%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="walkingCoder">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Build Your Dreams">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">关于Android Studio的Gradle文件配置的一些知识</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-08-10T14:17:05+08:00">
+                2015-08-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/08/10/%E5%85%B3%E4%BA%8EAndroid-Studio%E7%9A%84Gradle%E7%9A%84%E9%85%8D%E7%BD%AE%E7%9A%84%E4%B8%80%E4%BA%9B%E7%9F%A5%E8%AF%86/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015/08/10/关于Android-Studio的Gradle的配置的一些知识/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="一、采用签名不再是debug的签名"><a href="#一、采用签名不再是debug的签名" class="headerlink" title="一、采用签名不再是debug的签名"></a>一、采用签名不再是debug的签名</h3><p>  直接在编辑环境中运行app默认是debug签名的，我们想更改签名不是debug（例如，微信sdk接入分享的使用要求apk文件不能是debug签名，否则不生效）。</p>
+<p>  我们需要在项目的build.gradle中android{} 根目录中添加：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">	android&#123;                        <span class="comment">//在他的目录下添加</span></span><br><span class="line">	 </span><br><span class="line">		 signingConfigs&#123;</span><br><span class="line">		        debug&#123;</span><br><span class="line">		            <span class="function">storeFile <span class="title">file</span><span class="params">(<span class="string">"haha.keystore"</span>)</span>            <span class="comment">//签名文件的名字 这是在根目录下</span></span></span><br><span class="line"><span class="function">		            storePassword "haha123456"                 <span class="comment">//密码</span></span></span><br><span class="line"><span class="function">		            keyAlias "zzu"                            <span class="comment">//组织（这个是刚开始生成签名文件时填的）</span></span></span><br><span class="line"><span class="function">		            keyPassword "haha123456"                   <span class="comment">//key密码</span></span></span><br><span class="line"><span class="function">		        &#125;</span></span><br><span class="line"><span class="function">		    &#125;</span></span><br><span class="line"><span class="function">	 &#125;</span></span><br><span class="line"><span class="function">	 </span></span><br><span class="line"><span class="function">```	 </span></span><br><span class="line"><span class="function">	 </span></span><br><span class="line"><span class="function">同时还要经签名文件 haha.keystore放到项目app的根目录下</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">或者在项目的build.gradle中android</span>&#123;&#125;根目录中添加：</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line"></span><br><span class="line">Properties properties = <span class="keyword">new</span> Properties()</span><br><span class="line">    properties.load(project.rootProject.file(<span class="string">'local.properties'</span>).newDataInputStream())</span><br><span class="line"></span><br><span class="line">	signingConfigs &#123;</span><br><span class="line">	        haha &#123;                                              <span class="comment">//haha 这个名字是随意命名的</span></span><br><span class="line">	            <span class="function">storeFile <span class="title">file</span><span class="params">(<span class="string">"../keystore/haha.keystore"</span>)</span>     <span class="comment">// 签名文件的路径   这是在根目录下新建了keystore文件夹</span></span></span><br><span class="line"><span class="function">	            storePassword properties.<span class="title">getProperty</span><span class="params">(<span class="string">"Password"</span>)</span></span></span><br><span class="line"><span class="function">	            keyAlias properties.<span class="title">getProperty</span><span class="params">(<span class="string">"keyAlias"</span>)</span></span></span><br><span class="line"><span class="function">	            keyPassword properties.<span class="title">getProperty</span><span class="params">(<span class="string">"Password"</span>)</span></span></span><br><span class="line"><span class="function">	        &#125;</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">	 buildTypes </span>&#123;</span><br><span class="line">	        release &#123;</span><br><span class="line">	            signingConfig signingConfigs.haha      <span class="comment">//配置</span></span><br><span class="line">	            minifyEnabled <span class="keyword">false</span>    <span class="comment">//时候开启混淆</span></span><br><span class="line">	            <span class="function">proguardFiles <span class="title">getDefaultProguardFile</span><span class="params">(<span class="string">'proguard-android.txt'</span>)</span>, 'proguard-rules.pro'   <span class="comment">//混淆文件</span></span></span><br><span class="line"><span class="function">	        &#125;</span></span><br><span class="line"><span class="function">	</span></span><br><span class="line"><span class="function">	        debug </span>&#123;</span><br><span class="line">	            signingConfig signingConfigs.haha</span><br><span class="line">	        &#125;</span><br><span class="line">	    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后在local.properties 中添加 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">keyAlias=haha</span><br><span class="line">Password=haha123</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="二、直接生成以什么命名格式的apk文件"><a href="#二、直接生成以什么命名格式的apk文件" class="headerlink" title="二、直接生成以什么命名格式的apk文件"></a>二、直接生成以什么命名格式的apk文件</h3><p>同样是在项目的build.gradle中android{}根目录中添加：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">applicationVariants.all &#123;</span><br><span class="line">       variant -&gt;</span><br><span class="line">           variant.outputs.each &#123;</span><br><span class="line">               output -&gt;</span><br><span class="line">                   def oldFile = output.outputFile</span><br><span class="line">                   <span class="keyword">if</span> (variant.buildType.name.equals(<span class="string">'release'</span>)) &#123;</span><br><span class="line">	</span><br><span class="line">                            <span class="comment">//生成的就是  bizhi-版本号-版本名_singed.apk</span></span><br><span class="line">                       def releaseApkName=<span class="string">'bizhi-'</span>+defaultConfig.versionCode+<span class="string">"-"</span>+defaultConfig.versionName+<span class="string">"-signed.apk"</span></span><br><span class="line">                       output.outputFile=<span class="keyword">new</span> File(oldFile.parent,releaseApkName)</span><br><span class="line">                   &#125;</span><br><span class="line">           &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="三、Gradle多渠道打包"><a href="#三、Gradle多渠道打包" class="headerlink" title="三、Gradle多渠道打包"></a>三、Gradle多渠道打包</h3><p>以有多渠道打包为例，</p>
+<p>在AndroidManifest.xml里面会有这么一段：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;meta-data</span><br><span class="line">    android:name=<span class="string">"UMENG_CHANNEL"</span></span><br><span class="line">    android:value=<span class="string">"Channel_ID"</span> /&gt;</span><br></pre></td></tr></table></figure>
+
+<p>里面的Channel_ID就是渠道标示。我们的目标就是在编译的时候这个值能够自动变化。</p>
+<li>第一步 在AndroidManifest.xml里配置PlaceHolder
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;meta-data</span><br><span class="line">    android:name=<span class="string">"UMENG_CHANNEL"</span></span><br><span class="line">    android:value=<span class="string">"$&#123;UMENG_CHANNEL_VALUE&#125;"</span> /&gt;</span><br></pre></td></tr></table></figure>
+
+<li>第二步 在build.gradle设置productFlavors
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">	android &#123;  </span><br><span class="line">	    productFlavors &#123;</span><br><span class="line">	        xiaomi &#123;</span><br><span class="line">	            manifestPlaceholders = [UMENG_CHANNEL_VALUE: <span class="string">"xiaomi"</span>]</span><br><span class="line">	        &#125;</span><br><span class="line">	        _360 &#123;</span><br><span class="line">	            manifestPlaceholders = [UMENG_CHANNEL_VALUE: <span class="string">"_360"</span>]</span><br><span class="line">	        &#125;</span><br><span class="line">	        baidu &#123;</span><br><span class="line">	            manifestPlaceholders = [UMENG_CHANNEL_VALUE: <span class="string">"baidu"</span>]</span><br><span class="line">	        &#125;</span><br><span class="line">	        wandoujia &#123;</span><br><span class="line">	            manifestPlaceholders = [UMENG_CHANNEL_VALUE: <span class="string">"wandoujia"</span>]</span><br><span class="line">	        &#125;</span><br><span class="line">	    &#125;  </span><br><span class="line">	&#125;</span><br><span class="line">```	</span><br><span class="line">或者批量修改</span><br><span class="line"></span><br><span class="line">全选复制放进笔记</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">	android &#123;  </span><br><span class="line">	    productFlavors &#123;</span><br><span class="line">	        xiaomi &#123;&#125;</span><br><span class="line">	        _360 &#123;&#125;</span><br><span class="line">	        baidu &#123;&#125;</span><br><span class="line">	        wandoujia &#123;&#125;</span><br><span class="line">	    &#125;  </span><br><span class="line">	</span><br><span class="line">	    productFlavors.all &#123; </span><br><span class="line">	        flavor -&gt; flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name] </span><br><span class="line">	    &#125;</span><br><span class="line">	&#125;</span><br><span class="line">```	</span><br><span class="line"></span><br><span class="line">整体就是：</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">productFlavors &#123;</span><br><span class="line">        _3kongjian &#123;&#125;   <span class="comment">//3空间</span></span><br><span class="line">        wandoujia &#123;&#125;<span class="comment">//豌豆荚</span></span><br><span class="line">        _360 &#123;&#125;<span class="comment">//360</span></span><br><span class="line">        tencent &#123;&#125;<span class="comment">//应用宝</span></span><br><span class="line">        _91 &#123;&#125;<span class="comment">//91助手</span></span><br><span class="line">        baidu &#123;&#125;<span class="comment">//百度</span></span><br><span class="line">        xiaomi &#123;&#125;<span class="comment">//小米</span></span><br><span class="line">        huawei &#123;&#125;<span class="comment">//华为</span></span><br><span class="line">        anzhi &#123;&#125;  <span class="comment">//安智</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        productFlavors.all &#123; flavor -&gt;</span><br><span class="line">            flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    applicationVariants.all &#123;</span><br><span class="line">        variant -&gt;</span><br><span class="line">            variant.outputs.each &#123;</span><br><span class="line">                output -&gt;</span><br><span class="line">                    def oldFile = output.outputFile</span><br><span class="line">                    <span class="keyword">if</span> (variant.buildType.name.equals(<span class="string">'release'</span>)) &#123;</span><br><span class="line">                        def releaseApkName = defaultConfig.versionName + <span class="string">'/yifenguser-'</span> + defaultConfig.versionName + <span class="string">"-"</span> + variant.productFlavors[<span class="number">0</span>].name + <span class="string">"-signed.apk"</span></span><br><span class="line">                        output.outputFile = <span class="keyword">new</span> File(oldFile.parent, releaseApkName)</span><br><span class="line">                    &#125;</span><br><span class="line">            &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/AndroidStudio/" rel="tag"># AndroidStudio</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/07/30/%E5%85%B3%E4%BA%8EViewPager%E7%9A%84%E4%B8%80%E4%BA%9B%E7%9F%A5%E8%AF%86/" rel="next" title="关于ViewPager的一些知识">
+                <i class="fa fa-chevron-left"></i> 关于ViewPager的一些知识
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/08/10/%E5%85%B3%E4%BA%8E%E7%80%91%E5%B8%83%E6%B5%81%E8%A7%A3%E5%86%B3OOM%E9%97%AE%E9%A2%98/" rel="prev" title="关于瀑布流解决OOM问题">
+                关于瀑布流解决OOM问题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">walkingCoder</p>
+              <p class="site-description motion-element" itemprop="description">专注技术,极速成长</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/walkingCoder" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="os_line@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、采用签名不再是debug的签名"><span class="nav-number">1.</span> <span class="nav-text">一、采用签名不再是debug的签名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、直接生成以什么命名格式的apk文件"><span class="nav-number">2.</span> <span class="nav-text">二、直接生成以什么命名格式的apk文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、Gradle多渠道打包"><span class="nav-number">3.</span> <span class="nav-text">三、Gradle多渠道打包</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">walkingCoder</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://walkingCoder.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2015/08/10/%E5%85%B3%E4%BA%8EAndroid-Studio%E7%9A%84Gradle%E7%9A%84%E9%85%8D%E7%BD%AE%E7%9A%84%E4%B8%80%E4%BA%9B%E7%9F%A5%E8%AF%86/';
+          this.page.identifier = '2015/08/10/关于Android-Studio的Gradle的配置的一些知识/';
+          this.page.title = '关于Android Studio的Gradle文件配置的一些知识';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://walkingCoder.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="RecyclerView," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="SwipeRefreshLayout 是谷歌公司推出的用于下拉刷新的控件，SwipeRefreshLayout已经被放到了sdk中，在Version 19.1之后SwipeRefreshLayout 被放到support v4中。 1源码在SDK\sdk\extras\android\support\v4\src\java\android\support\v4\widget\SwipeRefres">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SwipeRefreshLayout + RecyclerView 实现下拉刷新和上拉加载更多">
+<meta property="og:url" content="http://yoursite.com/2015/10/13/SwipeRefreshLayout-RecyclerView-%E5%AE%9E%E7%8E%B0%E4%B8%8B%E6%8B%89%E5%88%B7%E6%96%B0%E5%92%8C%E4%B8%8A%E6%8B%89%E5%8A%A0%E8%BD%BD%E6%9B%B4%E5%A4%9A/index.html">
+<meta property="og:site_name" content="Build Your Dreams">
+<meta property="og:description" content="SwipeRefreshLayout 是谷歌公司推出的用于下拉刷新的控件，SwipeRefreshLayout已经被放到了sdk中，在Version 19.1之后SwipeRefreshLayout 被放到support v4中。 1源码在SDK\sdk\extras\android\support\v4\src\java\android\support\v4\widget\SwipeRefres">
+<meta property="og:image" content="http://7xl32g.com1.z0.glb.clouddn.com/swipeRefreshLayout.gif">
+<meta property="article:published_time" content="2015-10-13T07:09:26.000Z">
+<meta property="article:modified_time" content="2017-05-25T03:30:51.000Z">
+<meta property="article:author" content="walkingCoder">
+<meta property="article:tag" content="RecyclerView">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://7xl32g.com1.z0.glb.clouddn.com/swipeRefreshLayout.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/10/13/SwipeRefreshLayout-RecyclerView-实现下拉刷新和上拉加载更多/"/>
+
+
+
+
+
+  <title>SwipeRefreshLayout + RecyclerView 实现下拉刷新和上拉加载更多 | Build Your Dreams</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d93547c1df1bf79570af4684f56090cf";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Build Your Dreams</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">专注技术,极速成长</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/10/13/SwipeRefreshLayout-RecyclerView-%E5%AE%9E%E7%8E%B0%E4%B8%8B%E6%8B%89%E5%88%B7%E6%96%B0%E5%92%8C%E4%B8%8A%E6%8B%89%E5%8A%A0%E8%BD%BD%E6%9B%B4%E5%A4%9A/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="walkingCoder">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Build Your Dreams">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">SwipeRefreshLayout + RecyclerView 实现下拉刷新和上拉加载更多</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-10-13T15:09:26+08:00">
+                2015-10-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/10/13/SwipeRefreshLayout-RecyclerView-%E5%AE%9E%E7%8E%B0%E4%B8%8B%E6%8B%89%E5%88%B7%E6%96%B0%E5%92%8C%E4%B8%8A%E6%8B%89%E5%8A%A0%E8%BD%BD%E6%9B%B4%E5%A4%9A/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015/10/13/SwipeRefreshLayout-RecyclerView-实现下拉刷新和上拉加载更多/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>SwipeRefreshLayout 是谷歌公司推出的用于下拉刷新的控件，SwipeRefreshLayout已经被放到了sdk中，在Version 19.1之后SwipeRefreshLayout 被放到support v4中。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">源码在SDK\sdk\extras\android\support\v4\src\java\android\support\v4\widget\SwipeRefreshLayout.java</span><br></pre></td></tr></table></figure>
+<p><b>SwipeRefreshLayout只提供了下拉刷新，我们需要添加上拉加载更多</b></p>
+<p><img src="http://7xl32g.com1.z0.glb.clouddn.com/swipeRefreshLayout.gif"></img></p>
+<h5 id="SwipeRefreshLayout中要注意的API"><a href="#SwipeRefreshLayout中要注意的API" class="headerlink" title="SwipeRefreshLayout中要注意的API:"></a>SwipeRefreshLayout中要注意的API:</h5><li>setOnRefreshListener(OnRefreshListener listener)  设置下拉监听，当用户下拉的时候会去执行回调
+<li>setColorSchemeColors(int... colors) 设置 进度条的颜色变化，最多可以设置4种颜色
+<li>setProgressViewOffset(boolean scale, int start, int end) 调整进度条距离屏幕顶部的距离 (19) 
+<li>setRefreshing(boolean refreshing) 设置SwipeRefreshLayout当前是否处于刷新状态，一般是在请求数据的时候设置为true，在数据被加载到View中后，设置为false。
+
+<h5 id="添加上拉加载：对recyclerview添加addOnscrollListener-滑动到可见的最后一个item的时候，让mSwipeRefreshLayout-setRefreshing-true-加载数据，发handler-然后消失。"><a href="#添加上拉加载：对recyclerview添加addOnscrollListener-滑动到可见的最后一个item的时候，让mSwipeRefreshLayout-setRefreshing-true-加载数据，发handler-然后消失。" class="headerlink" title="添加上拉加载：对recyclerview添加addOnscrollListener,滑动到可见的最后一个item的时候，让mSwipeRefreshLayout.setRefreshing(true);加载数据，发handler ,然后消失。"></a>添加上拉加载：对recyclerview添加addOnscrollListener,滑动到可见的最后一个item的时候，让mSwipeRefreshLayout.setRefreshing(true);加载数据，发handler ,然后消失。</h5><h5 id="布局文件：SwipeRefreshLayout要嵌套在listview、srcrollview、recyclerview等的外边"><a href="#布局文件：SwipeRefreshLayout要嵌套在listview、srcrollview、recyclerview等的外边" class="headerlink" title="布局文件：SwipeRefreshLayout要嵌套在listview、srcrollview、recyclerview等的外边"></a>布局文件：SwipeRefreshLayout要嵌套在listview、srcrollview、recyclerview等的外边</h5><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;android.support.v4.widget.SwipeRefreshLayout</span><br><span class="line">     android:id=<span class="string">"@+id/swiperefreshlayout"</span></span><br><span class="line">     android:layout_height=<span class="string">"wrap_content"</span></span><br><span class="line">     android:layout_width=<span class="string">"match_parent"</span></span><br><span class="line">     &gt;</span><br><span class="line">     &lt;android.support.v7.widget.RecyclerView</span><br><span class="line">         android:id=<span class="string">"@+id/recyclerview"</span></span><br><span class="line">         android:layout_height=<span class="string">"wrap_content"</span></span><br><span class="line">         android:layout_width=<span class="string">"match_parent"</span></span><br><span class="line">         &gt;&lt;/android.support.v7.widget.RecyclerView&gt;</span><br><span class="line"> &lt;/android.support.v4.widget.SwipeRefreshLayout&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="Activity"><a href="#Activity" class="headerlink" title="Activity"></a>Activity</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">mRecyclerView= (RecyclerView) findViewById(R.id.recyclerview);</span><br><span class="line">layoutManager=<span class="keyword">new</span> LinearLayoutManager(<span class="keyword">this</span>);</span><br><span class="line">mRecyclerView.setLayoutManager(layoutManager);</span><br><span class="line">mRecyclerView.addItemDecoration(<span class="keyword">new</span> DividerItemDecoration(<span class="keyword">this</span>, DividerItemDecoration.VERTICAL_LIST));</span><br><span class="line">adapter=<span class="keyword">new</span> SimpleAdapter(<span class="keyword">this</span>,mDatas);</span><br><span class="line">mRecyclerView.setAdapter(adapter);</span><br><span class="line">mSwipeRefreshLayout= (SwipeRefreshLayout) findViewById(R.id.swiperefreshlayout);</span><br><span class="line">mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light,</span><br><span class="line">        android.R.color.holo_orange_light, android.R.color.holo_red_light);</span><br><span class="line">    <span class="comment">//此处是android自带的只支持下拉刷新</span></span><br><span class="line">mSwipeRefreshLayout.setOnRefreshListener(<span class="keyword">new</span> SwipeRefreshLayout.OnRefreshListener() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onRefresh</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        handler.sendEmptyMessageDelayed(MSG_COMPLETE, <span class="number">3000</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line">   <span class="comment">//此处我们是对recyclerview添加scrollListener ,监听滑倒最后一个可见的条目的时候，刷新加载数据</span></span><br><span class="line">mRecyclerView.addOnScrollListener(<span class="keyword">new</span> RecyclerView.OnScrollListener() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onScrollStateChanged</span><span class="params">(RecyclerView recyclerView, <span class="keyword">int</span> newState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onScrollStateChanged(recyclerView, newState);</span><br><span class="line">            <span class="comment">//SCROLL_STATE_DRAGGING  和   SCROLL_STATE_IDLE 两种效果自己看着来</span></span><br><span class="line">        <span class="keyword">if</span>(newState == RecyclerView.SCROLL_STATE_IDLE &amp;&amp; lastVisibleItem + <span class="number">1</span> == adapter.getItemCount())&#123;</span><br><span class="line">            mSwipeRefreshLayout.setRefreshing(<span class="keyword">true</span>);</span><br><span class="line">            handler.sendEmptyMessageDelayed(MSG_COMPLETE,<span class="number">3000</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onScrolled</span><span class="params">(RecyclerView recyclerView, <span class="keyword">int</span> dx, <span class="keyword">int</span> dy)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onScrolled(recyclerView, dx, dy);</span><br><span class="line">        lastVisibleItem=layoutManager.findLastVisibleItemPosition();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>handler模拟加载数据</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Handler handler=<span class="keyword">new</span> Handler()&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">super</span>.handleMessage(msg);</span><br><span class="line">            <span class="keyword">switch</span> (msg.what)&#123;</span><br><span class="line">                <span class="keyword">case</span> MSG_COMPLETE:</span><br><span class="line">                    List&lt;String&gt; lists=<span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">                    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;<span class="number">6</span> ; i++) &#123;</span><br><span class="line">                        lists.add(<span class="string">"刷新"</span>+i);</span><br><span class="line">                    &#125;</span><br><span class="line">                    mDatas.addAll(<span class="number">0</span>,lists);</span><br><span class="line">                    adapter.notifyDataSetChanged();</span><br><span class="line">                    mSwipeRefreshLayout.setRefreshing(<span class="keyword">false</span>);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br></pre></td></tr></table></figure>
+
+<h5 id="补充："><a href="#补充：" class="headerlink" title="补充："></a>补充：</h5><p>用 StaggeredGridLayoutManager 实现瀑布流时，上拉加载更多提前预加载：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mRecyclerView.addOnScrollListener(getOnBottomListener(layoutManager));</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> PRELOAD_SIZE = <span class="number">6</span>;</span><br><span class="line"></span><br><span class="line">RecyclerView.<span class="function">OnScrollListener <span class="title">getOnBottomListener</span><span class="params">(<span class="keyword">final</span> StaggeredGridLayoutManager layoutManager)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> RecyclerView.OnScrollListener() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onScrolled</span><span class="params">(RecyclerView rv, <span class="keyword">int</span> dx, <span class="keyword">int</span> dy)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">boolean</span> isBottom =</span><br><span class="line">                        layoutManager.findLastCompletelyVisibleItemPositions(<span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>])[<span class="number">1</span>] &gt;=</span><br><span class="line">                                beautymapImgAdapter.getItemCount() - PRELOAD_SIZE;</span><br><span class="line">                <span class="keyword">if</span> (!mRefreshLayout.isRefreshing() &amp;&amp; isBottom &amp;&amp; beautymapImageInfoList.size() &gt;= <span class="number">10</span>) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (!mIsFirstTimeTouchBottom) &#123;</span><br><span class="line">                        mRefreshLayout.setRefreshing(<span class="keyword">true</span>);</span><br><span class="line">                        getBeautyGalleryListFromNet(pageNum + <span class="number">1</span>);</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        mIsFirstTimeTouchBottom = <span class="keyword">false</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RecyclerView/" rel="tag"># RecyclerView</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/10/10/Android-RecyclerView%E4%BD%BF%E7%94%A8%E5%85%A8%E8%A7%A3%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/" rel="next" title="Android RecyclerView使用全解析">
+                <i class="fa fa-chevron-left"></i> Android RecyclerView使用全解析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/10/14/Android-%E6%9C%80%E7%81%AB%E7%9A%84%E5%BF%AB%E9%80%9F%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6AndroidAnnotations%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/" rel="prev" title="Android 最火的快速开发框架AndroidAnnotations使用详解">
+                Android 最火的快速开发框架AndroidAnnotations使用详解 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">walkingCoder</p>
+              <p class="site-description motion-element" itemprop="description">专注技术,极速成长</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/walkingCoder" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="os_line@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#SwipeRefreshLayout中要注意的API"><span class="nav-number">1.</span> <span class="nav-text">SwipeRefreshLayout中要注意的API:</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#添加上拉加载：对recyclerview添加addOnscrollListener-滑动到可见的最后一个item的时候，让mSwipeRefreshLayout-setRefreshing-true-加载数据，发handler-然后消失。"><span class="nav-number">2.</span> <span class="nav-text">添加上拉加载：对recyclerview添加addOnscrollListener,滑动到可见的最后一个item的时候，让mSwipeRefreshLayout.setRefreshing(true);加载数据，发handler ,然后消失。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#布局文件：SwipeRefreshLayout要嵌套在listview、srcrollview、recyclerview等的外边"><span class="nav-number">3.</span> <span class="nav-text">布局文件：SwipeRefreshLayout要嵌套在listview、srcrollview、recyclerview等的外边</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Activity"><span class="nav-number">4.</span> <span class="nav-text">Activity</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#补充："><span class="nav-number">5.</span> <span class="nav-text">补充：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">walkingCoder</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://walkingCoder.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2015/10/13/SwipeRefreshLayout-RecyclerView-%E5%AE%9E%E7%8E%B0%E4%B8%8B%E6%8B%89%E5%88%B7%E6%96%B0%E5%92%8C%E4%B8%8A%E6%8B%89%E5%8A%A0%E8%BD%BD%E6%9B%B4%E5%A4%9A/';
+          this.page.identifier = '2015/10/13/SwipeRefreshLayout-RecyclerView-实现下拉刷新和上拉加载更多/';
+          this.page.title = 'SwipeRefreshLayout + RecyclerView 实现下拉刷新和上拉加载更多';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://walkingCoder.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

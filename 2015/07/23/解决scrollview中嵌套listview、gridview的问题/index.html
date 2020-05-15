@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="listview,scrollview,gridview," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="出现的问题：   1.在SrollView中嵌套ListView，ListView的显示会有问题，只显示一行或显示效果与预期不同，这是因为android禁止这样使用，放入ScrollView中的ListView的高度是无法计算的。    2.嵌套中的子ListView和GridvIew是无法滑动的，因为子控件的滑动事件会被外面的ScrollView吃掉，如果想让子控件可以滑动，只能强行的截取滑动的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="解决scrollview中嵌套listview、gridview的问题">
+<meta property="og:url" content="http://yoursite.com/2015/07/23/%E8%A7%A3%E5%86%B3scrollview%E4%B8%AD%E5%B5%8C%E5%A5%97listview%E3%80%81gridview%E7%9A%84%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:site_name" content="Build Your Dreams">
+<meta property="og:description" content="出现的问题：   1.在SrollView中嵌套ListView，ListView的显示会有问题，只显示一行或显示效果与预期不同，这是因为android禁止这样使用，放入ScrollView中的ListView的高度是无法计算的。    2.嵌套中的子ListView和GridvIew是无法滑动的，因为子控件的滑动事件会被外面的ScrollView吃掉，如果想让子控件可以滑动，只能强行的截取滑动的">
+<meta property="article:published_time" content="2015-07-23T10:28:31.000Z">
+<meta property="article:modified_time" content="2017-05-25T03:33:44.000Z">
+<meta property="article:author" content="walkingCoder">
+<meta property="article:tag" content="listview">
+<meta property="article:tag" content="scrollview">
+<meta property="article:tag" content="gridview">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/07/23/解决scrollview中嵌套listview、gridview的问题/"/>
+
+
+
+
+
+  <title>解决scrollview中嵌套listview、gridview的问题 | Build Your Dreams</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d93547c1df1bf79570af4684f56090cf";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Build Your Dreams</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">专注技术,极速成长</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/07/23/%E8%A7%A3%E5%86%B3scrollview%E4%B8%AD%E5%B5%8C%E5%A5%97listview%E3%80%81gridview%E7%9A%84%E9%97%AE%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="walkingCoder">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Build Your Dreams">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">解决scrollview中嵌套listview、gridview的问题</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-07-23T18:28:31+08:00">
+                2015-07-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/07/23/%E8%A7%A3%E5%86%B3scrollview%E4%B8%AD%E5%B5%8C%E5%A5%97listview%E3%80%81gridview%E7%9A%84%E9%97%AE%E9%A2%98/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015/07/23/解决scrollview中嵌套listview、gridview的问题/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="出现的问题："><a href="#出现的问题：" class="headerlink" title="出现的问题："></a>出现的问题：</h3><p>   1.在SrollView中嵌套ListView，ListView的显示会有问题，只显示一行或显示效果与预期不同，这是因为android禁止这样使用，放入ScrollView中的ListView的高度是无法计算的。</p>
+<p>   2.嵌套中的子ListView和GridvIew是无法滑动的，因为子控件的滑动事件会被外面的ScrollView吃掉，如果想让子控件可以滑动，只能强行的截取滑动的相关事件了。</p>
+<h3 id="原因：原因就是scroll事件的消费处理以及ListView控件的高度设定问题。"><a href="#原因：原因就是scroll事件的消费处理以及ListView控件的高度设定问题。" class="headerlink" title="原因：原因就是scroll事件的消费处理以及ListView控件的高度设定问题。"></a>原因：原因就是scroll事件的消费处理以及ListView控件的高度设定问题。</h3><h3 id="解决的办法："><a href="#解决的办法：" class="headerlink" title="解决的办法："></a>解决的办法：</h3><h4 id="一、手动设置listview高度"><a href="#一、手动设置listview高度" class="headerlink" title="一、手动设置listview高度"></a>一、手动设置listview高度</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 动态设置ListView的高度</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> listView</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setListViewHeightBasedOnChildren</span><span class="params">(ListView listView)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">if</span>(listView == <span class="keyword">null</span>) <span class="keyword">return</span>;</span><br><span class="line">   ListAdapter listAdapter = listView.getAdapter();</span><br><span class="line">   <span class="keyword">if</span> (listAdapter == <span class="keyword">null</span>) &#123;</span><br><span class="line">       <span class="comment">// pre-condition</span></span><br><span class="line">       <span class="keyword">return</span>;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">int</span> totalHeight = <span class="number">0</span>;</span><br><span class="line">   <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; listAdapter.getCount(); i++) &#123;</span><br><span class="line">       View listItem = listAdapter.getView(i, <span class="keyword">null</span>, listView);</span><br><span class="line">       listItem.measure(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">       totalHeight += listItem.getMeasuredHeight();</span><br><span class="line">   &#125;</span><br><span class="line">   ViewGroup.LayoutParams params = listView.getLayoutParams();</span><br><span class="line">   params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - <span class="number">1</span>));</span><br><span class="line">   listView.setLayoutParams(params);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>  上面这个方法就是设定ListView的高度了，<b>在为ListView设置了Adapter之后使用</b>，就可以解决问题了。</p>
+<p>  但是这个方法有个两个细节需要注意：</p>
+<p>   <b>一是Adapter中getView方法返回的View的必须由LinearLayout组成</b>，因为只有LinearLayout才有measure()方法，如果使用其他的布局如RelativeLayout，在调用listItem.measure(0, 0);时就会抛异常，因为除LinearLayout外的其他布局的这个方法就是直接抛异常的，没理由…。我最初使用的就是这个方法，但是因为子控件的顶层布局是RelativeLayout，所以一直报错，不得不放弃这个方法。</p>
+<p>   <b>二是需要手动把ScrollView滚动至最顶端</b>，因为使用这个方法的话，默认在ScrollView顶端的项是ListView，具体原因不了解，求大神解答…可以在Activity中设置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sv &#x3D; (ScrollView) findViewById(R.id.act_solution_1_sv);</span><br><span class="line">sv.ScrollTo(0,0);</span><br></pre></td></tr></table></figure>
+<h4 id="二、使用LinearLayout取代ListView"><a href="#二、使用LinearLayout取代ListView" class="headerlink" title="二、使用LinearLayout取代ListView"></a>二、使用LinearLayout取代ListView</h4><p>既然ListView不能适应ScrollView，那就换一个可以适应ScrollView的控件，干嘛非要吊死在ListView这一棵树上呢？</p>
+<p>而LinearLayout是最好的选择。但如果我仍想继续使用已经定义好的Adater呢？我们只需要自定义一个类继承自LinearLayout，为其加上对BaseAdapter的适配。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 取代ListView的LinearLayout，使之能够成功嵌套在ScrollView中</span></span><br><span class="line"><span class="comment">* <span class="doctag">@author</span> </span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LinearLayoutForListView</span> <span class="keyword">extends</span> <span class="title">LinearLayout</span> </span>&#123;</span><br><span class="line">   <span class="keyword">private</span> BaseAdapter adapter;</span><br><span class="line">   <span class="keyword">private</span> OnClickListener onClickListener = <span class="keyword">null</span>;</span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 绑定布局</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">bindLinearLayout</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">int</span> count = adapter.getCount();</span><br><span class="line">       <span class="keyword">this</span>.removeAllViews();</span><br><span class="line">       <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; count; i++) &#123;</span><br><span class="line">           View v = adapter.getView(i, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line">           v.setOnClickListener(<span class="keyword">this</span>.onClickListener);</span><br><span class="line">           addView(v, i);</span><br><span class="line">       &#125;</span><br><span class="line">      Log.v(<span class="string">"countTAG"</span>, <span class="string">""</span> + count);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">LinearLayoutForListView</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">super</span>(context);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>它的使用和listview一样，写在布局文件里 然后setAdapter就ok了</p>
+<h4 id="三、自定义适应ScrollView的listview"><a href="#三、自定义适应ScrollView的listview" class="headerlink" title="三、自定义适应ScrollView的listview"></a>三、自定义适应ScrollView的listview</h4><p>自定义一个类继承自ListView，通过重写其onMeasure方法，达到对ScrollView适配的效果。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> android.content.Context;</span><br><span class="line"><span class="keyword">import</span> android.util.AttributeSet;</span><br><span class="line"><span class="keyword">import</span> android.widget.ListView;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ListViewForScrollView</span> <span class="keyword">extends</span> <span class="title">ListView</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ListViewForScrollView</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ListViewForScrollView</span><span class="params">(Context context, AttributeSet attrs)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context, attrs);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ListViewForScrollView</span><span class="params">(Context context, AttributeSet attrs,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">int</span> defStyle)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context, attrs, defStyle);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 重写该方法，达到使ListView适应ScrollView的效果</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthMeasureSpec, <span class="keyword">int</span> heightMeasureSpec)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> expandSpec = MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE &gt;&gt; <span class="number">2</span>,</span><br><span class="line">        MeasureSpec.AT_MOST);</span><br><span class="line">        <span class="keyword">super</span>.onMeasure(widthMeasureSpec, expandSpec);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>三个构造方法完全不用动，只要重写onMeasure方法，需要改动的地方比起方法2少了不是一点半点…</p>
+<p>在xml布局中和Activty中使用的ListView改成这个自定义ListView就行了。代码就省了吧…</p>
+<p>这个方法和方法1有一个同样的毛病，就是默认显示的首项是ListView，需要手动把ScrollView滚动至最顶端。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">	sv = (ScrollView) findViewById(R.id.act_solution_4_sv);</span><br><span class="line">	sv.smoothScrollTo(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">```	</span><br><span class="line">&lt;b&gt;GridView也一样，只需重写onMeasure()方法即可&lt;/b&gt;</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">	<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NoScrollGridView</span> <span class="keyword">extends</span> <span class="title">GridView</span></span>&#123;  </span><br><span class="line">	  </span><br><span class="line">	     <span class="function"><span class="keyword">public</span> <span class="title">NoScrollGridView</span><span class="params">(Context context, AttributeSet attrs)</span></span>&#123;  </span><br><span class="line">	          <span class="keyword">super</span>(context, attrs);  </span><br><span class="line">	     &#125;  </span><br><span class="line">	  </span><br><span class="line">	     <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthMeasureSpec, <span class="keyword">int</span> heightMeasureSpec)</span></span>&#123;  </span><br><span class="line">	          <span class="keyword">int</span> mExpandSpec = MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE &gt;&gt; <span class="number">2</span>, MeasureSpec.AT_MOST);  </span><br><span class="line">	          <span class="keyword">super</span>.onMeasure(widthMeasureSpec, mExpandSpec);  </span><br><span class="line">	     &#125;  </span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="注意："><a href="#注意：" class="headerlink" title="注意："></a>注意：</h4><p>使用PullToRefresh下拉刷新和上拉加载更多时，sv.ScrollTo(0,0) 是起不到作用的。</p>
+<p>解决办法一：  亲测没用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pullScrollView.getRefreshableView().ScrollTo(<span class="number">0</span>,<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+<p>解决办法二： 在PullToRefreshAdapterViewBase源码中添加这两个方法即可 （本人觉得麻烦，不建议）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">	 <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">setSelection</span><span class="params">(<span class="keyword">int</span> scrollTop)</span></span>&#123;</span><br><span class="line">	       mRefreshableView.setSelection(scrollTop);</span><br><span class="line">	   &#125;</span><br><span class="line">	    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">getFirstVisiablePosition</span><span class="params">()</span></span>&#123;</span><br><span class="line">	        <span class="keyword">return</span> mRefreshableView.getFirstVisiablePosition();</span><br><span class="line">	    &#125;</span><br><span class="line">```	    </span><br><span class="line">解决办法三：&lt;b&gt;让listview顶部的组件获得焦点（非常好用),有时需注意使用顺序&lt;/b&gt;</span><br><span class="line">	</span><br><span class="line">```java		 </span><br><span class="line">		tsstPager.setFocusable(<span class="keyword">true</span>);</span><br><span class="line">		testPager.setFocusableInTouchMode(<span class="keyword">true</span>);</span><br><span class="line">		testPager.requestFocus();</span><br></pre></td></tr></table></figure>
+<h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><h4 id="上述几个方法无非就是对listview（gridview）进行重新测量，但在pullToRefresh加载更多和下拉刷新时，会出现不停的测量，不停的刷新数据，手机屏幕乱跳等现象。解决办法：暂无。有能力再解决。"><a href="#上述几个方法无非就是对listview（gridview）进行重新测量，但在pullToRefresh加载更多和下拉刷新时，会出现不停的测量，不停的刷新数据，手机屏幕乱跳等现象。解决办法：暂无。有能力再解决。" class="headerlink" title="上述几个方法无非就是对listview（gridview）进行重新测量，但在pullToRefresh加载更多和下拉刷新时，会出现不停的测量，不停的刷新数据，手机屏幕乱跳等现象。解决办法：暂无。有能力再解决。"></a>上述几个方法无非就是对listview（gridview）进行重新测量，但在pullToRefresh加载更多和下拉刷新时，会出现不停的测量，不停的刷新数据，手机屏幕乱跳等现象。解决办法：暂无。有能力再解决。</h4>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/listview/" rel="tag"># listview</a>
+          
+            <a href="/tags/scrollview/" rel="tag"># scrollview</a>
+          
+            <a href="/tags/gridview/" rel="tag"># gridview</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/07/23/%E5%85%B3%E4%BA%8EEditText%E7%9A%84%E4%B8%80%E4%BA%9B%E7%89%B9%E5%88%AB%E4%BD%BF%E7%94%A8/" rel="next" title="关于EditText的一些特别使用">
+                <i class="fa fa-chevron-left"></i> 关于EditText的一些特别使用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/07/23/%E8%A7%A3%E5%86%B3listview%E4%B8%AD%E6%AF%8F%E4%B8%80%E9%A1%B9%E9%83%BD%E6%9C%89%E4%B8%8D%E5%90%8C%E7%9A%84%E5%B8%83%E5%B1%80/" rel="prev" title="解决listview中每一项都有不同的布局">
+                解决listview中每一项都有不同的布局 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">walkingCoder</p>
+              <p class="site-description motion-element" itemprop="description">专注技术,极速成长</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/walkingCoder" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="os_line@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#出现的问题："><span class="nav-number">1.</span> <span class="nav-text">出现的问题：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原因：原因就是scroll事件的消费处理以及ListView控件的高度设定问题。"><span class="nav-number">2.</span> <span class="nav-text">原因：原因就是scroll事件的消费处理以及ListView控件的高度设定问题。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决的办法："><span class="nav-number">3.</span> <span class="nav-text">解决的办法：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一、手动设置listview高度"><span class="nav-number">3.1.</span> <span class="nav-text">一、手动设置listview高度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二、使用LinearLayout取代ListView"><span class="nav-number">3.2.</span> <span class="nav-text">二、使用LinearLayout取代ListView</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三、自定义适应ScrollView的listview"><span class="nav-number">3.3.</span> <span class="nav-text">三、自定义适应ScrollView的listview</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#注意："><span class="nav-number">3.4.</span> <span class="nav-text">注意：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结："><span class="nav-number">4.</span> <span class="nav-text">总结：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#上述几个方法无非就是对listview（gridview）进行重新测量，但在pullToRefresh加载更多和下拉刷新时，会出现不停的测量，不停的刷新数据，手机屏幕乱跳等现象。解决办法：暂无。有能力再解决。"><span class="nav-number">4.1.</span> <span class="nav-text">上述几个方法无非就是对listview（gridview）进行重新测量，但在pullToRefresh加载更多和下拉刷新时，会出现不停的测量，不停的刷新数据，手机屏幕乱跳等现象。解决办法：暂无。有能力再解决。</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">walkingCoder</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://walkingCoder.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2015/07/23/%E8%A7%A3%E5%86%B3scrollview%E4%B8%AD%E5%B5%8C%E5%A5%97listview%E3%80%81gridview%E7%9A%84%E9%97%AE%E9%A2%98/';
+          this.page.identifier = '2015/07/23/解决scrollview中嵌套listview、gridview的问题/';
+          this.page.title = '解决scrollview中嵌套listview、gridview的问题';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://walkingCoder.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

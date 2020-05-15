@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="AndroidStudio," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="最近由于项目中的方法数过多，经常出现65535的异常，eclipse打包不成功，迫不得已，将原来的项目转到android studio上来继续开发，先后遇到了这样或者那样的问题。来记录一下： eclipsetostudio####第一种方式: 从Eclipse中导出Gradle build files在Eclipse菜单中 File –&gt; Export–&gt;Generate Gradle">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android Studio的一些坑">
+<meta property="og:url" content="http://yoursite.com/2016/11/14/Android-Studio%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9D%91/index.html">
+<meta property="og:site_name" content="Build Your Dreams">
+<meta property="og:description" content="最近由于项目中的方法数过多，经常出现65535的异常，eclipse打包不成功，迫不得已，将原来的项目转到android studio上来继续开发，先后遇到了这样或者那样的问题。来记录一下： eclipsetostudio####第一种方式: 从Eclipse中导出Gradle build files在Eclipse菜单中 File –&gt; Export–&gt;Generate Gradle">
+<meta property="og:image" content="http://7xl32g.com1.z0.glb.clouddn.com/elipsetostuido_1.png">
+<meta property="og:image" content="http://7xl32g.com1.z0.glb.clouddn.com/eclipsetostudio_2.png">
+<meta property="og:image" content="http://7xl32g.com1.z0.glb.clouddn.com/elipsetostudio_3.png">
+<meta property="og:image" content="http://7xl32g.com1.z0.glb.clouddn.com/eclipsetostudio4.png">
+<meta property="og:image" content="http://7xl32g.com1.z0.glb.clouddn.com/import_project.png">
+<meta property="og:image" content="http://7xl32g.com1.z0.glb.clouddn.com/import_project2.png">
+<meta property="og:image" content="http://7xl32g.com1.z0.glb.clouddn.com/import_project3.png">
+<meta property="og:image" content="http://7xl32g.com1.z0.glb.clouddn.com/import_project4.png">
+<meta property="og:image" content="http://7xl32g.com1.z0.glb.clouddn.com/svn_01.png">
+<meta property="article:published_time" content="2016-11-14T08:57:52.000Z">
+<meta property="article:modified_time" content="2017-07-06T02:17:15.000Z">
+<meta property="article:author" content="walkingCoder">
+<meta property="article:tag" content="AndroidStudio">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://7xl32g.com1.z0.glb.clouddn.com/elipsetostuido_1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/11/14/Android-Studio的一些坑/"/>
+
+
+
+
+
+  <title>Android Studio的一些坑 | Build Your Dreams</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d93547c1df1bf79570af4684f56090cf";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Build Your Dreams</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">专注技术,极速成长</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/14/Android-Studio%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9D%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="walkingCoder">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Build Your Dreams">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android Studio的一些坑</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-11-14T16:57:52+08:00">
+                2016-11-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/11/14/Android-Studio%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9D%91/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/11/14/Android-Studio的一些坑/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近由于项目中的方法数过多，经常出现65535的异常，eclipse打包不成功，迫不得已，将原来的项目转到android studio上来继续开发，先后遇到了这样或者那样的问题。来记录一下：</p>
+<h3 id="eclipsetostudio"><a href="#eclipsetostudio" class="headerlink" title="eclipsetostudio"></a>eclipsetostudio</h3><p>####第一种方式: 从Eclipse中导出Gradle build files<br>在Eclipse菜单中 File –&gt; Export–&gt;Generate Gradle build files<br><img src="http://7xl32g.com1.z0.glb.clouddn.com/elipsetostuido_1.png"/></p>
+<img src="http://7xl32g.com1.z0.glb.clouddn.com/eclipsetostudio_2.png">
+
+<img src="http://7xl32g.com1.z0.glb.clouddn.com/elipsetostudio_3.png">
+
+
+<h4 id="修改导出文件参数-或者导入studio之后在studio中修改"><a href="#修改导出文件参数-或者导入studio之后在studio中修改" class="headerlink" title="修改导出文件参数(或者导入studio之后在studio中修改)"></a>修改导出文件参数(或者导入studio之后在studio中修改)</h4><p>导出后，由于adt很久没更新，需要手动改一些参数，才能保证正常使用。<br>分情况说一下：</p>
+<li>没有库工程，只有主工程：module
+
+<p>修改主工程的build.gradle 文件，修改需要的gradle版本</p>
+<p>在 /gradle/wrapper/gradle-wrapper.properties里面,更新gradle版本</p>
+<li>含有库工程： project
+
+<p>和上面一样，只不过修改的是外面整个project的build.gradle和/gradle/wrapper/gradle-wrapper.properties。</p>
+<h4 id="导入AndroidStudio"><a href="#导入AndroidStudio" class="headerlink" title="导入AndroidStudio"></a>导入AndroidStudio</h4><p>这时打开 studio open 或 import 即可。<br><img src="http://7xl32g.com1.z0.glb.clouddn.com/eclipsetostudio4.png"></p>
+<h4 id="第二种方式：使用新的目录结构"><a href="#第二种方式：使用新的目录结构" class="headerlink" title="第二种方式：使用新的目录结构"></a>第二种方式：使用新的目录结构</h4><p>不用eclipse 直接用AndroidStudio来操作。</p>
+<li>File-->Import Project
+<img src="http://7xl32g.com1.z0.glb.clouddn.com/import_project.png">
+<li>直接找到原有的Eclipse工程
+
+<p>单一工程直接导入即可。</p>
+<p>有库工程的需要注意，导入一定要指向主工程，而不是整个项目的目录。指向项目目录是无法进行转换的。</p>
+<img src="http://7xl32g.com1.z0.glb.clouddn.com/import_project2.png">
+
+<li>指定目标路径
+<img src="http://7xl32g.com1.z0.glb.clouddn.com/import_project3.png">
+
+<img src="http://7xl32g.com1.z0.glb.clouddn.com/import_project4.png">
+
+<p>点击finish即可。</p>
+<p>之后需要经过一段时间的转换。成功后可以看到import-summary.txt。</p>
+<h3 id="一些错误"><a href="#一些错误" class="headerlink" title="一些错误"></a>一些错误</h3><p>到进来之后，直到运行apk成功之间还存在很多问题：</p>
+<h5 id="1-找不到三方的一些类："><a href="#1-找不到三方的一些类：" class="headerlink" title="1.找不到三方的一些类："></a>1.找不到三方的一些类：</h5><p>java.lang.UnsatisfiedLinkError: Couldn’t load hyphenate_av from loader dalvik.system.PathClassLoader</p>
+<p>原因是android studio导入so文件没有编译到apk里面去，所以导致UnsatisfiedLinkError异常</p>
+<p>打开app下的build.gradle，在android的标签下加入如下代码：<br>　　<br>　<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">　 sourceSets &#123;</span><br><span class="line">main &#123;</span><br><span class="line">    <span class="comment">//jni库的调用会到资源文件夹下libs里面找so文件</span></span><br><span class="line">    jniLibs.srcDirs = [<span class="string">'libs'</span>]</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>或者 so 文件放在 src/main 目录下 建个文件夹 jniLibs 放着这里面  src/main/jniLibs</p>
+<h5 id="2-no-png-file之类的"><a href="#2-no-png-file之类的" class="headerlink" title="2.no png file之类的"></a>2.no png file之类的</h5><p>//关闭Android Studio的PNG合法性检查的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">android &#123;</span><br><span class="line">    aaptOptions&#123;</span><br><span class="line">        aaptOptions.cruncherEnabled = <span class="keyword">false</span></span><br><span class="line">        aaptOptions.useNewCruncher = <span class="keyword">false</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-Out-of-Memory-GC"><a href="#3-Out-of-Memory-GC" class="headerlink" title="3.Out of Memory:GC"></a>3.Out of Memory:GC</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">android &#123;</span><br><span class="line">   dexOptions &#123;  javaMaxHeapSize <span class="string">"4g"</span> &#125;   </span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="4-plugin-with-id-com-android-application-not-found"><a href="#4-plugin-with-id-com-android-application-not-found" class="headerlink" title="4.plugin with id com.android.application not found"></a>4.plugin with id com.android.application not found</h5><p>在项目最外层的build.gradle加入如下代码刷新（try again）：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">buildscript &#123;     </span><br><span class="line">     repositories &#123;          </span><br><span class="line">          mavenCentral()     </span><br><span class="line">     &#125;     </span><br><span class="line">    dependencies &#123;          </span><br><span class="line">          classpath <span class="string">'com.android.tools.build:gradle:2.0+'</span>     </span><br><span class="line">     &#125;</span><br><span class="line"> &#125; </span><br><span class="line"> allprojects &#123;     </span><br><span class="line">      repositories &#123;          </span><br><span class="line">          mavenCentral()     </span><br><span class="line">      &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="5-transform-TransformException-DuplicateFileException"><a href="#5-transform-TransformException-DuplicateFileException" class="headerlink" title="5.transform.TransformException DuplicateFileException"></a>5.transform.TransformException DuplicateFileException</h5><p>com.android.build.api.transform.TransformException: com.android.builder.packaging.DuplicateFileException: Duplicate files copied in APK META-INF/maven/javax.jmdns/jmdns/pom.properties<br>      File1: /Users/jiayongkai/Documents/workspace/3kjandroid/1/yifenguser/libs/jmdns-3.4.1.jar<br>      File2: /Users/jiayongkai/Documents/workspace/3kjandroid/1/yifenguser/libs/jmdns-3.4.1.jar</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">packagingOptions &#123;</span><br><span class="line">   </span><br><span class="line">    exclude <span class="string">'META-INF/maven/javax.jmdns/jmdns/pom.properties'</span></span><br><span class="line">    exclude <span class="string">'META-INF/maven/javax.jmdns/jmdns/pom.xml'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="6-Manifest-merger-failed-with-multiple-errors-see-？"><a href="#6-Manifest-merger-failed-with-multiple-errors-see-？" class="headerlink" title="6.Manifest merger failed with multiple errors, see ？"></a>6.Manifest merger failed with multiple errors, see ？</h5><p>Error:Execution failed for task ‘:app:processDebugManifest’.</p>
+<blockquote>
+<p>Manifest merger failed with multiple errors, see logs</p>
+</blockquote>
+<p>原因是导入的库在build.gradle中的minSdkVersion与你的应用的minSdkVersion不匹配导致的(app要求应用最小系统版本和库要求系统最小版本不一致),改成一样的就行了.</p>
+<h5 id="7-warning-Ignoring-InnerClasses-attribute-for-an-anonymous-inner-class"><a href="#7-warning-Ignoring-InnerClasses-attribute-for-an-anonymous-inner-class" class="headerlink" title="7.warning: Ignoring InnerClasses attribute for an anonymous inner class"></a>7.warning: Ignoring InnerClasses attribute for an anonymous inner class</h5><p>that doesn’t come with an<br>associated EnclosingMethod attribute. This class was probably produced by a<br>compiler that did not target the modern .class file format. The recommended<br>solution is to recompile the class from source, using an up-to-date compiler<br>and without specifying any “-target” type options. The consequence of ignoring<br>this warning is that reflective operations on this class will incorrectly<br>indicate that it is <em>not</em> an inner class.</p>
+<p>解决办法：</p>
+<p>好像是 debug 签名过期了  ；<br>去 Users/用户名/.adnroid 下，删除：debug.keystore和ddms.cfg 即可。 </p>
+<h5 id="8-SVN-找不到了"><a href="#8-SVN-找不到了" class="headerlink" title="8.SVN 找不到了"></a>8.SVN 找不到了</h5><p>今天早上开机，打开android studio 的时候，突然发现，自己的studio中的subversion找不到了。前几天还用的好好的，今天突然找不到了，我很是纳闷了。再网上找了很多的资料，大部分都说你的svn 安装的不对，后来请教了大神，知道了错误在哪里？原来是plugin里边的subversion没有勾选啊。<br><img src="http://7xl32g.com1.z0.glb.clouddn.com/svn_01.png"></p>
+<h5 id="9-打包时遇见"><a href="#9-打包时遇见" class="headerlink" title="9.打包时遇见"></a>9.打包时遇见</h5><p>Error:A problem was found with the configuration of task ‘:app:packageRelease’.</p>
+<blockquote>
+<p>File ‘/Users/jiayongkai/Downloads/jd_android/app/build/intermediates/res/resources-release-stripped.ap_’ specified for property ‘resourceFile’ does not exist.</p>
+</blockquote>
+<p>解决办法：</p>
+<li>1、instant run 不支持 shrinkResources  File --> Settings-->instant  取消第一个选项
+
+<li>2.   并将module中的build.gradle中shrinkResources置为false，然后重新编译即可
+
+<h5 id="10-经常出现-transform、zip-等的异常，是因为-jar包-和-gradle-dependices引入重复引起的冲突。"><a href="#10-经常出现-transform、zip-等的异常，是因为-jar包-和-gradle-dependices引入重复引起的冲突。" class="headerlink" title="10.经常出现 transform、zip 等的异常，是因为 jar包 和 gradle dependices引入重复引起的冲突。"></a>10.经常出现 transform、zip 等的异常，是因为 jar包 和 gradle dependices引入重复引起的冲突。</h5><p>Error:Execution failed for task ‘:yifenguser:transformClassesWithJarMergingFor_360Debug’.</p>
+<blockquote>
+<p>com.android.build.api.transform.TransformException: java.util.zip.ZipException: duplicate entry: android/support/annotation/ColorRes.class</p>
+</blockquote>
+<h5 id="11-svn更新提交代码除了问题-提示-Please-see-the-‘svn-upgrade’-command"><a href="#11-svn更新提交代码除了问题-提示-Please-see-the-‘svn-upgrade’-command" class="headerlink" title="11.svn更新提交代码除了问题  提示: Please see the ‘svn upgrade’ command"></a>11.svn更新提交代码除了问题  提示: Please see the ‘svn upgrade’ command</h5><p>原因：svn 版本低  提示那个路径 就在那个路径下 svn upgrade</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">svn: E155036: Please see the <span class="string">'svn upgrade'</span> command  </span><br><span class="line">svn: E155036: Working copy <span class="string">'/Users/lijie/Documents/merchat_app'</span> <span class="function">is too <span class="title">old</span> <span class="params">(format <span class="number">10</span>, created by Subversion <span class="number">1.6</span>)</span>  </span></span><br><span class="line"><span class="function">localhost:merchat_app lijie$ svn upgrade help  </span></span><br><span class="line"><span class="function">svn: E155019: Can't upgrade '/Users/lijie/Documents/merchat_app/help' as it is not a pre-1.7 working copy directory  </span></span><br><span class="line"><span class="function">svn: E000002: Can't open file '/Users/lijie/Documents/merchat_app/help/.svn/entries': No such file or directory  </span></span><br><span class="line"><span class="function">localhost:zcht lijie$ svn upgrade  </span></span><br><span class="line"><span class="function">svn: E155019: Can't upgrade '/Users/lijie/Documents/merchat_app/zcht/zcht' as it is not a pre-1.7 working copy root, the root is '/Users/lijie/Documents/merchat_app'  </span></span><br><span class="line"><span class="function">……  </span></span><br><span class="line"><span class="function">localhost:merchat_app lijie$ svn upgrade  </span></span><br><span class="line"><span class="function">Upgraded '.'</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="12-android-studio-gradle-引入三方时，failed-to-resolve"><a href="#12-android-studio-gradle-引入三方时，failed-to-resolve" class="headerlink" title="12.android studio  gradle 引入三方时，failed to resolve"></a>12.android studio  gradle 引入三方时，failed to resolve</h5><p>在project级别的 build.gradle 下 buildscript 中加入：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">buildscript &#123;</span><br><span class="line">     </span><br><span class="line">    allprojects &#123;</span><br><span class="line">        repositories &#123;</span><br><span class="line">            jcenter()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/AndroidStudio/" rel="tag"># AndroidStudio</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/14/Mac%E4%B8%8B%E5%8F%8D%E7%BC%96%E8%AF%91apk%E5%8F%8A%E6%89%8B%E5%8A%A8%E5%91%BD%E4%BB%A4apk%E7%AD%BE%E5%90%8D/" rel="next" title="Mac下反编译apk及手动命令apk签名">
+                <i class="fa fa-chevron-left"></i> Mac下反编译apk及手动命令apk签名
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/14/ListView%E4%B8%ADEditText%E7%9A%84%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F/" rel="prev" title="ListView中EditText的使用注意">
+                ListView中EditText的使用注意 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">walkingCoder</p>
+              <p class="site-description motion-element" itemprop="description">专注技术,极速成长</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/walkingCoder" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="os_line@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#eclipsetostudio"><span class="nav-number">1.</span> <span class="nav-text">eclipsetostudio</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#修改导出文件参数-或者导入studio之后在studio中修改"><span class="nav-number">1.1.</span> <span class="nav-text">修改导出文件参数(或者导入studio之后在studio中修改)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#导入AndroidStudio"><span class="nav-number">1.2.</span> <span class="nav-text">导入AndroidStudio</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第二种方式：使用新的目录结构"><span class="nav-number">1.3.</span> <span class="nav-text">第二种方式：使用新的目录结构</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一些错误"><span class="nav-number">2.</span> <span class="nav-text">一些错误</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-找不到三方的一些类："><span class="nav-number">2.0.1.</span> <span class="nav-text">1.找不到三方的一些类：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-no-png-file之类的"><span class="nav-number">2.0.2.</span> <span class="nav-text">2.no png file之类的</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-Out-of-Memory-GC"><span class="nav-number">2.0.3.</span> <span class="nav-text">3.Out of Memory:GC</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-plugin-with-id-com-android-application-not-found"><span class="nav-number">2.0.4.</span> <span class="nav-text">4.plugin with id com.android.application not found</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-transform-TransformException-DuplicateFileException"><span class="nav-number">2.0.5.</span> <span class="nav-text">5.transform.TransformException DuplicateFileException</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-Manifest-merger-failed-with-multiple-errors-see-？"><span class="nav-number">2.0.6.</span> <span class="nav-text">6.Manifest merger failed with multiple errors, see ？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#7-warning-Ignoring-InnerClasses-attribute-for-an-anonymous-inner-class"><span class="nav-number">2.0.7.</span> <span class="nav-text">7.warning: Ignoring InnerClasses attribute for an anonymous inner class</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#8-SVN-找不到了"><span class="nav-number">2.0.8.</span> <span class="nav-text">8.SVN 找不到了</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#9-打包时遇见"><span class="nav-number">2.0.9.</span> <span class="nav-text">9.打包时遇见</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#10-经常出现-transform、zip-等的异常，是因为-jar包-和-gradle-dependices引入重复引起的冲突。"><span class="nav-number">2.0.10.</span> <span class="nav-text">10.经常出现 transform、zip 等的异常，是因为 jar包 和 gradle dependices引入重复引起的冲突。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#11-svn更新提交代码除了问题-提示-Please-see-the-‘svn-upgrade’-command"><span class="nav-number">2.0.11.</span> <span class="nav-text">11.svn更新提交代码除了问题  提示: Please see the ‘svn upgrade’ command</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#12-android-studio-gradle-引入三方时，failed-to-resolve"><span class="nav-number">2.0.12.</span> <span class="nav-text">12.android studio  gradle 引入三方时，failed to resolve</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">walkingCoder</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://walkingCoder.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2016/11/14/Android-Studio%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9D%91/';
+          this.page.identifier = '2016/11/14/Android-Studio的一些坑/';
+          this.page.title = 'Android Studio的一些坑';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://walkingCoder.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

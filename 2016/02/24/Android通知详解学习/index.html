@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Notification," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Notification状态通知栏： 功能作用 显示接收到短消息、即使消息等信息 （如QQ、微信、新浪、短信） 显示客户端的推送消息（如有新版本发布，广告，推荐新闻等） 显示正在进行的事物（例如：后台运行的程序）（如音乐播放器、版本更新时候的下载进度等）  思维导图结构Notificaiton — service   – BroadcastReceiver  – Intent（flag、Actio">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android通知详解学习">
+<meta property="og:url" content="http://yoursite.com/2016/02/24/Android%E9%80%9A%E7%9F%A5%E8%AF%A6%E8%A7%A3%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="Build Your Dreams">
+<meta property="og:description" content="Notification状态通知栏： 功能作用 显示接收到短消息、即使消息等信息 （如QQ、微信、新浪、短信） 显示客户端的推送消息（如有新版本发布，广告，推荐新闻等） 显示正在进行的事物（例如：后台运行的程序）（如音乐播放器、版本更新时候的下载进度等）  思维导图结构Notificaiton — service   – BroadcastReceiver  – Intent（flag、Actio">
+<meta property="og:image" content="http://7xl32g.com1.z0.glb.clouddn.com/notifications_pattern_anatomy.png">
+<meta property="og:image" content="http://7xl32g.com1.z0.glb.clouddn.com/20140511193432625.jpg">
+<meta property="article:published_time" content="2016-02-24T07:05:50.000Z">
+<meta property="article:modified_time" content="2017-05-25T03:29:00.000Z">
+<meta property="article:author" content="walkingCoder">
+<meta property="article:tag" content="Notification">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://7xl32g.com1.z0.glb.clouddn.com/notifications_pattern_anatomy.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/02/24/Android通知详解学习/"/>
+
+
+
+
+
+  <title>Android通知详解学习 | Build Your Dreams</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d93547c1df1bf79570af4684f56090cf";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Build Your Dreams</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">专注技术,极速成长</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/02/24/Android%E9%80%9A%E7%9F%A5%E8%AF%A6%E8%A7%A3%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="walkingCoder">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Build Your Dreams">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android通知详解学习</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-02-24T15:05:50+08:00">
+                2016-02-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/02/24/Android%E9%80%9A%E7%9F%A5%E8%AF%A6%E8%A7%A3%E5%AD%A6%E4%B9%A0/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/02/24/Android通知详解学习/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Notification状态通知栏：</p>
+<h3 id="功能作用"><a href="#功能作用" class="headerlink" title="功能作用"></a>功能作用</h3><ol>
+<li>显示接收到短消息、即使消息等信息 （如QQ、微信、新浪、短信）</li>
+<li>显示客户端的推送消息（如有新版本发布，广告，推荐新闻等）</li>
+<li>显示正在进行的事物（例如：后台运行的程序）（如音乐播放器、版本更新时候的下载进度等）</li>
+</ol>
+<h3 id="思维导图结构"><a href="#思维导图结构" class="headerlink" title="思维导图结构"></a>思维导图结构</h3><p>Notificaiton — service   – BroadcastReceiver  – Intent（flag、Action等属性应用） —  PendingIntent</p>
+<h3 id="联系："><a href="#联系：" class="headerlink" title="联系："></a>联系：</h3><ol>
+<li><p>由于service 是在后台运行，所以它意图做什么我们看不到，可以通过Notificaiton 来显示提醒（如音乐的后台播放）。</p>
+</li>
+<li><p>service服务和BroadcastReceiver广播相结合，在加上Notificaiton 显示（如程序的后台更新）。</p>
+</li>
+<li><p>Intent作为意图处理，和Notificaiton的点击时间紧密结合在了一起，并且与BroadcastReceiver和service的联系也紧密不可以分割。</p>
+</li>
+</ol>
+<p>（service 在后台之后通过BroadcastReceiver来通知Notificaiton 显示相关东西，在通过Intent完成用户的意图操作）</p>
+<h3 id="大体了解"><a href="#大体了解" class="headerlink" title="大体了解"></a>大体了解</h3><p>Notification支持文字内容显示、震动、三色灯、铃声等多种提示形式，在默认情况下，Notification仅显示消息标题、消息内容、送达时间这3项内容。以下就是通知的基本布局。</p>
+<h4 id="通知的基本布局："><a href="#通知的基本布局：" class="headerlink" title="通知的基本布局："></a>通知的基本布局：</h4><img src="http://7xl32g.com1.z0.glb.clouddn.com/notifications_pattern_anatomy.png">
+
+<h4 id="元素："><a href="#元素：" class="headerlink" title="元素："></a>元素：</h4><ol>
+<li><p>标题   Title/Name</p>
+</li>
+<li><p>大图标  Icon/Photo</p>
+</li>
+<li><p>内容文字</p>
+</li>
+<li><p>内容信息   MESSAGE</p>
+</li>
+<li><p>小图标 Secondary Icon</p>
+</li>
+<li><p>通知的时间 Timestamp,默认为系统发出通知的时间，也可通过setWhen()来设置</p>
+</li>
+</ol>
+<h3 id="相关分析："><a href="#相关分析：" class="headerlink" title="相关分析："></a>相关分析：</h3><p>状态通知栏主要涉及到2个类：  Notification 和 NotificationManager</p>
+<p>Notification为通知信息类，它里面对应了通知栏的各个属性</p>
+<p>NotificationManager ：  是状态栏通知的管理类，负责发通知、清除通知等操作。</p>
+<p>注意：NotificationManager 是一个系统Service，所以必须通过 getSystemService(NOTIFICATION_SERVICE)方法来获取，方法如下。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用步骤："><a href="#使用步骤：" class="headerlink" title="使用步骤："></a>使用步骤：</h3><h4 id="流程模块："><a href="#流程模块：" class="headerlink" title="流程模块："></a>流程模块：</h4><li>第一步：创建一个通知栏的Builder构造类  （Create a Notification Builder）
+
+<li>第二步：定义通知栏的Action  （Define the Notification’s Action）
+
+<li>第三步：设置通知栏点击事件    （Set the Notification’s Click Behavior）
+
+<li>第四步：通知   （Issue the Notification）
+
+<h4 id="代码模块："><a href="#代码模块：" class="headerlink" title="代码模块："></a>代码模块：</h4><p>实现系统默认的通知栏效果：</p>
+<li>第一步：获取状态通知栏管理：
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);</span><br></pre></td></tr></table></figure>
+
+<li>第二步：实例化通知栏构造器NotificationCompat.Builder：
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NotificationCompat.Builder mBuilder = <span class="keyword">new</span> NotificationCompat.Builder(<span class="keyword">this</span>);</span><br></pre></td></tr></table></figure>
+
+<li>第三步：对Builder进行配置：
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">	mBuilder.setContentTitle(<span class="string">"测试标题"</span>)<span class="comment">//设置通知栏标题</span></span><br><span class="line">        .setContentText(<span class="string">"测试内容"</span>) <span class="comment">//设置通知栏显示内容</span></span><br><span class="line">        .setContentIntent(getDefalutIntent(Notification.FLAG_AUTO_CANCEL)) <span class="comment">//设置通知栏点击意图</span></span><br><span class="line">        <span class="comment">//  .setNumber(number) //设置通知集合的数量</span></span><br><span class="line">        .setTicker(<span class="string">"测试通知来啦"</span>) <span class="comment">//通知首次出现在通知栏，带上升动画效果的</span></span><br><span class="line">        .setWhen(System.currentTimeMillis())<span class="comment">//通知产生的时间，会在通知信息里显示，一般是系统获取到的时间</span></span><br><span class="line">        .setPriority(Notification.PRIORITY_DEFAULT) <span class="comment">//设置该通知优先级</span></span><br><span class="line">        <span class="comment">//  .setAutoCancel(true)//设置这个标志当用户单击面板就可以让通知将自动取消</span></span><br><span class="line">        .setOngoing(<span class="keyword">false</span>)<span class="comment">//true，设置他为一个正在进行的通知。他们通常是用来表示一个后台任务,用户积极参与(如播放音乐)或以某种方式正在等待,因此占用设备(如一个文件下载,同步操作,主动网络连接)</span></span><br><span class="line">        .setDefaults(Notification.DEFAULT_VIBRATE)<span class="comment">//向通知添加声音、闪灯和振动效果的最简单、最一致的方式是使用当前的用户默认设置，使用defaults属性，可以组合</span></span><br><span class="line">        <span class="comment">//Notification.DEFAULT_ALL  Notification.DEFAULT_SOUND 添加声音 // requires VIBRATE permission</span></span><br><span class="line">        .setSmallIcon(R.drawable.ic_launcher);<span class="comment">//设置通知小ICON</span></span><br><span class="line">```        </span><br><span class="line">        </span><br><span class="line">&lt;li&gt;第四步：设置通知栏PendingIntent（点击动作事件等都包含在这里）</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">	mBuilder.setContentIntent(PendingIntent intent)</span><br></pre></td></tr></table></figure>
+<p>PendingIntent和Intent略有不同，它可以设置执行次数，主要用于远程服务通信、闹铃、通知、启动器、短信中，在一般情况下用的比较少。</p>
+<p>相关属性和方法</p>
+<p>属性：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">PendingIntent的位标识符：</span><br><span class="line">FLAG_ONE_SHOT   表示返回的PendingIntent仅能执行一次，执行完后自动取消</span><br><span class="line">FLAG_NO_CREATE     表示如果描述的PendingIntent不存在，并不创建相应的PendingIntent，而是返回NULL</span><br><span class="line">FLAG_CANCEL_CURRENT      表示相应的PendingIntent已经存在，则取消前者，然后创建新的PendingIntent，这个有利于数据保持为最新的，可以用于即时通信的通信场景</span><br><span class="line">FLAG_UPDATE_CURRENT     表示更新的PendingIntent</span><br></pre></td></tr></table></figure>
+
+<p>方法：<br><img src="http://7xl32g.com1.z0.glb.clouddn.com/20140511193432625.jpg"><br>可以看出，它支持多种相应方式，有Activity、Broadcast、Service，就根据你自身需求去选择。</p>
+<p>在各种情况下情况下它还会根据各种情况出发效果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">	contentIntent：在通知窗口区域，Notification被单击时的响应事件由该intent触发；</span><br><span class="line">	deleteIntent：当用户点击全部清除按钮时，响应该清除事件的Intent；</span><br><span class="line">	fullScreenIntent：响应紧急状态的全屏事件（例如来电事件），也就是说通知来的时候，跳过在通知区域点击通知这一步，直接执行fullScreenIntent代表的事件。</span><br><span class="line">例如：在执行了点击通知之后要跳转到指定的XXX的Activity的时候，可以设置以下方法来相应点击事件：</span><br><span class="line"></span><br><span class="line">	Intent intent = <span class="keyword">new</span> Intent(context,XXX<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">	PendingIntent pendingIntent = PendingIntent.getActivity(context, <span class="number">0</span>, intent, <span class="number">0</span>);</span><br><span class="line">	mBuilder.setContentIntent(pendingIntent)</span><br></pre></td></tr></table></figure>
+<p>例如：在执行了清空全部的通知操作时候，可以设置以下方法来相应这个事件：</p>
+<p>采用setDeleteIntent(PendingIntent intent)方法或按照以下写法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Intent deleteIntent = <span class="keyword">new</span> Intent();</span><br><span class="line">deleteIntent.setClass(context, XXXReceiver<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">deleteIntent.setAction(DELETE_ACTION);</span><br><span class="line">notification.deleteIntent = PendingIntent.getBroadcast(context, <span class="number">0</span>, deleteIntent, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+<p>例如：在响应紧急事件（如来电）时候，可以设置以下方法来相应这个事件：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setFullScreenIntent(PendingIntent intent, <span class="keyword">boolean</span> highPriority)</span><br></pre></td></tr></table></figure>
+
+<li>第五步，最简单的一部，发送通知请求
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mNotificationManager.notify(notifyId, mBuilder.build());</span><br></pre></td></tr></table></figure>
+<h4 id="对应的各个方法的属性（部分方法以上代码中已经作注释，就不再介绍）："><a href="#对应的各个方法的属性（部分方法以上代码中已经作注释，就不再介绍）：" class="headerlink" title="对应的各个方法的属性（部分方法以上代码中已经作注释，就不再介绍）："></a>对应的各个方法的属性（部分方法以上代码中已经作注释，就不再介绍）：</h4><p>#####（1）方法：设置提醒标志符Flags<br>功能：提醒标志符，向通知添加声音、闪灯和振动效果等设置达到通知提醒效果，可以组合多个属性</p>
+<p>有2种设置方法：</p>
+<p>1.实例化通知栏之后通过给他添加.flags属性赋值。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Notification notification = mBuilder.build();</span><br><span class="line">notification.flags = Notification.FLAG_AUTO_CANCEL;</span><br></pre></td></tr></table></figure>
+
+<p>2.通过setContentIntent(PendingIntent intent)方法中的意图设置对应的flags</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> PendingIntent <span class="title">getDefalutIntent</span><span class="params">(<span class="keyword">int</span> flags)</span></span>&#123;</span><br><span class="line">      PendingIntent pendingIntent= PendingIntent.getActivity(<span class="keyword">this</span>, <span class="number">1</span>, <span class="keyword">new</span> Intent(), flags);</span><br><span class="line">      <span class="keyword">return</span> pendingIntent;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>提醒标志符成员：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Notification.FLAG_SHOW_LIGHTS              <span class="comment">//三色灯提醒，在使用三色灯提醒时候必须加该标志符</span></span><br><span class="line">Notification.FLAG_ONGOING_EVENT          <span class="comment">//发起正在运行事件（活动中）</span></span><br><span class="line">Notification.FLAG_INSISTENT   <span class="comment">//让声音、振动无限循环，直到用户响应 （取消或者打开）</span></span><br><span class="line">Notification.FLAG_ONLY_ALERT_ONCE  <span class="comment">//发起Notification后，铃声和震动均只执行一次</span></span><br><span class="line">Notification.FLAG_AUTO_CANCEL      <span class="comment">//用户单击通知后自动消失</span></span><br><span class="line">Notification.FLAG_NO_CLEAR          <span class="comment">//只有全部清除时，Notification才会清除 ，不清楚该通知(QQ的通知无法清除，就是用的这个)</span></span><br><span class="line">Notification.FLAG_FOREGROUND_SERVICE    <span class="comment">//表示正在运行的服务</span></span><br></pre></td></tr></table></figure>
+
+<p>#####（2）方法：.setDefaults(int defaults)     （NotificationCompat.Builder中的方法，用于提示）</p>
+<p>功能：向通知添加声音、闪灯和振动效果的最简单、使用默认（defaults）属性，可以组合多个属性（和方法1中提示效果一样的）<br>对应属性：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Notification.DEFAULT_VIBRATE    <span class="comment">//添加默认震动提醒  需要 VIBRATE permission</span></span><br><span class="line">Notification.DEFAULT_SOUND    <span class="comment">// 添加默认声音提醒</span></span><br><span class="line">Notification.DEFAULT_LIGHTS<span class="comment">// 添加默认三色灯提醒</span></span><br><span class="line">Notification.DEFAULT_ALL<span class="comment">// 添加默认以上3种全部提醒</span></span><br></pre></td></tr></table></figure>
+
+<p>#####（3）方法：setVibrate(long[] pattern)</p>
+<p>功能：设置震动方式。<br>使用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mBuilder.setVibrate(<span class="keyword">new</span> <span class="keyword">long</span>[] &#123;<span class="number">0</span>,<span class="number">300</span>,<span class="number">500</span>,<span class="number">700</span>&#125;);</span><br></pre></td></tr></table></figure>
+<p>实现效果：延迟0ms，然后振动300ms，在延迟500ms，接着在振动700ms。</p>
+<p>以上方法的还有种写法是</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mBuilder.build().vibrate = <span class="keyword">new</span> <span class="keyword">long</span>[] &#123;<span class="number">0</span>,<span class="number">300</span>,<span class="number">500</span>,<span class="number">700</span>&#125;;</span><br></pre></td></tr></table></figure>
+<p>以此类推，2种写法都可以。</p>
+<p>如果希望设置默认振动方式，设置了方法（2）中默认为DEFAULT_VIBRATE 即可。</p>
+<p>#####（4）方法：.setLights(intledARGB ,intledOnMS ,intledOffMS )</p>
+<p>功能：android支持三色灯提醒，这个方法就是设置不同场景下的不同颜色的灯。<br>描述：其中ledARGB 表示灯光颜色、 ledOnMS 亮持续时间、ledOffMS 暗的时间。<br>注意：</p>
+<p>1）只有在设置了标志符Flags为Notification.FLAG_SHOW_LIGHTS的时候，才支持三色灯提醒。<br>2）这边的颜色跟设备有关，不是所有的颜色都可以，要看具体设备。<br>使用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mBuilder.setLights(<span class="number">0xff0000ff</span>, <span class="number">300</span>, <span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+<p>同理，以下方法也可以设置同样效果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Notification notify = mBuilder.build();</span><br><span class="line">notify.flags = Notification.FLAG_SHOW_LIGHTS;</span><br><span class="line">notify.ledARGB = <span class="number">0xff0000ff</span>;</span><br><span class="line">notify.ledOnMS = <span class="number">300</span>;</span><br><span class="line">notify.ledOffMS = <span class="number">300</span>;</span><br></pre></td></tr></table></figure>
+
+<p>如果希望使用默认的三色灯提醒，设置了方法（2）中默认为DEFAULT_LIGHTS即可。</p>
+<p>#####（5）方法：.setSound(Uri sound)</p>
+<p>功能：设置默认或则自定义的铃声，来提醒。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获取默认铃声</span></span><br><span class="line">.setDefaults(Notification.DEFAULT_SOUND)</span><br><span class="line"><span class="comment">//获取自定义铃声</span></span><br><span class="line">.setSound(Uri.parse(<span class="string">"file:///sdcard/xx/xx.mp3"</span>))</span><br><span class="line"><span class="comment">//获取Android多媒体库内的铃声</span></span><br><span class="line">.setSound(Uri.withAppendedPath(Audio.Media.INTERNAL_CONTENT_URI, <span class="string">"5"</span>))</span><br></pre></td></tr></table></figure>
+<p>同理相同效果的另一种设置方法这边就不讲， 和上面的都是一样的。</p>
+<p>#####（6）方法：.setPriority(int pri)</p>
+<p>功能：设置优先级</p>
+<p>对应属性：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Notification.PRIORITY_DEFAULT</span><br><span class="line">Notification.PRIORITY_HIGH</span><br><span class="line">Notification.PRIORITY_LOW</span><br><span class="line">Notification.PRIORITY_MAX</span><br><span class="line">Notification.PRIORITY_MIN</span><br></pre></td></tr></table></figure>
+<p>#####（7）方法：setOngoing(boolean ongoing)</p>
+<p>功能：设置为ture，表示它为一个正在进行的通知。他们通常是用来表示一个后台任务,用户积极参与(如播放音乐)或以某种方式正在等待,因此占用设备(如一个文件下载,同步操作,主动网络连接)<br>#####（8）方法：setProgress(int max, int progress,boolean indeterminate)</p>
+<p>属性：max:进度条最大数值  、progress:当前进度、indeterminate:表示进度是否不确定，true为不确定，false为确定</p>
+<p>功能：设置带进度条的通知，可以在下载中使用</p>
+<p>注意：此方法在4.0及以后版本才有用，如果为早期版本：需要自定义通知布局，其中包含ProgressBar视图</p>
+<p>使用：如果为确定的进度条：调用setProgress(max, progress, false)来设置通知，在更新进度的时候在此发起通知更新progress，并且在下载完成后要移除进度条，通过调用setProgress(0, 0, false)既可。</p>
+<p>如果为不确定（持续活动）的进度条，这是在处理进度无法准确获知时显示活动正在持续，所以调用setProgress(0, 0, true) ，操作结束时，调用setProgress(0, 0, false)并更新通知以移除指示条</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Notification/" rel="tag"># Notification</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/02/17/%E8%87%AA%E5%AE%9A%E4%B9%89ViewPager%E5%AE%9E%E7%8E%B0%E6%97%A0%E9%99%90%E8%BD%AE%E6%92%AD/" rel="next" title="自定义ViewPager实现无限轮播">
+                <i class="fa fa-chevron-left"></i> 自定义ViewPager实现无限轮播
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/02/24/%E9%80%9A%E7%9F%A5%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%87%AA%E5%AE%9A%E4%B9%89%E9%80%9A%E7%9F%A5/" rel="prev" title="通知学习之自定义通知">
+                通知学习之自定义通知 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">walkingCoder</p>
+              <p class="site-description motion-element" itemprop="description">专注技术,极速成长</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/walkingCoder" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="os_line@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#功能作用"><span class="nav-number">1.</span> <span class="nav-text">功能作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#思维导图结构"><span class="nav-number">2.</span> <span class="nav-text">思维导图结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#联系："><span class="nav-number">3.</span> <span class="nav-text">联系：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#大体了解"><span class="nav-number">4.</span> <span class="nav-text">大体了解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#通知的基本布局："><span class="nav-number">4.1.</span> <span class="nav-text">通知的基本布局：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#元素："><span class="nav-number">4.2.</span> <span class="nav-text">元素：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#相关分析："><span class="nav-number">5.</span> <span class="nav-text">相关分析：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用步骤："><span class="nav-number">6.</span> <span class="nav-text">使用步骤：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#流程模块："><span class="nav-number">6.1.</span> <span class="nav-text">流程模块：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#代码模块："><span class="nav-number">6.2.</span> <span class="nav-text">代码模块：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#对应的各个方法的属性（部分方法以上代码中已经作注释，就不再介绍）："><span class="nav-number">6.3.</span> <span class="nav-text">对应的各个方法的属性（部分方法以上代码中已经作注释，就不再介绍）：</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">walkingCoder</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://walkingCoder.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2016/02/24/Android%E9%80%9A%E7%9F%A5%E8%AF%A6%E8%A7%A3%E5%AD%A6%E4%B9%A0/';
+          this.page.identifier = '2016/02/24/Android通知详解学习/';
+          this.page.title = 'Android通知详解学习';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://walkingCoder.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

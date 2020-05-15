@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="ImageView," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、本地图片本地图片只需将图片转换为bitmap对象即可。 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647&#x2F;**    * 将给定图片维持宽高比缩放后，截取正中间的正方形部分。    * @param bitmap      原图    * @param edgeLeng">
+<meta property="og:type" content="article">
+<meta property="og:title" content="android将给定图片维持宽高比例缩放后，截取正中间的正方形部分">
+<meta property="og:url" content="http://yoursite.com/2015/07/25/android%E5%B0%86%E7%BB%99%E5%AE%9A%E5%9B%BE%E7%89%87%E7%BB%B4%E6%8C%81%E5%AE%BD%E9%AB%98%E6%AF%94%E4%BE%8B%E7%BC%A9%E6%94%BE%E5%90%8E%EF%BC%8C%E6%88%AA%E5%8F%96%E6%AD%A3%E4%B8%AD%E9%97%B4%E7%9A%84%E6%AD%A3%E6%96%B9%E5%BD%A2%E9%83%A8%E5%88%86/index.html">
+<meta property="og:site_name" content="Build Your Dreams">
+<meta property="og:description" content="一、本地图片本地图片只需将图片转换为bitmap对象即可。 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647&#x2F;**    * 将给定图片维持宽高比缩放后，截取正中间的正方形部分。    * @param bitmap      原图    * @param edgeLeng">
+<meta property="og:image" content="http://7xl32g.com1.z0.glb.clouddn.com/smallPicture.png">
+<meta property="og:image" content="http://7xl32g.com1.z0.glb.clouddn.com/bigPicture.png">
+<meta property="article:published_time" content="2015-07-25T02:51:17.000Z">
+<meta property="article:modified_time" content="2017-05-25T03:23:01.000Z">
+<meta property="article:author" content="walkingCoder">
+<meta property="article:tag" content="ImageView">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://7xl32g.com1.z0.glb.clouddn.com/smallPicture.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/07/25/android将给定图片维持宽高比例缩放后，截取正中间的正方形部分/"/>
+
+
+
+
+
+  <title>android将给定图片维持宽高比例缩放后，截取正中间的正方形部分 | Build Your Dreams</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d93547c1df1bf79570af4684f56090cf";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Build Your Dreams</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">专注技术,极速成长</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/07/25/android%E5%B0%86%E7%BB%99%E5%AE%9A%E5%9B%BE%E7%89%87%E7%BB%B4%E6%8C%81%E5%AE%BD%E9%AB%98%E6%AF%94%E4%BE%8B%E7%BC%A9%E6%94%BE%E5%90%8E%EF%BC%8C%E6%88%AA%E5%8F%96%E6%AD%A3%E4%B8%AD%E9%97%B4%E7%9A%84%E6%AD%A3%E6%96%B9%E5%BD%A2%E9%83%A8%E5%88%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="walkingCoder">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Build Your Dreams">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">android将给定图片维持宽高比例缩放后，截取正中间的正方形部分</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-07-25T10:51:17+08:00">
+                2015-07-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/07/25/android%E5%B0%86%E7%BB%99%E5%AE%9A%E5%9B%BE%E7%89%87%E7%BB%B4%E6%8C%81%E5%AE%BD%E9%AB%98%E6%AF%94%E4%BE%8B%E7%BC%A9%E6%94%BE%E5%90%8E%EF%BC%8C%E6%88%AA%E5%8F%96%E6%AD%A3%E4%B8%AD%E9%97%B4%E7%9A%84%E6%AD%A3%E6%96%B9%E5%BD%A2%E9%83%A8%E5%88%86/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015/07/25/android将给定图片维持宽高比例缩放后，截取正中间的正方形部分/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <a id="more"></a>
+
+<h3 id="一、本地图片"><a href="#一、本地图片" class="headerlink" title="一、本地图片"></a>一、本地图片</h3><p>本地图片只需将图片转换为bitmap对象即可。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 将给定图片维持宽高比缩放后，截取正中间的正方形部分。</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> bitmap      原图</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> edgeLength  希望得到的正方形部分的边长</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@return</span>  缩放截取正中部分后的位图。</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Bitmap <span class="title">centerSquareScaleBitmap</span><span class="params">(Bitmap bitmap, <span class="keyword">int</span> edgeLength)</span></span></span><br><span class="line"><span class="function">  </span>&#123;</span><br><span class="line">   <span class="keyword">if</span>(<span class="keyword">null</span> == bitmap || edgeLength &lt;= <span class="number">0</span>)</span><br><span class="line">   &#123;</span><br><span class="line">    <span class="keyword">return</span>  <span class="keyword">null</span>;</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   Bitmap result = bitmap;</span><br><span class="line">   <span class="keyword">int</span> widthOrg = bitmap.getWidth();</span><br><span class="line">   <span class="keyword">int</span> heightOrg = bitmap.getHeight();</span><br><span class="line">   </span><br><span class="line">   <span class="keyword">if</span>(widthOrg &gt; edgeLength &amp;&amp; heightOrg &gt; edgeLength)</span><br><span class="line">   &#123;</span><br><span class="line">    <span class="comment">//压缩到一个最小长度是edgeLength的bitmap</span></span><br><span class="line">    <span class="keyword">int</span> longerEdge = (<span class="keyword">int</span>)(edgeLength * Math.max(widthOrg, heightOrg) / Math.min(widthOrg, heightOrg));</span><br><span class="line">    <span class="keyword">int</span> scaledWidth = widthOrg &gt; heightOrg ? longerEdge : edgeLength;</span><br><span class="line">    <span class="keyword">int</span> scaledHeight = widthOrg &gt; heightOrg ? edgeLength : longerEdge;</span><br><span class="line">    Bitmap scaledBitmap;</span><br><span class="line">    </span><br><span class="line">          <span class="keyword">try</span>&#123;</span><br><span class="line">           scaledBitmap = Bitmap.createScaledBitmap(bitmap, scaledWidth, scaledHeight, <span class="keyword">true</span>);</span><br><span class="line">          &#125; </span><br><span class="line">          <span class="keyword">catch</span>(Exception e)&#123;</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">          &#125;</span><br><span class="line">          </span><br><span class="line">       <span class="comment">//从图中截取正中间的正方形部分。</span></span><br><span class="line">       <span class="keyword">int</span> xTopLeft = (scaledWidth - edgeLength) / <span class="number">2</span>;</span><br><span class="line">       <span class="keyword">int</span> yTopLeft = (scaledHeight - edgeLength) / <span class="number">2</span>;</span><br><span class="line">       </span><br><span class="line">       <span class="keyword">try</span>&#123;</span><br><span class="line">        result = Bitmap.createBitmap(scaledBitmap, xTopLeft, yTopLeft, edgeLength, edgeLength);</span><br><span class="line">        scaledBitmap.recycle();</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">catch</span>(Exception e)&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">       &#125;         </span><br><span class="line">   &#125;</span><br><span class="line">        </span><br><span class="line">   <span class="keyword">return</span> result;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="二、网络图片"><a href="#二、网络图片" class="headerlink" title="二、网络图片"></a>二、网络图片</h3><p>使用xUtils框架中的Bitmaputils的display方法可以有效地将网络上的图片成功的显示在ImageView布局上。</p>
+<p>其中new BitmapCallBack接口中的onLoadCompleted方法，表示load成功，可以得到Bitmap对象，截取我们就是要对bitmap进行操作。</p>
+<p>然后调用上述的截取方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">LApplication.getBitmapUtils().display(imageView, selectPicture.getPictureUrl(), <span class="keyword">new</span> BitmapLoadCallBack&lt;View&gt;() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onLoadCompleted</span><span class="params">(ImageView imageView, String s, Bitmap bitmap, BitmapDisplayConfig bitmapDisplayConfig, BitmapLoadFrom bitmapLoadFrom)</span> </span>&#123;</span><br><span class="line">            Bitmap showBitmap = centerSquareScaleBitmap(bitmap, ScreenUtil.getWidth() / <span class="number">2</span>);  <span class="comment">//截取新的bitmap</span></span><br><span class="line">            imageView.setBitmap(showBitmap);     <span class="comment">//设显示所占的宽高</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onLoadFailed</span><span class="params">(View view, String s, Drawable drawable)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="做了那么多，其实有时候还不如这样做，看情况而定吧-这个不行在用上面的："><a href="#做了那么多，其实有时候还不如这样做，看情况而定吧-这个不行在用上面的：" class="headerlink" title="做了那么多，其实有时候还不如这样做，看情况而定吧 这个不行在用上面的："></a>做了那么多，其实有时候还不如这样做，看情况而定吧 这个不行在用上面的：</h3><figure class="highlight java"><figcaption><span>imageView.setScaleType(ScaleType.CENTER_CROP);</span><a href="//就这一句话" target="_blank" rel="noopener">link</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">LApplication.getBitmapUtils().display(imageView, selectPicture.getPictureUrl(), <span class="keyword">new</span> BitmapLoadCallBack&lt;View&gt;() &#123;</span><br><span class="line">           <span class="meta">@Override</span></span><br><span class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onLoadCompleted</span><span class="params">(ImageView imageView, String s, Bitmap bitmap, BitmapDisplayConfig bitmapDisplayConfig, BitmapLoadFrom bitmapLoadFrom)</span> </span>&#123;</span><br><span class="line">               imageView.setBitmap(bitmap);     </span><br><span class="line">           &#125;</span><br><span class="line">	</span><br><span class="line">           <span class="meta">@Override</span></span><br><span class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onLoadFailed</span><span class="params">(View view, String s, Drawable drawable)</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="关于ScaleType-的图片说明"><a href="#关于ScaleType-的图片说明" class="headerlink" title="关于ScaleType 的图片说明"></a>关于ScaleType 的图片说明</h3><p><img src="http://7xl32g.com1.z0.glb.clouddn.com/smallPicture.png">小图</img><br><img src="http://7xl32g.com1.z0.glb.clouddn.com/bigPicture.png">大图</img></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ImageView/" rel="tag"># ImageView</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/07/23/%E5%BC%80%E5%8F%91Android%E5%A3%81%E7%BA%B8-%E8%AE%BE%E7%BD%AE%E5%A3%81%E7%BA%B8%E3%80%81%E8%AE%BE%E7%BD%AE%E9%94%81%E5%B1%8F%E5%BF%83%E5%BE%97/" rel="next" title="开发Android壁纸:设置壁纸、设置锁屏心得">
+                <i class="fa fa-chevron-left"></i> 开发Android壁纸:设置壁纸、设置锁屏心得
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/07/30/%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9F%A9%E5%BD%A2%E3%80%81%E5%9C%86%E5%BD%A2%E7%AD%89%E8%BE%B9%E6%A1%86%E5%8F%8A%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86/" rel="prev" title="自定义矩形、圆形等边框及相关知识">
+                自定义矩形、圆形等边框及相关知识 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">walkingCoder</p>
+              <p class="site-description motion-element" itemprop="description">专注技术,极速成长</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/walkingCoder" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="os_line@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、本地图片"><span class="nav-number">1.</span> <span class="nav-text">一、本地图片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、网络图片"><span class="nav-number">2.</span> <span class="nav-text">二、网络图片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#做了那么多，其实有时候还不如这样做，看情况而定吧-这个不行在用上面的："><span class="nav-number">3.</span> <span class="nav-text">做了那么多，其实有时候还不如这样做，看情况而定吧 这个不行在用上面的：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于ScaleType-的图片说明"><span class="nav-number">4.</span> <span class="nav-text">关于ScaleType 的图片说明</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">walkingCoder</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://walkingCoder.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2015/07/25/android%E5%B0%86%E7%BB%99%E5%AE%9A%E5%9B%BE%E7%89%87%E7%BB%B4%E6%8C%81%E5%AE%BD%E9%AB%98%E6%AF%94%E4%BE%8B%E7%BC%A9%E6%94%BE%E5%90%8E%EF%BC%8C%E6%88%AA%E5%8F%96%E6%AD%A3%E4%B8%AD%E9%97%B4%E7%9A%84%E6%AD%A3%E6%96%B9%E5%BD%A2%E9%83%A8%E5%88%86/';
+          this.page.identifier = '2015/07/25/android将给定图片维持宽高比例缩放后，截取正中间的正方形部分/';
+          this.page.title = 'android将给定图片维持宽高比例缩放后，截取正中间的正方形部分';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://walkingCoder.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

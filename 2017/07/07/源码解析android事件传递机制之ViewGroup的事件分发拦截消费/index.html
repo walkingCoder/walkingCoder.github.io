@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="事件传递机制,ViewGroup," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="在上一篇View的事件分发、消费基础上，看一看ViewGroup的事件传递机制。 ViewGroup也是View的子类，在View的基础上增加了些包含子View的功能等。 ViewGroup比View多了个事件拦截的方法，拦截顾名思义，就是让事件传递拦截了，传递不下去，让子View接收不到事件。 123public boolean onInterceptTouchEvent(MotionEvent">
+<meta property="og:type" content="article">
+<meta property="og:title" content="源码解析android事件传递机制之ViewGroup的事件分发拦截消费">
+<meta property="og:url" content="http://yoursite.com/2017/07/07/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90android%E4%BA%8B%E4%BB%B6%E4%BC%A0%E9%80%92%E6%9C%BA%E5%88%B6%E4%B9%8BViewGroup%E7%9A%84%E4%BA%8B%E4%BB%B6%E5%88%86%E5%8F%91%E6%8B%A6%E6%88%AA%E6%B6%88%E8%B4%B9/index.html">
+<meta property="og:site_name" content="Build Your Dreams">
+<meta property="og:description" content="在上一篇View的事件分发、消费基础上，看一看ViewGroup的事件传递机制。 ViewGroup也是View的子类，在View的基础上增加了些包含子View的功能等。 ViewGroup比View多了个事件拦截的方法，拦截顾名思义，就是让事件传递拦截了，传递不下去，让子View接收不到事件。 123public boolean onInterceptTouchEvent(MotionEvent">
+<meta property="og:image" content="http://7xl32g.com1.z0.glb.clouddn.com/viewgroup%E6%B5%81%E7%A8%8B%E5%9B%BE.png">
+<meta property="article:published_time" content="2017-07-07T02:44:16.000Z">
+<meta property="article:modified_time" content="2017-07-12T03:34:07.000Z">
+<meta property="article:author" content="walkingCoder">
+<meta property="article:tag" content="事件传递机制">
+<meta property="article:tag" content="ViewGroup">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://7xl32g.com1.z0.glb.clouddn.com/viewgroup%E6%B5%81%E7%A8%8B%E5%9B%BE.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/07/07/源码解析android事件传递机制之ViewGroup的事件分发拦截消费/"/>
+
+
+
+
+
+  <title>源码解析android事件传递机制之ViewGroup的事件分发拦截消费 | Build Your Dreams</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d93547c1df1bf79570af4684f56090cf";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Build Your Dreams</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">专注技术,极速成长</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/07/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90android%E4%BA%8B%E4%BB%B6%E4%BC%A0%E9%80%92%E6%9C%BA%E5%88%B6%E4%B9%8BViewGroup%E7%9A%84%E4%BA%8B%E4%BB%B6%E5%88%86%E5%8F%91%E6%8B%A6%E6%88%AA%E6%B6%88%E8%B4%B9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="walkingCoder">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Build Your Dreams">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">源码解析android事件传递机制之ViewGroup的事件分发拦截消费</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-07T10:44:16+08:00">
+                2017-07-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/07/07/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90android%E4%BA%8B%E4%BB%B6%E4%BC%A0%E9%80%92%E6%9C%BA%E5%88%B6%E4%B9%8BViewGroup%E7%9A%84%E4%BA%8B%E4%BB%B6%E5%88%86%E5%8F%91%E6%8B%A6%E6%88%AA%E6%B6%88%E8%B4%B9/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/07/07/源码解析android事件传递机制之ViewGroup的事件分发拦截消费/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在上一篇View的事件分发、消费基础上，看一看ViewGroup的事件传递机制。</p>
+<p>ViewGroup也是View的子类，在View的基础上增加了些包含子View的功能等。</p>
+<p>ViewGroup比View多了个事件拦截的方法，拦截顾名思义，就是让事件传递拦截了，传递不下去，让子View接收不到事件。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onInterceptTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.onInterceptTouchEvent(ev);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="来看示例："><a href="#来看示例：" class="headerlink" title="来看示例："></a>来看示例：</h4><p>定义MyLinearLayout</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyLinearLayout</span> <span class="keyword">extends</span> <span class="title">LinearLayout</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> String TAG=<span class="string">"MyLinearLayout"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyLinearLayout</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyLinearLayout</span><span class="params">(Context context, @Nullable AttributeSet attrs)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context, attrs);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyLinearLayout</span><span class="params">(Context context, @Nullable AttributeSet attrs, <span class="keyword">int</span> defStyleAttr)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context, attrs, defStyleAttr);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">dispatchTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">switch</span> (ev.getAction())&#123;</span><br><span class="line">            <span class="keyword">case</span> MotionEvent.ACTION_DOWN:</span><br><span class="line">                Log.d(TAG,<span class="string">"dispatchTouchEvent  ACTION_DOWN"</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> MotionEvent.ACTION_UP:</span><br><span class="line">                Log.d(TAG,<span class="string">"dispatchTouchEvent  ACTION_UP"</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.dispatchTouchEvent(ev);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onInterceptTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.onInterceptTouchEvent(ev);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onTouchEvent</span><span class="params">(MotionEvent event)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">switch</span> (event.getAction())&#123;</span><br><span class="line">            <span class="keyword">case</span> MotionEvent.ACTION_DOWN:</span><br><span class="line">                Log.d(TAG,<span class="string">"onTouchEvent  ACTION_DOWN"</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> MotionEvent.ACTION_UP:</span><br><span class="line">                Log.d(TAG,<span class="string">"onTouchEvent  ACTION_UP"</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.onTouchEvent(event);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在布局文件中使用</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;com.beijing.jiayongkai.test_view_demo.view.MyLinearLayout xmlns:android=<span class="string">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">    xmlns:app=<span class="string">"http://schemas.android.com/apk/res-auto"</span></span><br><span class="line">    android:id=<span class="string">"@+id/activity_main"</span></span><br><span class="line">    android:layout_width=<span class="string">"match_parent"</span></span><br><span class="line">    android:layout_height=<span class="string">"match_parent"</span></span><br><span class="line">    android:orientation=<span class="string">"vertical"</span>&gt;</span><br><span class="line">    &lt;com.beijing.jiayongkai.test_view_demo.view.MyTextView</span><br><span class="line">        android:id=<span class="string">"@+id/text"</span></span><br><span class="line">        android:layout_width=<span class="string">"wrap_content"</span></span><br><span class="line">        android:layout_height=<span class="string">"wrap_content"</span></span><br><span class="line">        android:padding=<span class="string">"20dp"</span></span><br><span class="line">        android:text=<span class="string">"@string/app_name"</span>/&gt;</span><br><span class="line"></span><br><span class="line">&lt;/com.beijing.jiayongkai.test_view_demo.view.MyLinearLayout&gt;</span><br></pre></td></tr></table></figure>
+<p>最后Activity中设置onTouchListener事件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> <span class="keyword">implements</span> <span class="title">View</span>.<span class="title">OnClickListener</span>, <span class="title">View</span>.<span class="title">OnTouchListener</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG=<span class="string">"MainActivity"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> MyTextView textView;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line"></span><br><span class="line">        textView= (MyTextView) findViewById(R.id.text);</span><br><span class="line">        textView.setOnClickListener(<span class="keyword">this</span>);</span><br><span class="line">        textView.setOnTouchListener(<span class="keyword">this</span>);</span><br><span class="line">        findViewById(R.id.activity_main).setOnTouchListener(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">dispatchTouchEvent</span><span class="params">(MotionEvent event)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">switch</span> (event.getAction())&#123;</span><br><span class="line">            <span class="keyword">case</span> MotionEvent.ACTION_DOWN:</span><br><span class="line">                Log.d(TAG,<span class="string">"dispatchTouchEvent  ACTION_DOWN"</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> MotionEvent.ACTION_UP:</span><br><span class="line">                Log.d(TAG,<span class="string">"dispatchTouchEvent  ACTION_UP"</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.dispatchTouchEvent(event);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onTouchEvent</span><span class="params">(MotionEvent event)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">switch</span> (event.getAction())&#123;</span><br><span class="line">            <span class="keyword">case</span> MotionEvent.ACTION_DOWN:</span><br><span class="line">                Log.d(TAG,<span class="string">"onTouchEvent  ACTION_DOWN"</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> MotionEvent.ACTION_UP:</span><br><span class="line">                Log.d(TAG,<span class="string">"onTouchEvent  ACTION_UP"</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.onTouchEvent(event);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">switch</span> (view.getId())&#123;</span><br><span class="line">            <span class="keyword">case</span> R.id.text:</span><br><span class="line">                Log.d(TAG,<span class="string">"click========="</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onTouch</span><span class="params">(View view, MotionEvent motionEvent)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">switch</span> (view.getId())&#123;</span><br><span class="line">            <span class="keyword">case</span> R.id.text:</span><br><span class="line">                <span class="keyword">switch</span> (motionEvent.getAction())&#123;</span><br><span class="line">                    <span class="keyword">case</span> MotionEvent.ACTION_DOWN:</span><br><span class="line">                        Log.d(TAG,<span class="string">"MyTextView onTouchEvent  ACTION_DOWN"</span>);</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    <span class="keyword">case</span> MotionEvent.ACTION_UP:</span><br><span class="line">                        Log.d(TAG,<span class="string">"MyTextView onTouchEvent  ACTION_UP"</span>);</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> R.id.activity_main:</span><br><span class="line">                <span class="keyword">switch</span> (motionEvent.getAction())&#123;</span><br><span class="line">                    <span class="keyword">case</span> MotionEvent.ACTION_DOWN:</span><br><span class="line">                        Log.d(TAG,<span class="string">"MyLinearLayout onTouchEvent  ACTION_DOWN"</span>);</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    <span class="keyword">case</span> MotionEvent.ACTION_UP:</span><br><span class="line">                        Log.d(TAG,<span class="string">"MyLinearLayout onTouchEvent  ACTION_UP"</span>);</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.onTouchEvent(motionEvent);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="来看日志结果"><a href="#来看日志结果" class="headerlink" title="来看日志结果"></a>来看日志结果</h4><h5 id="1-textview是否设置onClick事件"><a href="#1-textview是否设置onClick事件" class="headerlink" title="1.textview是否设置onClick事件"></a>1.textview是否设置onClick事件</h5><li>设置
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">D/MainActivity: dispatchTouchEvent  ACTION_DOWN</span><br><span class="line">D/MyLinearLayout: dispatchTouchEvent  ACTION_DOWN</span><br><span class="line">D/MyTextView: dispatchTouchEvent  ACTION_DOWN</span><br><span class="line">D/MainActivity: MyTextView onTouchEvent  ACTION_DOWN</span><br><span class="line">D/MyTextView: onTouchEvent  ACTION_DOWN</span><br><span class="line">D/MainActivity: dispatchTouchEvent  ACTION_UP</span><br><span class="line">D/MyLinearLayout: dispatchTouchEvent  ACTION_UP</span><br><span class="line">D/MyTextView: dispatchTouchEvent  ACTION_UP</span><br><span class="line">D/MainActivity: MyTextView onTouchEvent  ACTION_UP</span><br><span class="line">D/MyTextView: onTouchEvent  ACTION_UP</span><br><span class="line">D/MainActivity: click=========</span><br></pre></td></tr></table></figure>
+<p>textview设置click 就把事件给消费了，就没有打印MyLinearLayout的onTouchEvent</p>
+<li>不设置
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">D/MainActivity: dispatchTouchEvent  ACTION_DOWN</span><br><span class="line">D/MyLinearLayout: dispatchTouchEvent  ACTION_DOWN</span><br><span class="line">D/MyTextView: dispatchTouchEvent  ACTION_DOWN</span><br><span class="line">D/MainActivity: MyTextView onTouchEvent  ACTION_DOWN</span><br><span class="line">D/MyTextView: onTouchEvent  ACTION_DOWN</span><br><span class="line">D/MainActivity: MyLinearLayout onTouchEvent  ACTION_DOWN</span><br><span class="line">D/MyLinearLayout: onTouchEvent  ACTION_DOWN</span><br><span class="line">D/MainActivity: onTouchEvent  ACTION_DOWN</span><br><span class="line">D/MainActivity: dispatchTouchEvent  ACTION_UP</span><br><span class="line">D/MainActivity: onTouchEvent  ACTION_UP</span><br></pre></td></tr></table></figure>
+<p>可以看到，只打印了MyLinearLayout onTouchEvent  ACTION_DOWN<br>这就是上一篇View事件分发所讲到的当dispatchTouchEvent在进行事件分发的时候，只有前一个action返回true，才会触发后一个action。</p>
+<p>textView 默认不是enable的，如果将textview换成button就会打印UP了。</p>
+<h5 id="2-设置onInterceptTouchEvent"><a href="#2-设置onInterceptTouchEvent" class="headerlink" title="2.设置onInterceptTouchEvent"></a>2.设置onInterceptTouchEvent</h5><p>上面的设置默认不拦截，所以事件能够传到TextView。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onInterceptTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>拦截一下看看，效果.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">D/MainActivity:dispatchTouchEvent  ACTION_DOWN</span><br><span class="line">D/MyLinearLayout: dispatchTouchEvent  ACTION_DOWN</span><br><span class="line">D/MainActivity: MyLinearLayout onTouchEvent  ACTION_DOWN</span><br><span class="line">D/MyLinearLayout: onTouchEvent  ACTION_DOWN</span><br><span class="line">D/MainActivity: onTouchEvent  ACTION_DOWN</span><br><span class="line">D/MainActivity: dispatchTouchEvent  ACTION_UP</span><br><span class="line">D/MainActivity: onTouchEvent  ACTION_UP</span><br></pre></td></tr></table></figure>
+<p>看看并没有textview的任何日志显示，成功的拦截的事件。</p>
+<h4 id="源码解析"><a href="#源码解析" class="headerlink" title="源码解析"></a>源码解析</h4><h5 id="看一下ViewGroup的dispatchTouchEvent"><a href="#看一下ViewGroup的dispatchTouchEvent" class="headerlink" title="看一下ViewGroup的dispatchTouchEvent"></a>看一下ViewGroup的dispatchTouchEvent</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">dispatchTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>&#123;  </span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> action = ev.getAction();  </span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">float</span> xf = ev.getX();  </span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">float</span> yf = ev.getY();  </span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">float</span> scrolledXFloat = xf + mScrollX;  </span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">float</span> scrolledYFloat = yf + mScrollY;  </span><br><span class="line">    <span class="keyword">final</span> Rect frame = mTempRect;  </span><br><span class="line">    <span class="keyword">boolean</span> disallowIntercept = (mGroupFlags &amp; FLAG_DISALLOW_INTERCEPT) != <span class="number">0</span>;  </span><br><span class="line">    <span class="keyword">if</span> (action == MotionEvent.ACTION_DOWN) &#123;  </span><br><span class="line">        <span class="keyword">if</span> (mMotionTarget != <span class="keyword">null</span>) &#123;  </span><br><span class="line">            mMotionTarget = <span class="keyword">null</span>;  </span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">if</span> (disallowIntercept || !onInterceptTouchEvent(ev)) &#123;  </span><br><span class="line">            ev.setAction(MotionEvent.ACTION_DOWN);  </span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">int</span> scrolledXInt = (<span class="keyword">int</span>) scrolledXFloat;  </span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">int</span> scrolledYInt = (<span class="keyword">int</span>) scrolledYFloat;  </span><br><span class="line">            <span class="keyword">final</span> View[] children = mChildren;  </span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">int</span> count = mChildrenCount;  </span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = count - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--) &#123;  </span><br><span class="line">                <span class="keyword">final</span> View child = children[i];  </span><br><span class="line">                <span class="keyword">if</span> ((child.mViewFlags &amp; VISIBILITY_MASK) == VISIBLE  </span><br><span class="line">                        || child.getAnimation() != <span class="keyword">null</span>) &#123;  </span><br><span class="line">                    child.getHitRect(frame);  </span><br><span class="line">                    <span class="keyword">if</span> (frame.contains(scrolledXInt, scrolledYInt)) &#123;  </span><br><span class="line">                        <span class="keyword">final</span> <span class="keyword">float</span> xc = scrolledXFloat - child.mLeft;  </span><br><span class="line">                        <span class="keyword">final</span> <span class="keyword">float</span> yc = scrolledYFloat - child.mTop;  </span><br><span class="line">                        ev.setLocation(xc, yc);  </span><br><span class="line">                        child.mPrivateFlags &amp;= ~CANCEL_NEXT_UP_EVENT;  </span><br><span class="line">                        <span class="keyword">if</span> (child.dispatchTouchEvent(ev))  &#123;  </span><br><span class="line">                            mMotionTarget = child;  </span><br><span class="line">                            <span class="keyword">return</span> <span class="keyword">true</span>;  </span><br><span class="line">                        &#125;  </span><br><span class="line">                    &#125;  </span><br><span class="line">                &#125;  </span><br><span class="line">            &#125;  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="keyword">boolean</span> isUpOrCancel = (action == MotionEvent.ACTION_UP) ||  </span><br><span class="line">            (action == MotionEvent.ACTION_CANCEL);  </span><br><span class="line">    <span class="keyword">if</span> (isUpOrCancel) &#123;  </span><br><span class="line">        mGroupFlags &amp;= ~FLAG_DISALLOW_INTERCEPT;  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="keyword">final</span> View target = mMotionTarget;  </span><br><span class="line">    <span class="keyword">if</span> (target == <span class="keyword">null</span>) &#123;  </span><br><span class="line">        ev.setLocation(xf, yf);  </span><br><span class="line">        <span class="keyword">if</span> ((mPrivateFlags &amp; CANCEL_NEXT_UP_EVENT) != <span class="number">0</span>) &#123;  </span><br><span class="line">            ev.setAction(MotionEvent.ACTION_CANCEL);  </span><br><span class="line">            mPrivateFlags &amp;= ~CANCEL_NEXT_UP_EVENT;  </span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.dispatchTouchEvent(ev);  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="keyword">if</span> (!disallowIntercept &amp;&amp; onInterceptTouchEvent(ev)) &#123;  </span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">float</span> xc = scrolledXFloat - (<span class="keyword">float</span>) target.mLeft;  </span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">float</span> yc = scrolledYFloat - (<span class="keyword">float</span>) target.mTop;  </span><br><span class="line">        mPrivateFlags &amp;= ~CANCEL_NEXT_UP_EVENT;  </span><br><span class="line">        ev.setAction(MotionEvent.ACTION_CANCEL);  </span><br><span class="line">        ev.setLocation(xc, yc);  </span><br><span class="line">        <span class="keyword">if</span> (!target.dispatchTouchEvent(ev)) &#123;  </span><br><span class="line">        &#125;  </span><br><span class="line">        mMotionTarget = <span class="keyword">null</span>;  </span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="keyword">if</span> (isUpOrCancel) &#123;  </span><br><span class="line">        mMotionTarget = <span class="keyword">null</span>;  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">float</span> xc = scrolledXFloat - (<span class="keyword">float</span>) target.mLeft;  </span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">float</span> yc = scrolledYFloat - (<span class="keyword">float</span>) target.mTop;  </span><br><span class="line">    ev.setLocation(xc, yc);  </span><br><span class="line">    <span class="keyword">if</span> ((target.mPrivateFlags &amp; CANCEL_NEXT_UP_EVENT) != <span class="number">0</span>) &#123;  </span><br><span class="line">        ev.setAction(MotionEvent.ACTION_CANCEL);  </span><br><span class="line">        target.mPrivateFlags &amp;= ~CANCEL_NEXT_UP_EVENT;  </span><br><span class="line">        mMotionTarget = <span class="keyword">null</span>;  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="keyword">return</span> target.dispatchTouchEvent(ev);  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>挑重点的看，看到onInterceptTouchEvent，这不是我们在外部设置的是否拦截，那么重点就在这了。</p>
+<p>这是一个条件判断，如果disallowIntercept和!onInterceptTouchEvent(ev)两者有一个为true，就会进入到这个条件判断中。disallowIntercept是指是否禁用掉事件拦截的功能，默认是false，也可以通过调用requestDisallowInterceptTouchEvent方法对这个值进行修改。</p>
+<p>那么当第一个值为false的时候就会完全依赖第二个值来决定是否可以进入到条件判断的内部，第二个值是什么呢？竟然就是对onInterceptTouchEvent方法的返回值取反！也就是说如果我们在onInterceptTouchEvent方法中返回false，就会让第二个值为true，从而进入到条件判断的内部，如果我们在onInterceptTouchEvent方法中返回true，就会让第二个值为false，从而跳出了这个条件判断。</p>
+<p>由于刚刚在MyLinearLayout中重写了onInterceptTouchEvent方法，让这个方法返回true，导致所有按钮的点击事件都被屏蔽了，那我们就完全有理由相信，按钮点击事件的处理就是在条件判断的内部进行的！</p>
+<p>内部是怎么实现的?通过一个for循环，遍历了当前ViewGroup下的所有子View，然后判断当前遍历的View是不是正在点击的View，如果是的话就会进入到该条件判断的内部，然后调用了该View的dispatchTouchEvent。</p>
+<p>调用子View的dispatchTouchEvent后是有返回值的。我们已经知道，如果一个控件是可点击的，那么点击该控件时，dispatchTouchEvent的返回值必定是true。于是给ViewGroup的dispatchTouchEvent方法直接返回了true。这样就导致后面的代码无法执行到了，也是印证了我们前面的打印的结果，如果点击事件得到执行，就会把MyLiearLayout的touch事件拦截掉。</p>
+<p>如果我们点击的不是组件，而是空白区域呢？这种情况就一定不会返回true了，而是会继续执行后面的代码。那我们继续往后看，如果target等于null，就会进入到该条件判断内部，这里一般情况下target都会是null，因此会调用super.dispatchTouchEvent(ev)。这句代码会调用到哪里呢？当然是View中的dispatchTouchEvent方法了，因为ViewGroup的父类就是View。之后的处理逻辑又和前面所说的是一样的了，也因此MyLayout中注册的onTouch方法会得到执行。</p>
+<h5 id="简单梳理一下"><a href="#简单梳理一下" class="headerlink" title="简单梳理一下"></a>简单梳理一下</h5><li> Android事件分发是先传递到ViewGroup，再由ViewGroup传递到View的。
+<li> 在ViewGroup中可以通过onInterceptTouchEvent方法对事件传递进行拦截，onInterceptTouchEvent方法返回true代表不允许事件继续向子View传递，返回false代表不对事件进行拦截，默认返回false。
+<li> 子View中如果将传递的事件消费掉，ViewGroup中将无法接收到任何事件。
+
+<h5 id="来张图条理更清晰"><a href="#来张图条理更清晰" class="headerlink" title="来张图条理更清晰"></a>来张图条理更清晰</h5><img src="http://7xl32g.com1.z0.glb.clouddn.com/viewgroup%E6%B5%81%E7%A8%8B%E5%9B%BE.png"/>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E4%BA%8B%E4%BB%B6%E4%BC%A0%E9%80%92%E6%9C%BA%E5%88%B6/" rel="tag"># 事件传递机制</a>
+          
+            <a href="/tags/ViewGroup/" rel="tag"># ViewGroup</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/06/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Hanlder-Looper-Message%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB/" rel="next" title="深入理解Hanlder Looper Message之间的关系">
+                <i class="fa fa-chevron-left"></i> 深入理解Hanlder Looper Message之间的关系
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/07/17/Java%E7%AE%97%E6%B3%95%E4%B9%8B%E9%9A%8F%E6%9C%BA%E6%B4%97%E7%89%8C/" rel="prev" title="Java算法之随机洗牌">
+                Java算法之随机洗牌 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">walkingCoder</p>
+              <p class="site-description motion-element" itemprop="description">专注技术,极速成长</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/walkingCoder" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="os_line@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#来看示例："><span class="nav-number">1.</span> <span class="nav-text">来看示例：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#来看日志结果"><span class="nav-number">2.</span> <span class="nav-text">来看日志结果</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-textview是否设置onClick事件"><span class="nav-number">2.1.</span> <span class="nav-text">1.textview是否设置onClick事件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-设置onInterceptTouchEvent"><span class="nav-number">2.2.</span> <span class="nav-text">2.设置onInterceptTouchEvent</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#源码解析"><span class="nav-number">3.</span> <span class="nav-text">源码解析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#看一下ViewGroup的dispatchTouchEvent"><span class="nav-number">3.1.</span> <span class="nav-text">看一下ViewGroup的dispatchTouchEvent</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#简单梳理一下"><span class="nav-number">3.2.</span> <span class="nav-text">简单梳理一下</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#来张图条理更清晰"><span class="nav-number">3.3.</span> <span class="nav-text">来张图条理更清晰</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">walkingCoder</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://walkingCoder.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2017/07/07/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90android%E4%BA%8B%E4%BB%B6%E4%BC%A0%E9%80%92%E6%9C%BA%E5%88%B6%E4%B9%8BViewGroup%E7%9A%84%E4%BA%8B%E4%BB%B6%E5%88%86%E5%8F%91%E6%8B%A6%E6%88%AA%E6%B6%88%E8%B4%B9/';
+          this.page.identifier = '2017/07/07/源码解析android事件传递机制之ViewGroup的事件分发拦截消费/';
+          this.page.title = '源码解析android事件传递机制之ViewGroup的事件分发拦截消费';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://walkingCoder.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="recyclerview," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="多Item布局实现(MultipleItem)如果之前你用过ListView实现过此功能，那么你一定对下面这两个方法并不陌生 123456789@Override    public int getItemViewType(int position) &amp;#123;        return super.getItemViewType(position);    &amp;#125;    @Overri">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android-RecyclerView使用全解析(二)">
+<meta property="og:url" content="http://yoursite.com/2015/10/27/Android-RecyclerView%E4%BD%BF%E7%94%A8%E5%85%A8%E8%A7%A3%E6%9E%90%EF%BC%88%E4%BA%8C%EF%BC%89/index.html">
+<meta property="og:site_name" content="Build Your Dreams">
+<meta property="og:description" content="多Item布局实现(MultipleItem)如果之前你用过ListView实现过此功能，那么你一定对下面这两个方法并不陌生 123456789@Override    public int getItemViewType(int position) &amp;#123;        return super.getItemViewType(position);    &amp;#125;    @Overri">
+<meta property="article:published_time" content="2015-10-27T02:38:27.000Z">
+<meta property="article:modified_time" content="2017-05-25T03:25:09.000Z">
+<meta property="article:author" content="walkingCoder">
+<meta property="article:tag" content="recyclerview">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/10/27/Android-RecyclerView使用全解析（二）/"/>
+
+
+
+
+
+  <title>Android-RecyclerView使用全解析(二) | Build Your Dreams</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d93547c1df1bf79570af4684f56090cf";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Build Your Dreams</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">专注技术,极速成长</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/10/27/Android-RecyclerView%E4%BD%BF%E7%94%A8%E5%85%A8%E8%A7%A3%E6%9E%90%EF%BC%88%E4%BA%8C%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="walkingCoder">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Build Your Dreams">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android-RecyclerView使用全解析(二)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-10-27T10:38:27+08:00">
+                2015-10-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/10/27/Android-RecyclerView%E4%BD%BF%E7%94%A8%E5%85%A8%E8%A7%A3%E6%9E%90%EF%BC%88%E4%BA%8C%EF%BC%89/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015/10/27/Android-RecyclerView使用全解析（二）/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="多Item布局实现-MultipleItem"><a href="#多Item布局实现-MultipleItem" class="headerlink" title="多Item布局实现(MultipleItem)"></a>多Item布局实现(MultipleItem)</h4><p>如果之前你用过ListView实现过此功能，那么你一定对下面这两个方法并不陌生</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getItemViewType</span><span class="params">(<span class="keyword">int</span> position)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.getItemViewType(position);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getViewTypeCount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.getViewTypeCount();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中<b>getItemViewType</b>方法是用来获取当前项Item(position参数)是哪种类型的布局</p>
+<p><b>getViewTypeCount</b>方法是用来获取当前listview总共有多少种类型的布局。</p>
+<p>如果你用RecyclerView，你会发现getViewTypeCount这个方法没有了，只有一个<b>getItemViewType</b>方法，用法和listview没有任何区别，这里要注意的就是这个函数<b>onCreateViewHolder(ViewGroup parent, int viewType)</b>这里的第二个参数就是View的类型，可以根据这个类型判断去创建不同item的ViewHolder。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MultipleItemAdapter</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">Adapter</span>&lt;<span class="title">RecyclerView</span>.<span class="title">ViewHolder</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">enum</span> ITEM_TYPE &#123;</span><br><span class="line">        ITEM_TYPE_IMAGE,</span><br><span class="line">        ITEM_TYPE_TEXT</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> LayoutInflater mLayoutInflater;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Context mContext;</span><br><span class="line">    <span class="keyword">private</span> String[] mTitles;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MultipleItemAdapter</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">        mTitles = context.getResources().getStringArray(R.array.titles);</span><br><span class="line">        mContext = context;</span><br><span class="line">        mLayoutInflater = LayoutInflater.from(context);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> RecyclerView.<span class="function">ViewHolder <span class="title">onCreateViewHolder</span><span class="params">(ViewGroup parent, <span class="keyword">int</span> viewType)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (viewType == ITEM_TYPE.ITEM_TYPE_IMAGE.ordinal()) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> ImageViewHolder(mLayoutInflater.inflate(R.layout.item_image, parent, <span class="keyword">false</span>));</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> TextViewHolder(mLayoutInflater.inflate(R.layout.item_text, parent, <span class="keyword">false</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(RecyclerView.ViewHolder holder, <span class="keyword">int</span> position)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (holder <span class="keyword">instanceof</span> TextViewHolder) &#123;</span><br><span class="line">            ((TextViewHolder) holder).mTextView.setText(mTitles[position]);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (holder <span class="keyword">instanceof</span> ImageViewHolder) &#123;</span><br><span class="line">            ((ImageViewHolder) holder).mTextView.setText(mTitles[position]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getItemViewType</span><span class="params">(<span class="keyword">int</span> position)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> position % <span class="number">2</span> == <span class="number">0</span> ? ITEM_TYPE.ITEM_TYPE_IMAGE.ordinal() : ITEM_TYPE.ITEM_TYPE_TEXT.ordinal();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getItemCount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mTitles == <span class="keyword">null</span> ? <span class="number">0</span> : mTitles.length;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">TextViewHolder</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span> </span>&#123;</span><br><span class="line">        <span class="meta">@InjectView</span>(R.id.text_view)</span><br><span class="line">        TextView mTextView;</span><br><span class="line"></span><br><span class="line">        TextViewHolder(View view) &#123;</span><br><span class="line">            <span class="keyword">super</span>(view);</span><br><span class="line">            ButterKnife.inject(<span class="keyword">this</span>, view);</span><br><span class="line">            view.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">                    Log.d(<span class="string">"TextViewHolder"</span>, <span class="string">"onClick--&gt; position = "</span> + getPosition());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ImageViewHolder</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span> </span>&#123;</span><br><span class="line">        <span class="meta">@InjectView</span>(R.id.text_view)</span><br><span class="line">        TextView mTextView;</span><br><span class="line">        <span class="meta">@InjectView</span>(R.id.image_view)</span><br><span class="line">        ImageView mImageView;</span><br><span class="line"></span><br><span class="line">        ImageViewHolder(View view) &#123;</span><br><span class="line">            <span class="keyword">super</span>(view);</span><br><span class="line">            ButterKnife.inject(<span class="keyword">this</span>, view);</span><br><span class="line">            view.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">                    Log.d(<span class="string">"ImageViewHolder"</span>, <span class="string">"onClick--&gt; position = "</span> + getPosition());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>怎么样，是不是很简单，没错，就是这么简单，但是只要会了这个多Item，那么你就可以做出很多效果了，比如HeaderView和BottomView也是可以通过这种方式来实现的。(<a href="https://github.com/Frank-Zhu/AndroidRecyclerViewDemo/blob/master/app/src/main/java/com/frankzhu/recyclerviewdemo/adapter/HeaderBottomItemAdapter.java" target="_blank" rel="noopener">HeaderView Adapter</a>)</p>
+<h4 id="嵌套RecyclerView-不好，会出各种问题：例，底部下方会有大量空白空间等"><a href="#嵌套RecyclerView-不好，会出各种问题：例，底部下方会有大量空白空间等" class="headerlink" title="嵌套RecyclerView(不好，会出各种问题：例，底部下方会有大量空白空间等)"></a>嵌套RecyclerView(不好，会出各种问题：例，底部下方会有大量空白空间等)</h4><p>一般是不推荐使用嵌套RecycleView的，和ListView是类似的，遇到这种需要嵌套的View一般都是想别的办法来规避，比如<b>动态AddView</b>，或者通过<b>RecycleView的MultipleItemAdapter</b>来实现，通过设置不同的ItemType布局不同的View，但是有时候会闲麻烦，想直接就用嵌套的方式来做，那么和ListView实现方式不同的是，ListView的实现一般都是继承ListView然后复写onMeasure方法，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthMeasureSpec, <span class="keyword">int</span> heightMeasureSpec)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">int</span> expandSpec = MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE &gt;&gt; <span class="number">2</span>, MeasureSpec.AT_MOST);</span><br><span class="line">       <span class="keyword">super</span>.onMeasure(widthMeasureSpec, expandSpec);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>但是RecycleView的实现方式不再是继承RecycleView来做，而是通过<b>修改LayoutManager</b>的方式，即通过继承LinearLayoutManager GridLayoutManager StaggeredGridLayoutManager来修改子控件的测量，下面给出主要代码：</p>
+<h4 id="FullyLinearLayoutManager"><a href="#FullyLinearLayoutManager" class="headerlink" title="FullyLinearLayoutManager"></a>FullyLinearLayoutManager</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">int</span>[] mMeasuredDimension = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(RecyclerView.Recycler recycler, RecyclerView.State state,</span></span></span><br><span class="line"><span class="function"><span class="params">                          <span class="keyword">int</span> widthSpec, <span class="keyword">int</span> heightSpec)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> widthMode = View.MeasureSpec.getMode(widthSpec);</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> heightMode = View.MeasureSpec.getMode(heightSpec);</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> widthSize = View.MeasureSpec.getSize(widthSpec);</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> heightSize = View.MeasureSpec.getSize(heightSpec);</span><br><span class="line"></span><br><span class="line">        Log.i(TAG, <span class="string">"onMeasure called. \nwidthMode "</span> + widthMode</span><br><span class="line">                + <span class="string">" \nheightMode "</span> + heightSpec</span><br><span class="line">                + <span class="string">" \nwidthSize "</span> + widthSize</span><br><span class="line">                + <span class="string">" \nheightSize "</span> + heightSize</span><br><span class="line">                + <span class="string">" \ngetItemCount() "</span> + getItemCount());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> width = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> height = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; getItemCount(); i++) &#123;</span><br><span class="line">            measureScrapChild(recycler, i,</span><br><span class="line">                    View.MeasureSpec.makeMeasureSpec(i, View.MeasureSpec.UNSPECIFIED),</span><br><span class="line">                    View.MeasureSpec.makeMeasureSpec(i, View.MeasureSpec.UNSPECIFIED),</span><br><span class="line">                    mMeasuredDimension);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (getOrientation() == HORIZONTAL) &#123;</span><br><span class="line">                width = width + mMeasuredDimension[<span class="number">0</span>];</span><br><span class="line">                <span class="keyword">if</span> (i == <span class="number">0</span>) &#123;</span><br><span class="line">                    height = mMeasuredDimension[<span class="number">1</span>];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                height = height + mMeasuredDimension[<span class="number">1</span>];</span><br><span class="line">                <span class="keyword">if</span> (i == <span class="number">0</span>) &#123;</span><br><span class="line">                    width = mMeasuredDimension[<span class="number">0</span>];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">switch</span> (widthMode) &#123;</span><br><span class="line">            <span class="keyword">case</span> View.MeasureSpec.EXACTLY:</span><br><span class="line">                width = widthSize;</span><br><span class="line">            <span class="keyword">case</span> View.MeasureSpec.AT_MOST:</span><br><span class="line">            <span class="keyword">case</span> View.MeasureSpec.UNSPECIFIED:</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">switch</span> (heightMode) &#123;</span><br><span class="line">            <span class="keyword">case</span> View.MeasureSpec.EXACTLY:</span><br><span class="line">                height = heightSize;</span><br><span class="line">            <span class="keyword">case</span> View.MeasureSpec.AT_MOST:</span><br><span class="line">            <span class="keyword">case</span> View.MeasureSpec.UNSPECIFIED:</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        setMeasuredDimension(width, height);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">measureScrapChild</span><span class="params">(RecyclerView.Recycler recycler, <span class="keyword">int</span> position, <span class="keyword">int</span> widthSpec,</span></span></span><br><span class="line"><span class="function"><span class="params">                                   <span class="keyword">int</span> heightSpec, <span class="keyword">int</span>[] measuredDimension)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            View view = recycler.getViewForPosition(<span class="number">0</span>);<span class="comment">//fix 动态添加时报IndexOutOfBoundsException</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (view != <span class="keyword">null</span>) &#123;</span><br><span class="line">                RecyclerView.LayoutParams p = (RecyclerView.LayoutParams) view.getLayoutParams();</span><br><span class="line"></span><br><span class="line">                <span class="keyword">int</span> childWidthSpec = ViewGroup.getChildMeasureSpec(widthSpec,</span><br><span class="line">                        getPaddingLeft() + getPaddingRight(), p.width);</span><br><span class="line"></span><br><span class="line">                <span class="keyword">int</span> childHeightSpec = ViewGroup.getChildMeasureSpec(heightSpec,</span><br><span class="line">                        getPaddingTop() + getPaddingBottom(), p.height);</span><br><span class="line"></span><br><span class="line">                view.measure(childWidthSpec, childHeightSpec);</span><br><span class="line">                measuredDimension[<span class="number">0</span>] = view.getMeasuredWidth() + p.leftMargin + p.rightMargin;</span><br><span class="line">                measuredDimension[<span class="number">1</span>] = view.getMeasuredHeight() + p.bottomMargin + p.topMargin;</span><br><span class="line">                recycler.recycleView(view);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="FullyGridLayoutManager"><a href="#FullyGridLayoutManager" class="headerlink" title="FullyGridLayoutManager"></a>FullyGridLayoutManager</h4><pre><code class="java"><span class="keyword">private</span> <span class="keyword">int</span>[] mMeasuredDimension = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];
+
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(RecyclerView.Recycler recycler, RecyclerView.State state, <span class="keyword">int</span> widthSpec, <span class="keyword">int</span> heightSpec)</span> </span>{
+        <span class="keyword">final</span> <span class="keyword">int</span> widthMode = View.MeasureSpec.getMode(widthSpec);
+        <span class="keyword">final</span> <span class="keyword">int</span> heightMode = View.MeasureSpec.getMode(heightSpec);
+        <span class="keyword">final</span> <span class="keyword">int</span> widthSize = View.MeasureSpec.getSize(widthSpec);
+        <span class="keyword">final</span> <span class="keyword">int</span> heightSize = View.MeasureSpec.getSize(heightSpec);
+
+        <span class="keyword">int</span> width = <span class="number">0</span>;
+        <span class="keyword">int</span> height = <span class="number">0</span>;
+        <span class="keyword">int</span> count = getItemCount();
+        <span class="keyword">int</span> span = getSpanCount();
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; count; i++) {
+            measureScrapChild(recycler, i,
+                    View.MeasureSpec.makeMeasureSpec(i, View.MeasureSpec.UNSPECIFIED),
+                    View.MeasureSpec.makeMeasureSpec(i, View.MeasureSpec.UNSPECIFIED),
+                    mMeasuredDimension);
+
+            <span class="keyword">if</span> (getOrientation() == HORIZONTAL) {
+                <span class="keyword">if</span> (i % span == <span class="number">0</span>) {
+                    width = width + mMeasuredDimension[<span class="number">0</span>];
+                }
+                <span class="keyword">if</span> (i == <span class="number">0</span>) {
+                    height = mMeasuredDimension[<span class="number">1</span>];
+                }
+            } <span class="keyword">else</span> {
+                <span class="keyword">if</span> (i % span == <span class="number">0</span>) {
+                    height = height + mMeasuredDimension[<span class="number">1</span>];
+                }
+                <span class="keyword">if</span> (i == <span class="number">0</span>) {
+                    width = mMeasuredDimension[<span class="number">0</span>];
+                }
+            }
+        }
+
+        <span class="keyword">switch</span> (widthMode) {
+            <span class="keyword">case</span> View.MeasureSpec.EXACTLY:
+                width = widthSize;
+            <span class="keyword">case</span> View.MeasureSpec.AT_MOST:
+            <span class="keyword">case</span> View.MeasureSpec.UNSPECIFIED:
+        }
+
+        <span class="keyword">switch</span> (heightMode) {
+            <span class="keyword">case</span> View.MeasureSpec.EXACTLY:
+                height = heightSize;
+            <span class="keyword">case</span> View.MeasureSpec.AT_MOST:
+            <span class="keyword">case</span> View.MeasureSpec.UNSPECIFIED:
+        }
+
+        setMeasuredDimension(width, height);
+    }
+
+    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">measureScrapChild</span><span class="params">(RecyclerView.Recycler recycler, <span class="keyword">int</span> position, <span class="keyword">int</span> widthSpec,</span></span>
+<span class="function"><span class="params">                                   <span class="keyword">int</span> heightSpec, <span class="keyword">int</span>[] measuredDimension)</span> </span>{
+        <span class="keyword">if</span> (position &lt; getItemCount()) {
+            <span class="keyword">try</span> {
+                View view = recycler.getViewForPosition(<span class="number">0</span>);<span class="comment">//fix 动态添加时报IndexOutOfBoundsException</span>
+                <span class="keyword">if</span> (view != <span class="keyword">null</span>) {
+                    RecyclerView.LayoutParams p = (RecyclerView.LayoutParams) view.getLayoutParams();
+                    <span class="keyword">int</span> childWidthSpec = ViewGroup.getChildMeasureSpec(widthSpec,
+                            getPaddingLeft() + getPaddingRight(), p.width);
+                    <span class="keyword">int</span> childHeightSpec = ViewGroup.getChildMeasureSpec(heightSpec,
+                            getPaddingTop() + getPaddingBottom(), p.height);
+                    view.measure(childWidthSpec, childHeightSpec);
+                    measuredDimension[<span class="number">0</span>] = view.getMeasuredWidth() + p.leftMargin + p.rightMargin;
+                    measuredDimension[<span class="number">1</span>] = view.getMeasuredHeight() + p.bottomMargin + p.topMargin;
+                    recycler.recycleView(view);
+                }
+            } <span class="keyword">catch</span> (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }</code></pre>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/recyclerview/" rel="tag"># recyclerview</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/10/17/Android-Studio%E5%A6%82%E4%BD%95%E5%AF%BC%E5%85%A5%E7%AC%AC%E4%B8%89%E6%96%B9%E7%B1%BB%E5%BA%93/" rel="next" title="Android Studio如何导入第三方类库">
+                <i class="fa fa-chevron-left"></i> Android Studio如何导入第三方类库
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/10/29/Android%E5%A6%82%E4%BD%95%E4%BB%8E%E7%B3%BB%E7%BB%9F%E5%9B%BE%E5%BA%93%E4%B8%AD%E9%80%89%E6%8B%A9%E5%9B%BE%E7%89%87/" rel="prev" title="Android如何从系统图库中选择图片">
+                Android如何从系统图库中选择图片 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">walkingCoder</p>
+              <p class="site-description motion-element" itemprop="description">专注技术,极速成长</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/walkingCoder" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="os_line@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#多Item布局实现-MultipleItem"><span class="nav-number">1.</span> <span class="nav-text">多Item布局实现(MultipleItem)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#嵌套RecyclerView-不好，会出各种问题：例，底部下方会有大量空白空间等"><span class="nav-number">2.</span> <span class="nav-text">嵌套RecyclerView(不好，会出各种问题：例，底部下方会有大量空白空间等)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#FullyLinearLayoutManager"><span class="nav-number">3.</span> <span class="nav-text">FullyLinearLayoutManager</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#FullyGridLayoutManager"><span class="nav-number">4.</span> <span class="nav-text">FullyGridLayoutManager</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">walkingCoder</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://walkingCoder.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2015/10/27/Android-RecyclerView%E4%BD%BF%E7%94%A8%E5%85%A8%E8%A7%A3%E6%9E%90%EF%BC%88%E4%BA%8C%EF%BC%89/';
+          this.page.identifier = '2015/10/27/Android-RecyclerView使用全解析（二）/';
+          this.page.title = 'Android-RecyclerView使用全解析(二)';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://walkingCoder.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

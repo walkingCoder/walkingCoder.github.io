@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="设计模式,Okhttp," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="【转载】 原文链接：http:&#x2F;&#x2F;www.jianshu.com&#x2F;p&#x2F;2c4a11a26350 OkHttp 源码中广泛使用 Builder 模式 Builder 模式的四种变换：链式调用、省略指挥者角色、省略抽象 Builder 角色、Product 角色回炉再造，在 OKHttp 源码中提现得淋漓尽致。 在上一篇中介绍了Builder模式的标准形式，以及两种基本变换——链式调用和省略指挥者角色">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OkHttp源码中的Builder模式">
+<meta property="og:url" content="http://yoursite.com/2017/05/26/OkHttp%E6%BA%90%E7%A0%81%E4%B8%AD%E7%9A%84Builder%E6%A8%A1%E5%BC%8F/index.html">
+<meta property="og:site_name" content="Build Your Dreams">
+<meta property="og:description" content="【转载】 原文链接：http:&#x2F;&#x2F;www.jianshu.com&#x2F;p&#x2F;2c4a11a26350 OkHttp 源码中广泛使用 Builder 模式 Builder 模式的四种变换：链式调用、省略指挥者角色、省略抽象 Builder 角色、Product 角色回炉再造，在 OKHttp 源码中提现得淋漓尽致。 在上一篇中介绍了Builder模式的标准形式，以及两种基本变换——链式调用和省略指挥者角色">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/3/17/1a2fb6a7da1af00f620ec28fe5738e22">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/3/17/17286ed2e195f203c304084e80316b2c">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/3/17/3a1e797ababcd9d1a2c7f031a6670ad7">
+<meta property="article:published_time" content="2017-05-26T07:08:38.000Z">
+<meta property="article:modified_time" content="2017-05-26T08:58:10.000Z">
+<meta property="article:author" content="walkingCoder">
+<meta property="article:tag" content="设计模式">
+<meta property="article:tag" content="Okhttp">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2017/3/17/1a2fb6a7da1af00f620ec28fe5738e22">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/05/26/OkHttp源码中的Builder模式/"/>
+
+
+
+
+
+  <title>OkHttp源码中的Builder模式 | Build Your Dreams</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d93547c1df1bf79570af4684f56090cf";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Build Your Dreams</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">专注技术,极速成长</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/26/OkHttp%E6%BA%90%E7%A0%81%E4%B8%AD%E7%9A%84Builder%E6%A8%A1%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="walkingCoder">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Build Your Dreams">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">OkHttp源码中的Builder模式</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-26T15:08:38+08:00">
+                2017-05-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/05/26/OkHttp%E6%BA%90%E7%A0%81%E4%B8%AD%E7%9A%84Builder%E6%A8%A1%E5%BC%8F/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/05/26/OkHttp源码中的Builder模式/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>【转载】 原文链接：<a href="http://www.jianshu.com/p/2c4a11a26350" target="_blank" rel="noopener">http://www.jianshu.com/p/2c4a11a26350</a></p>
+<p>OkHttp 源码中广泛使用 Builder 模式 Builder 模式的四种变换：链式调用、省略指挥者角色、省略抽象 Builder 角色、Product 角色回炉再造，在 OKHttp 源码中提现得淋漓尽致。</p>
+<p>在上一篇中介绍了Builder模式的标准形式，以及两种基本变换——链式调用和省略指挥者角色。本文将通过分析OkHttp源码阐述Builder模式的另外两种变换——省略抽象Builder角色和Product角色回炉再造。</p>
+<h4 id="OkHttp源码中的Builder模式"><a href="#OkHttp源码中的Builder模式" class="headerlink" title="OkHttp源码中的Builder模式"></a>OkHttp源码中的Builder模式</h4><p>OkHttp作为开源的Android网络请求框架，以URLConnection和HttpClient的替代者身份出现，名噪江湖。许多开源框架都是基于OkHttp的二次封装，比如OkGo，以及与OkHttp同源的Retrofit。OkHttp的使用非常简单，在Github上OkHttp项目的Wiki/Recipes中有基本的介绍。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> OkHttpClient client = <span class="keyword">new</span> OkHttpClient();</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    Request request = <span class="keyword">new</span> Request.Builder()</span><br><span class="line">        .url(<span class="string">"http://publicobject.com/helloworld.txt"</span>)</span><br><span class="line">        .build();</span><br><span class="line">    Response response = client.newCall(request).execute();</span><br><span class="line"><span class="comment">//省略其他代码</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由上述代码的调用风格我们可以基本猜到，Request对象的构建采用了Builder模式。为了验证这一点，我们看看源码中Request类的具体实现。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Request</span> </span>&#123;</span><br><span class="line">  <span class="keyword">final</span> HttpUrl url;</span><br><span class="line">  <span class="keyword">final</span> String method;</span><br><span class="line">  <span class="keyword">final</span> Headers headers;</span><br><span class="line">  <span class="keyword">final</span> RequestBody body;</span><br><span class="line">  <span class="keyword">final</span> Object tag;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">volatile</span> CacheControl cacheControl; <span class="comment">// Lazily initialized.</span></span><br><span class="line"></span><br><span class="line">  Request(Builder builder) &#123;</span><br><span class="line">    <span class="comment">//构造函数，省略属性赋值操作</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Builder <span class="title">newBuilder</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Builder(<span class="keyword">this</span>);</span><br><span class="line">  &#125;</span><br><span class="line"><span class="comment">//省略部分代码</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Builder</span> </span>&#123;</span><br><span class="line">    HttpUrl url;</span><br><span class="line">    String method;</span><br><span class="line">    Headers.Builder headers;</span><br><span class="line">    RequestBody body;</span><br><span class="line">    Object tag;</span><br><span class="line"><span class="comment">//省略部分代码</span></span><br><span class="line">    Builder(Request request) &#123;</span><br><span class="line">      <span class="comment">//构造函数，省略属性赋值操作</span></span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">//省略部分代码</span></span><br><span class="line">     <span class="function"><span class="keyword">public</span> Request <span class="title">build</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (url == <span class="keyword">null</span>) <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"url == null"</span>);</span><br><span class="line">         <span class="keyword">return</span> <span class="keyword">new</span> Request(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述代码非常清晰，Request类共有6个属性，从名字就可以猜出它们的意义：url代表这个Http请求的url，method指的是POST请求还是GET请求还是其他，header和body自然就是http请求的首部和请求体；tag猜测是用作取消一个请求，cacheControl是缓存控制。Request.Builder中冗余定义了这6个属性。builder在经过一系列的链式调用，对这6个属性中的某几个进行赋值后，最终调用build()方法，生成一个完整的Request对象。build()方法的具体实现也很简单，调用Request的构造方法，将自己作为参数传递过去。Request构造方法内对6个属性一一赋值（没有值时使用默认值）。</p>
+<h4 id="省略抽象Builder角色"><a href="#省略抽象Builder角色" class="headerlink" title="省略抽象Builder角色"></a>省略抽象Builder角色</h4><p>仔细研究，发现Request类的6个属性分别对应的类型中，Headers、CacheControl、HttpUrl类的内部都含有Builder！RequestBody是个抽象类，其内部没有Builder，但是它的两个子类FormBody和MultipartBody有。于是画出如下UML类图。</p>
+<img src="https://user-gold-cdn.xitu.io/2017/3/17/1a2fb6a7da1af00f620ec28fe5738e22">
+
+<p>我们很希望RequestBody中有一个Builder作为抽象Builder角色，作为FormBody.Builder和MultipartBody.Builder的共同父类。然而Request.Builder根本不存在！上图中除了RequestBody，其他每个类中的Builder都是独立存在的，除宿主类（Builder所在的外部类），不和其他类发生任何牵扯。<br>　　换一种方式理解，如果Builder模式中的ConcreteBuilder只有一个，那么抽象的Builder当然可以省略。此所谓<b>Builder模式变换之省略抽象Builder角色。</b>
+　　</p>
+<h4 id="Product角色回炉再造"><a href="#Product角色回炉再造" class="headerlink" title="Product角色回炉再造"></a>Product角色回炉再造</h4><p>省略指挥者角色，省略抽象Builder角色，整个Builder模式只剩下两个角色，如下图。<br><img src="https://user-gold-cdn.xitu.io/2017/3/17/17286ed2e195f203c304084e80316b2c"></p>
+<p>相信你已经非常熟悉Builder模式的使用套路了——在经过一系列的链式调用对属性进行赋值后，ConcreteBuilder最终调用build()方法生成Product对象。一旦调用build()方法，无法再设置或修改属性值了，因为build()返回的是Product类型，而不再是Builder本身。这本身是一种保护机制，也是Builder模式的特性。这好比打包邮寄东西，一旦封包，无法再继续往里面塞，更无法在运输的途中，进行远程遥控替换里面的某件物品。　</p>
+<p>回看文章开头Request类的源码，有一个newBuilder()方法，它返回Request.Builder()类型。newBuilder()的内部，调用的是Builder的一个含Request类型参数的构造函数。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Builder <span class="title">newBuilder</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Builder(<span class="keyword">this</span>);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>Request(Builder builder){…}和Builder(Request request) {…}，外部类和内部类的构造函数，是否有种对称美？正是这种美，巧妙地完成了从Product重回Builder的逆向过程。再接下来的事，就是继续链式调用最后调用build()模式一锤定音。至此，Builder模式Builder和Product的关系如下</p>
+<img src="https://user-gold-cdn.xitu.io/2017/3/17/3a1e797ababcd9d1a2c7f031a6670ad7">
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> OkHttpClient client = <span class="keyword">new</span> OkHttpClient();</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    Request request = <span class="keyword">new</span> Request.Builder()</span><br><span class="line">        .url(<span class="string">"http://httpbin.org/delay/1"</span>) <span class="comment">// This URL is served with a 1 second delay.</span></span><br><span class="line">        .build();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="comment">// Copy to customize OkHttp for this request.</span></span><br><span class="line">      OkHttpClient copy = client.newBuilder()</span><br><span class="line">          .readTimeout(<span class="number">500</span>, TimeUnit.MILLISECONDS)</span><br><span class="line">          .build();</span><br><span class="line"></span><br><span class="line">      Response response = copy.newCall(request).execute();</span><br><span class="line">      System.out.println(<span class="string">"Response 1 succeeded: "</span> + response);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">      System.out.println(<span class="string">"Response 1 failed: "</span> + e);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="comment">// Copy to customize OkHttp for this request.</span></span><br><span class="line">      OkHttpClient copy = client.newBuilder()</span><br><span class="line">          .readTimeout(<span class="number">3000</span>, TimeUnit.MILLISECONDS)</span><br><span class="line">          .build();</span><br><span class="line"></span><br><span class="line">      Response response = copy.newCall(request).execute();</span><br><span class="line">      System.out.println(<span class="string">"Response 2 succeeded: "</span> + response);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">      System.out.println(<span class="string">"Response 2 failed: "</span> + e);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>OKHttpClient类也使用Builer模式！</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>Builder模式的四种变换。</p>
+<li> 链式调用:
+
+<p>　　并非Builder模式特有，只要在原本返回值为void的方法中返回this，都可以实现链式调用。</p>
+<li>省略指挥者角色：
+
+<p>　　new builder、链式赋值、最后build，一条龙调用，不再需要指挥者角色。</p>
+<li>省略抽象Builder角色：
+
+<p>　　具体的Builder只有一个，省略抽象父类。</p>
+<li>Product角色的回炉再造：
+
+<p>　　Product逆转化为Builder，调整某些配置后，重新build，回到Product形态。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag"># 设计模式</a>
+          
+            <a href="/tags/Okhttp/" rel="tag"># Okhttp</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/26/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%B3%BB%E5%88%97%E4%B9%8B-Builder%E6%A8%A1%E5%BC%8F/" rel="next" title="设计模式系列之--Builder模式">
+                <i class="fa fa-chevron-left"></i> 设计模式系列之--Builder模式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/27/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B-%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/" rel="prev" title="【设计模式】设计模式之--策略模式">
+                【设计模式】设计模式之--策略模式 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">walkingCoder</p>
+              <p class="site-description motion-element" itemprop="description">专注技术,极速成长</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/walkingCoder" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="os_line@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#OkHttp源码中的Builder模式"><span class="nav-number">1.</span> <span class="nav-text">OkHttp源码中的Builder模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#省略抽象Builder角色"><span class="nav-number">2.</span> <span class="nav-text">省略抽象Builder角色</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Product角色回炉再造"><span class="nav-number">3.</span> <span class="nav-text">Product角色回炉再造</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">walkingCoder</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://walkingCoder.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2017/05/26/OkHttp%E6%BA%90%E7%A0%81%E4%B8%AD%E7%9A%84Builder%E6%A8%A1%E5%BC%8F/';
+          this.page.identifier = '2017/05/26/OkHttp源码中的Builder模式/';
+          this.page.title = 'OkHttp源码中的Builder模式';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://walkingCoder.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

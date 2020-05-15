@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="webview," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="WebView基础使用WebView是View的一个子类，可以让你在activity中显示网页。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android中WebView使用之一（基础用法）">
+<meta property="og:url" content="http://yoursite.com/2015/12/17/Android%E4%B8%ADWebView%E4%BD%BF%E7%94%A8%E4%B9%8B%E4%B8%80%EF%BC%88%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95%EF%BC%89/index.html">
+<meta property="og:site_name" content="Build Your Dreams">
+<meta property="og:description" content="WebView基础使用WebView是View的一个子类，可以让你在activity中显示网页。">
+<meta property="article:published_time" content="2015-12-17T08:41:51.000Z">
+<meta property="article:modified_time" content="2017-07-12T02:29:52.000Z">
+<meta property="article:author" content="walkingCoder">
+<meta property="article:tag" content="webview">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/12/17/Android中WebView使用之一（基础用法）/"/>
+
+
+
+
+
+  <title>Android中WebView使用之一（基础用法） | Build Your Dreams</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d93547c1df1bf79570af4684f56090cf";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Build Your Dreams</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">专注技术,极速成长</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/12/17/Android%E4%B8%ADWebView%E4%BD%BF%E7%94%A8%E4%B9%8B%E4%B8%80%EF%BC%88%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="walkingCoder">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Build Your Dreams">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android中WebView使用之一（基础用法）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-12-17T16:41:51+08:00">
+                2015-12-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/12/17/Android%E4%B8%ADWebView%E4%BD%BF%E7%94%A8%E4%B9%8B%E4%B8%80%EF%BC%88%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95%EF%BC%89/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015/12/17/Android中WebView使用之一（基础用法）/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="WebView基础使用"><a href="#WebView基础使用" class="headerlink" title="WebView基础使用"></a>WebView基础使用</h3><p>WebView是View的一个子类，可以让你在activity中显示网页。</p>
+<a id="more"></a>
+<p>　　可以在布局文件中写入WebView：比如下面这个写了一个填满整个屏幕的WebView：　</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">	&lt;?xml version=<span class="string">"1.0"</span> encoding=<span class="string">"utf-8"</span>?&gt;</span><br><span class="line">	&lt;WebView  xmlns:android=<span class="string">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">	    android:id=<span class="string">"@+id/webview"</span></span><br><span class="line">	    android:layout_width=<span class="string">"fill_parent"</span></span><br><span class="line">	    android:layout_height=<span class="string">"fill_parent"</span></span><br><span class="line">	/&gt;</span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line">　　加载一个网页，使用loadUrl()：</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">	WebView myWebView = (WebView) findViewById(R.id.webview);</span><br><span class="line">	myWebView.loadUrl(<span class="string">"http://www.example.com"</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="设置WebView要现实的网页"><a href="#设置WebView要现实的网页" class="headerlink" title="设置WebView要现实的网页"></a>设置WebView要现实的网页</h4><p>设置WevView要显示的网页方法有很多：</p>
+<p>　　互联网页面直接用：
+　　　</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">myWebView.loadUrl(<span class="string">"http://www.google.com"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>   本地文件用：
+　　</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">	myWebView.loadUrl(<span class="string">"file:///android_asset/XX.html"</span>); </span><br><span class="line">```	 </span><br><span class="line">　　本地文件存放在：assets文件中。</span><br><span class="line"></span><br><span class="line">　　还可以直接载入html的字符串，如：</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">	String htmlString = <span class="string">"&lt;h1&gt;Title&lt;/h1&gt;&lt;p&gt;This is HTML text&lt;br /&gt;&lt;i&gt;Formatted in italics&lt;/i&gt;&lt;br /&gt;Anothor Line&lt;/p&gt;"</span>;</span><br><span class="line">	<span class="comment">// 载入这个html页面</span></span><br><span class="line">	myWebView.loadData(htmlString, <span class="string">"text/html"</span>, <span class="string">"utf-8"</span>);</span><br></pre></td></tr></table></figure>
+<p>打开页面时， 自适应屏幕：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">WebSettings webSettings =   mWebView .getSettings();       </span><br><span class="line">webSettings.setUseWideViewPort(<span class="keyword">true</span>);<span class="comment">//设置此属性，可任意比例缩放</span></span><br><span class="line">webSettings.setLoadWithOverviewMode(<span class="keyword">true</span>);</span><br></pre></td></tr></table></figure>
+<p>便页面支持缩放：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">WebSettings webSettings =   mWebView .getSettings();       </span><br><span class="line">webSettings.setJavaScriptEnabled(<span class="keyword">true</span>);  </span><br><span class="line">webSettings.setBuiltInZoomControls(<span class="keyword">true</span>);</span><br><span class="line">webSettings.setSupportZoom(<span class="keyword">true</span>);</span><br></pre></td></tr></table></figure>
+<p>如果webView中需要用户手动输入用户名、密码或其他，则webview必须设置支持获取手势焦点。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">webview.requestFocusFromTouch();</span><br></pre></td></tr></table></figure>
+<h4 id="在WebView中使用JavaScript"><a href="#在WebView中使用JavaScript" class="headerlink" title="在WebView中使用JavaScript"></a>在WebView中使用JavaScript</h4><p>如果你想要载入的页面中用了JavaScript，你必须为你的WebView使用JavaScript。</p>
+<p>一旦使用之后，你也可以自己创建接口在你的应用和JavaScript代码间进行交互。</p>
+<p>使用JavaScript可以通过getSettings()获得WebSettings，然后用setJavaScriptEnabled()使能JavaScript：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">	WebView myWebView = (WebView) findViewById(R.id.webview);</span><br><span class="line">	WebSettings webSettings = myWebView.getSettings();</span><br><span class="line">	webSettings.setJavaScriptEnabled(<span class="keyword">true</span>);</span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line">WebSettings中提供了很多有用的设置。</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">	setJavaScriptEnabled(<span class="keyword">true</span>);  <span class="comment">//支持js</span></span><br><span class="line">	</span><br><span class="line">	setPluginsEnabled(<span class="keyword">true</span>);  <span class="comment">//支持插件 </span></span><br><span class="line">	</span><br><span class="line">	setUseWideViewPort(<span class="keyword">false</span>);  <span class="comment">//将图片调整到适合webview的大小 </span></span><br><span class="line">	</span><br><span class="line">	setSupportZoom(<span class="keyword">true</span>);  <span class="comment">//支持缩放 </span></span><br><span class="line">	</span><br><span class="line">	setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN); <span class="comment">//支持内容重新布局  </span></span><br><span class="line">	</span><br><span class="line">	supportMultipleWindows();  <span class="comment">//多窗口 </span></span><br><span class="line">	</span><br><span class="line">	setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);  <span class="comment">//关闭webview中缓存 </span></span><br><span class="line">	</span><br><span class="line">	setAllowFileAccess(<span class="keyword">true</span>);  <span class="comment">//设置可以访问文件 </span></span><br><span class="line">	</span><br><span class="line">	setNeedInitialFocus(<span class="keyword">true</span>); <span class="comment">//当webview调用requestFocus时为webview设置节点</span></span><br><span class="line">	</span><br><span class="line">	webview webSettings.setBuiltInZoomControls(<span class="keyword">true</span>); <span class="comment">//设置支持缩放 </span></span><br><span class="line">	</span><br><span class="line">	setJavaScriptCanOpenWindowsAutomatically(<span class="keyword">true</span>); <span class="comment">//支持通过JS打开新窗口 </span></span><br><span class="line">	</span><br><span class="line">	setLoadWithOverviewMode(<span class="keyword">true</span>); <span class="comment">// 缩放至屏幕的大小</span></span><br><span class="line">	</span><br><span class="line">	setLoadsImagesAutomatically(<span class="keyword">true</span>);  <span class="comment">//支持自动加载图片</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="处理页面浏览"><a href="#处理页面浏览" class="headerlink" title="处理页面浏览"></a>处理页面浏览</h4><p>当用户点击了你的WebView中的一个链接，默认的行为是Android启动一个处理URL的应用，通常，默认的浏览器打开并下载目标URL。</p>
+<p>但是，你可以在你的WebView中覆盖这一行为，使得连接仍在你的WebView中打开。</p>
+<p>之后，根据在WebView中维护的网页浏览历史，你可以允许用户向前或向后浏览他们的网页。</p>
+<h5 id="在WebView中打开所有链接"><a href="#在WebView中打开所有链接" class="headerlink" title="在WebView中打开所有链接"></a>在WebView中打开所有链接</h5><p>要打开用户点击的链接，只需要用setWebViewClient()方法向你的WebView提供一个WebViewClient 比如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">WebView myWebView = (WebView) findViewById(R.id.webview);</span><br><span class="line">myWebView.setWebViewClient(<span class="keyword">new</span> WebViewClient());</span><br></pre></td></tr></table></figure>
+
+<p>此时就OK了， 就可以在你的WebView中打开链接了。</p>
+<h5 id="关于打开链接位置的更多控制"><a href="#关于打开链接位置的更多控制" class="headerlink" title="关于打开链接位置的更多控制"></a>关于打开链接位置的更多控制</h5><p>如果你对在哪里打开链接需要更多的控制，你可以创建自己的类，继承 WebViewClient，然后覆写shouldOverrideUrlLoading() 方法。</p>
+<p>　　比如下面这个：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">MyWebViewClient</span> <span class="keyword">extends</span> <span class="title">WebViewClient</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">shouldOverrideUrlLoading</span><span class="params">(WebView view, String url)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">	</span><br><span class="line">	　　　　　　　<span class="keyword">if</span>(Uri.parse(url).getHost().equals(www.example.com))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        Intent intent = <span class="keyword">new</span> Intent(Intent.ACTION_VIEW, Uri.parse(url));</span><br><span class="line">        startActivity(intent);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>将特定的链接用自己的WebView打开，其他链接用浏览器（intent启动了默认的处理URL的Activity）。</p>
+<p>定义完之后把这个类的对象传入setWebViewClient()方法即可。　</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">WebView myWebView = (WebView) findViewById(R.id.webview);</span><br><span class="line">myWebView.setWebViewClient(<span class="keyword">new</span> MyWebViewClient());</span><br></pre></td></tr></table></figure>
+
+<h5 id="浏览网页历史回退"><a href="#浏览网页历史回退" class="headerlink" title="浏览网页历史回退"></a>浏览网页历史回退</h5><p>当你的WebView覆写了URL载入的行为，它会自动地对访问过的网页积累一个历史，你可以利用 goBack() 和 goForward()方法在这个历史中前进或后退。</p>
+<p>比如说使用后退键进行网页后退：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 按键响应，在WebView中查看网页时，按返回键的时候按浏览历史退回,如果不做此项处理则整个WebView返回退出</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onKeyDown</span><span class="params">(<span class="keyword">int</span> keyCode, KeyEvent event)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// Check if the key event was the Back button and if there's history</span></span><br><span class="line">    <span class="keyword">if</span> ((keyCode == KeyEvent.KEYCODE_BACK) &amp;&amp; myWebView.canGoBack())</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 返回键退回</span></span><br><span class="line">        myWebView.goBack();</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">super</span>.onKeyDown(keyCode, event);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>canGoBack() 方法在网页可以后退时返回true。</p>
+<p>类似的，canGoForward()方法可以检查是否有可以前进的历史记录。</p>
+<p>如果你不执行这种检查，一旦 goBack() 和 goForward()方法到达历史记录顶端，它们将什么也不做。</p>
+<p>如果不加这种设置，在用户按下Back键时，如果是WebView显示网页，则会将WebView作为整体返回。</p>
+<h5 id="WebViewClient方法详解"><a href="#WebViewClient方法详解" class="headerlink" title="WebViewClient方法详解"></a>WebViewClient方法详解</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">	doUpdateVisitedHistory(WebView view, String url, <span class="keyword">boolean</span> isReload)  <span class="comment">//(更新历史记录) </span></span><br><span class="line">	</span><br><span class="line">	onFormResubmission(WebView view, Message dontResend, Message resend) <span class="comment">//(应用程序重新请求网页数据) </span></span><br><span class="line">	</span><br><span class="line">	onLoadResource(WebView view, String url) <span class="comment">// 在加载页面资源时会调用，每一个资源（比如图片）的加载都会调用一次。 </span></span><br><span class="line">	</span><br><span class="line">	onPageStarted(WebView view, String url, Bitmap favicon) <span class="comment">//这个事件就是开始载入页面调用的，通常我们可以在这设定一个loading的页面，告诉用户程序在等待网络响应。 </span></span><br><span class="line">	</span><br><span class="line">	onPageFinished(WebView view, String url) <span class="comment">//在页面加载结束时调用。同样道理，我们知道一个页面载入完成，于是我们可以关闭loading 条，切换程序动作。 </span></span><br><span class="line">	</span><br><span class="line">	onReceivedError(WebView view, <span class="keyword">int</span> errorCode, String description, String failingUrl)<span class="comment">// (报告错误信息) </span></span><br><span class="line">	</span><br><span class="line">	onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host,String realm)<span class="comment">//（获取返回信息授权请求） </span></span><br><span class="line">	 </span><br><span class="line">	onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) <span class="comment">//重写此方法可以让webview处理https请求。</span></span><br><span class="line">	 </span><br><span class="line">	onScaleChanged(WebView view, <span class="keyword">float</span> oldScale, <span class="keyword">float</span> newScale) <span class="comment">// (WebView发生改变时调用) </span></span><br><span class="line">	</span><br><span class="line">	onUnhandledKeyEvent(WebView view, KeyEvent event) <span class="comment">//（Key事件未被加载时调用） </span></span><br><span class="line">	</span><br><span class="line">	shouldOverrideKeyEvent(WebView view, KeyEvent event)<span class="comment">//重写此方法才能够处理在浏览器中的按键事件。 </span></span><br><span class="line">	</span><br><span class="line">	shouldOverrideUrlLoading(WebView view, String url) </span><br><span class="line">	<span class="comment">//在点击请求的是链接是才会调用，重写此方法返回true表明点击网页里面的链接还是在当前的webview里跳转，不跳到浏览器那边。这个函数我们可以做很多操作，比如我们读取到某些特殊的URL，于是就可以不打开地址，取消这个操作，进行预先定义的其他操作，这对一个程序是非常必要的。</span></span><br><span class="line">```	</span><br><span class="line"></span><br><span class="line">#### WebView记录上次访问位置</span><br><span class="line"></span><br><span class="line">##### 实现原理</span><br><span class="line"></span><br><span class="line">就是用webview.getScrollY记录你当前的webview已经滑动的位置  onPause()</span><br><span class="line">下次再进入这个页面时，在网页加载完成时调用：webview.scrollTo(<span class="keyword">int</span> x, <span class="keyword">int</span> y)方法即可。</span><br><span class="line"></span><br><span class="line">##### 实现步骤</span><br><span class="line"><span class="number">1</span>,用SharedPreferences或者数据库保存当前webview滑动的位置，如果多个页面都要记录访问位置，就需要用</span><br><span class="line">集合把url和位置都保存起来</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onPause</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onPause();</span><br><span class="line">    PreferencesUtils.putInt(gankItem.getUrl(),mWebView.getScrollY());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2，获取保存的位置，用webview.scrollTo(int x, int y)定位到上次访问的位置</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">webviewClient</span> <span class="keyword">extends</span> <span class="title">WebViewClient</span> </span>&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onPageStarted</span><span class="params">(WebView view, String url, Bitmap favicon)</span> </span>&#123;</span><br><span class="line">            <span class="comment">//</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onPageFinished</span><span class="params">(WebView view, String url)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">super</span>.onPageFinished(view, url);</span><br><span class="line">            <span class="comment">//获取保存的位置position</span></span><br><span class="line">            <span class="keyword">int</span> position = PreferencesUtils.getInt(gankItem.getUrl());</span><br><span class="line">       mWebView.scrollTo(<span class="number">0</span>,position);;<span class="comment">//webview加载完成后直接定位到上次访问的位置</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="webview-缓存"><a href="#webview-缓存" class="headerlink" title="webview 缓存"></a>webview 缓存</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//有网 就默认的加载网络数据  没有 就加载缓存</span></span><br><span class="line"><span class="keyword">if</span> (NetStatusUtil.isNetworkAvailable(<span class="keyword">this</span>))&#123;</span><br><span class="line">    webSetting.setCacheMode(WebSettings.LOAD_DEFAULT);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    webSetting.setCacheMode(</span><br><span class="line">            WebSettings.LOAD_CACHE_ELSE_NETWORK);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Webview设置cookie"><a href="#Webview设置cookie" class="headerlink" title="Webview设置cookie"></a>Webview设置cookie</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span>  <span class="keyword">void</span> <span class="title">syncCookie</span><span class="params">(Context context, String url)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.LOLLIPOP) &#123;</span><br><span class="line">           CookieSyncManager.createInstance(context);</span><br><span class="line">       &#125;</span><br><span class="line">       CookieManager cookieManager = CookieManager.getInstance();</span><br><span class="line">       StringBuilder sbCookie = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">           sbCookie.append(<span class="string">"appWebview="</span>);</span><br><span class="line">           sbCookie.append(Constants.USER_PLATFORM_NAME);</span><br><span class="line">           String cookieValue = sbCookie.toString();</span><br><span class="line">       cookieManager.setCookie(url, cookieValue);<span class="comment">//如果没有特殊需求，这里只需要将session id以"key=value"形式作为cookie即可</span></span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>一定要在loadUrl之前调用</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/webview/" rel="tag"># webview</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/12/15/%E4%BB%BFQQ%E5%A5%BD%E5%8F%8B%E5%88%97%E8%A1%A8/" rel="next" title="仿QQ好友列表">
+                <i class="fa fa-chevron-left"></i> 仿QQ好友列表
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/12/17/Android%E4%B8%ADWebView%E4%BD%BF%E7%94%A8%E4%B9%8B%E4%BA%8C%EF%BC%88JavaScript%E4%BB%A3%E7%A0%81%E4%BD%BF%E7%94%A8%EF%BC%89/" rel="prev" title="Android中WebView使用之二（JavaScript代码使用）">
+                Android中WebView使用之二（JavaScript代码使用） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">walkingCoder</p>
+              <p class="site-description motion-element" itemprop="description">专注技术,极速成长</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/walkingCoder" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="os_line@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#WebView基础使用"><span class="nav-number">1.</span> <span class="nav-text">WebView基础使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#设置WebView要现实的网页"><span class="nav-number">1.1.</span> <span class="nav-text">设置WebView要现实的网页</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在WebView中使用JavaScript"><span class="nav-number">1.2.</span> <span class="nav-text">在WebView中使用JavaScript</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#处理页面浏览"><span class="nav-number">1.3.</span> <span class="nav-text">处理页面浏览</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#在WebView中打开所有链接"><span class="nav-number">1.3.1.</span> <span class="nav-text">在WebView中打开所有链接</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#关于打开链接位置的更多控制"><span class="nav-number">1.3.2.</span> <span class="nav-text">关于打开链接位置的更多控制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#浏览网页历史回退"><span class="nav-number">1.3.3.</span> <span class="nav-text">浏览网页历史回退</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#WebViewClient方法详解"><span class="nav-number">1.3.4.</span> <span class="nav-text">WebViewClient方法详解</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#webview-缓存"><span class="nav-number">1.4.</span> <span class="nav-text">webview 缓存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Webview设置cookie"><span class="nav-number">1.5.</span> <span class="nav-text">Webview设置cookie</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">walkingCoder</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://walkingCoder.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2015/12/17/Android%E4%B8%ADWebView%E4%BD%BF%E7%94%A8%E4%B9%8B%E4%B8%80%EF%BC%88%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95%EF%BC%89/';
+          this.page.identifier = '2015/12/17/Android中WebView使用之一（基础用法）/';
+          this.page.title = 'Android中WebView使用之一（基础用法）';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://walkingCoder.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

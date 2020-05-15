@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="EventBus," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、概述EventBus是一款针对Android优化的发布&#x2F;订阅事件总线。 主要功能是替代Intent、Handler、BroadCast在Fragment、Activity、Service、线程之间传递消息。 优点是，开销小，代码更优雅，以及将发送者和接受者解耦。 作为一个消息总线，有三个主要的元素： Event：事件  Event 可以是任意类型的对象Subscriber:事件订阅者，接收特定">
+<meta property="og:type" content="article">
+<meta property="og:title" content="EventBus使用详解">
+<meta property="og:url" content="http://yoursite.com/2016/02/16/EventBus%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="Build Your Dreams">
+<meta property="og:description" content="一、概述EventBus是一款针对Android优化的发布&#x2F;订阅事件总线。 主要功能是替代Intent、Handler、BroadCast在Fragment、Activity、Service、线程之间传递消息。 优点是，开销小，代码更优雅，以及将发送者和接受者解耦。 作为一个消息总线，有三个主要的元素： Event：事件  Event 可以是任意类型的对象Subscriber:事件订阅者，接收特定">
+<meta property="og:image" content="http://7xl32g.com1.z0.glb.clouddn.com/greendao.gif">
+<meta property="article:published_time" content="2016-02-16T09:26:41.000Z">
+<meta property="article:modified_time" content="2017-05-25T03:29:50.000Z">
+<meta property="article:author" content="walkingCoder">
+<meta property="article:tag" content="EventBus">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://7xl32g.com1.z0.glb.clouddn.com/greendao.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/02/16/EventBus使用详解/"/>
+
+
+
+
+
+  <title>EventBus使用详解 | Build Your Dreams</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d93547c1df1bf79570af4684f56090cf";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Build Your Dreams</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">专注技术,极速成长</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/02/16/EventBus%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="walkingCoder">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Build Your Dreams">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">EventBus使用详解</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-02-16T17:26:41+08:00">
+                2016-02-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/02/16/EventBus%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/02/16/EventBus使用详解/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h3><p>EventBus是一款针对Android优化的发布/订阅事件总线。</p>
+<p>主要功能是替代Intent、Handler、BroadCast在Fragment、Activity、Service、线程之间传递消息。</p>
+<p>优点是，开销小，代码更优雅，以及将发送者和接受者解耦。</p>
+<p>作为一个消息总线，有三个主要的元素：</p>
+<li>Event：事件
+
+<pre><code>Event 可以是任意类型的对象</code></pre><li>Subscriber:事件订阅者，接收特定的事件
+
+<p>   在EventBus中，使用约定来指定事件订阅者以简化使用。即所有事件订阅都都是以onEvent开头的函数，具体来说，函数的名字是onEvent，onEventMainThread，onEventBackgroundThread，onEventAsync这四个，这个和ThreadMode有关</p>
+<li>Publisher:事件发布者，用于通知Subscriber有事件发生
+
+<p>可以在任意线程任意位置发送事件，直接调用EventBus的<code>post(Object)</code>方法，可以自己实例化EventBus对象，但一般使用默认的单例就好了：<code>EventBus.getDefault()</code>，根据post函数参数的类型，会自动调用订阅相应类型事件的函数。</p>
+<li>ThreadMode
+
+<p>前面说了，Subscriber函数的名字只能是那4个，因为每个事件订阅函数都是和一个<code>ThreadMode</code>相关联的，ThreadMode指定了会调用的函数。有以下四个ThreadMode：</p>
+<ul><li>PostThread：事件的处理在和事件的发送在相同的进程，所以事件处理时间不应太长，不然影响事件的发送线程，而这个线程可能是UI线程。对应的函数名是onEvent。
+
+<li>MainThread: 事件的处理会在UI线程中执行。事件处理时间不能太长，这个不用说的，长了会ANR的，对应的函数名是onEventMainThread。
+
+<li>BackgroundThread：事件的处理会在一个后台线程中执行，对应的函数名是onEventBackgroundThread，虽然名字是BackgroundThread，事件处理是在后台线程，但事件处理时间还是不应该太长，因为如果发送事件的线程是后台线程，会直接执行事件，如果当前线程是UI线程，事件会被加到一个队列中，由一个线程依次处理这些事件，如果某个事件处理时间太长，会阻塞后面的事件的派发或处理。
+
+<li>Async：事件处理会在单独的线程中执行，主要用于在后台线程中执行耗时操作，每个事件会开启一个线程（有线程池），但最好限制线程的数目。</ul>
+
+<p>根据事件订阅都函数名称的不同，会使用不同的ThreadMode，比如果在后台线程加载了数据想在UI线程显示，订阅者只需把函数命名为onEventMainThread。</p>
+<h3 id="二、基本使用"><a href="#二、基本使用" class="headerlink" title="二、基本使用"></a>二、基本使用</h3><p>导入：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">compile <span class="string">'de.greenrobot:eventbus:2.4.0'</span></span><br></pre></td></tr></table></figure>
+
+<p>使用方法：</p>
+<p>在EventBus中，获取实例的方法一般是采用EventBus.getInstance()来获取默认的EventBus实例</p>
+<p>①.定义事件类型：<br><code>public class MyEvent {}</code></p>
+<p>②.定义事件处理方法：<br><code>public void onEventMainThread</code></p>
+<p>③.注册订阅者：<br><code>EventBus.getDefault().register(this)</code></p>
+<p>③.解除注册订阅者：<br><code>EventBus.getDefault().unregister(this)</code></p>
+<p>④.发送事件：<br><code>EventBus.getDefault().post(new MyEvent())</code></p>
+<p>注册/解除订阅者，是在对事件进行处理的Activity或者Fragment等的onCreate()、onDestoty()中进行的。<br>发送事件的页面中不用注册。</p>
+<h3 id="三、实战"><a href="#三、实战" class="headerlink" title="三、实战"></a>三、实战</h3><p>现在我们的需求是这样的，两个Fragment组成主界面，左边的Fragment是个目录、即列表，右边的Fragment是详细信息面板；</p>
+<p>a、目录的列表是从网络获取的。</p>
+<p>b、当点击目录上的条目时，动态更新详细信息面板；</p>
+<p>效果图：</p>
+<img src="http://7xl32g.com1.z0.glb.clouddn.com/greendao.gif">
+
+<p>有了这个需求，我们传统的做法是：</p>
+<p>a、目录Fragment在onCreate中去开启线程去访问网络获取数据，获取完成以后，通过handler去更新界面。</p>
+<p>b、在目录的Fragment中提供一个接口，然后详细信息面板去注册这个接口，当发生点击时，去回调这个接口，让详细信息面板发生改变。</p>
+<p>这种做法不错的，但是有了EventBus之后，我们有….</p>
+<h4 id="1-MainActivity及其布局"><a href="#1-MainActivity及其布局" class="headerlink" title="1.MainActivity及其布局"></a>1.MainActivity及其布局</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">FragmentActivity</span>  </span></span><br><span class="line"><span class="class"></span>&#123;  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span>  </span></span><br><span class="line"><span class="function">    </span>&#123;  </span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);  </span><br><span class="line">        setContentView(R.layout.activity_main);  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>布局</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&lt;LinearLayout xmlns:android=<span class="string">"http://schemas.android.com/apk/res/android"</span>  </span><br><span class="line">    xmlns:tools=<span class="string">"http://schemas.android.com/tools"</span>  </span><br><span class="line">    android:layout_width=<span class="string">"match_parent"</span>  </span><br><span class="line">    android:layout_height=<span class="string">"match_parent"</span>  </span><br><span class="line">    android:baselineAligned=<span class="string">"false"</span>  </span><br><span class="line">    android:divider=<span class="string">"?android:attr/dividerHorizontal"</span>  </span><br><span class="line">    android:orientation=<span class="string">"horizontal"</span>  </span><br><span class="line">    android:showDividers=<span class="string">"middle"</span> &gt;  </span><br><span class="line">  </span><br><span class="line">    &lt;fragment  </span><br><span class="line">        android:id=<span class="string">"@+id/item_list"</span>  </span><br><span class="line">        android:name=<span class="string">"com.angeldevil.eventbusdemo.ItemListFragment"</span>  </span><br><span class="line">        android:layout_width=<span class="string">"0dip"</span>  </span><br><span class="line">        android:layout_height=<span class="string">"match_parent"</span>  </span><br><span class="line">        android:layout_weight=<span class="string">"1"</span> /&gt;  </span><br><span class="line">  </span><br><span class="line">    &lt;fragment  </span><br><span class="line">        android:id=<span class="string">"@+id/item_detail_container"</span>  </span><br><span class="line">        android:name=<span class="string">"com.angeldevil.eventbusdemo.ItemDetailFragment"</span>  </span><br><span class="line">        android:layout_width=<span class="string">"0dip"</span>  </span><br><span class="line">        android:layout_height=<span class="string">"match_parent"</span>  </span><br><span class="line">        android:layout_weight=<span class="string">"2"</span> /&gt;  </span><br><span class="line">  </span><br><span class="line">&lt;/LinearLayout&gt;</span><br></pre></td></tr></table></figure>
+<p>可以看到，我们MainActvity可以说没有一行代码，布局文件即两个Fragment组成；</p>
+<h4 id="2-ItemListFragment"><a href="#2-ItemListFragment" class="headerlink" title="2.ItemListFragment"></a>2.ItemListFragment</h4><p>首先看个实体类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Item</span>  </span></span><br><span class="line"><span class="class"></span>&#123;  </span><br><span class="line">    <span class="keyword">public</span> String id;  </span><br><span class="line">    <span class="keyword">public</span> String content;  </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> List&lt;Item&gt; ITEMS = <span class="keyword">new</span> ArrayList&lt;Item&gt;();  </span><br><span class="line">    <span class="keyword">static</span>  </span><br><span class="line">    &#123;  </span><br><span class="line">        <span class="comment">// Add 6 sample items.  </span></span><br><span class="line">        addItem(<span class="keyword">new</span> Item(<span class="string">"1"</span>, <span class="string">"Item 1"</span>));  </span><br><span class="line">        addItem(<span class="keyword">new</span> Item(<span class="string">"2"</span>, <span class="string">"Item 2"</span>));  </span><br><span class="line">        addItem(<span class="keyword">new</span> Item(<span class="string">"3"</span>, <span class="string">"Item 3"</span>));  </span><br><span class="line">        addItem(<span class="keyword">new</span> Item(<span class="string">"4"</span>, <span class="string">"Item 4"</span>));  </span><br><span class="line">        addItem(<span class="keyword">new</span> Item(<span class="string">"5"</span>, <span class="string">"Item 5"</span>));  </span><br><span class="line">        addItem(<span class="keyword">new</span> Item(<span class="string">"6"</span>, <span class="string">"Item 6"</span>));  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">addItem</span><span class="params">(Item item)</span>  </span></span><br><span class="line"><span class="function">    </span>&#123;  </span><br><span class="line">        ITEMS.add(item);  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Item</span><span class="params">(String id, String content)</span>  </span></span><br><span class="line"><span class="function">    </span>&#123;  </span><br><span class="line">        <span class="keyword">this</span>.id = id;  </span><br><span class="line">        <span class="keyword">this</span>.content = content;  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span>  </span></span><br><span class="line"><span class="function">    </span>&#123;  </span><br><span class="line">        <span class="keyword">return</span> content;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其次，ItemListFragment</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ItemListFragment</span> <span class="keyword">extends</span> <span class="title">ListFragment</span>  </span></span><br><span class="line"><span class="class"></span>&#123;  </span><br><span class="line">  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span>  </span></span><br><span class="line"><span class="function">    </span>&#123;  </span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);  </span><br><span class="line">        <span class="comment">// Register  </span></span><br><span class="line">        EventBus.getDefault().register(<span class="keyword">this</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span>  </span></span><br><span class="line"><span class="function">    </span>&#123;  </span><br><span class="line">        <span class="keyword">super</span>.onDestroy();  </span><br><span class="line">        <span class="comment">// Unregister  </span></span><br><span class="line">        EventBus.getDefault().unregister(<span class="keyword">this</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onViewCreated</span><span class="params">(View view, Bundle savedInstanceState)</span>  </span></span><br><span class="line"><span class="function">    </span>&#123;  </span><br><span class="line">        <span class="keyword">super</span>.onViewCreated(view, savedInstanceState);  </span><br><span class="line">        <span class="comment">// 开启线程加载列表  </span></span><br><span class="line">        <span class="keyword">new</span> Thread()  </span><br><span class="line">        &#123;  </span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span>  </span></span><br><span class="line"><span class="function">            </span>&#123;  </span><br><span class="line">                <span class="keyword">try</span>  </span><br><span class="line">                &#123;  </span><br><span class="line">                    Thread.sleep(<span class="number">2000</span>); <span class="comment">// 模拟延时  </span></span><br><span class="line">                    <span class="comment">// 发布事件，在后台线程发的事件  </span></span><br><span class="line">                    EventBus.getDefault().post(<span class="keyword">new</span> ItemListEvent(Item.ITEMS));  </span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e)  </span><br><span class="line">                &#123;  </span><br><span class="line">                    e.printStackTrace();  </span><br><span class="line">                &#125;  </span><br><span class="line">            &#125;;  </span><br><span class="line">        &#125;.start();  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onEventMainThread</span><span class="params">(ItemListEvent event)</span>  </span></span><br><span class="line"><span class="function">    </span>&#123;  </span><br><span class="line">        setListAdapter(<span class="keyword">new</span> ArrayAdapter&lt;Item&gt;(getActivity(),  </span><br><span class="line">                android.R.layout.simple_list_item_activated_1,  </span><br><span class="line">                android.R.id.text1, event.getItems()));  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onListItemClick</span><span class="params">(ListView listView, View view, <span class="keyword">int</span> position,  </span></span></span><br><span class="line"><span class="function"><span class="params">            <span class="keyword">long</span> id)</span>  </span></span><br><span class="line"><span class="function">    </span>&#123;  </span><br><span class="line">        <span class="keyword">super</span>.onListItemClick(listView, view, position, id);  </span><br><span class="line">        EventBus.getDefault().post(getListView().getItemAtPosition(position));  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ItemListFragment里面在onCreate里面进行了事件的订阅，onDestroy里面进行了事件的取消；onViewCreated中我们模拟了一个子线程去网络加载数据，获取成功后我们调用<br>了EventBus.getDefault().post(new ItemListEvent(Item.ITEMS));发布了一个事件；</p>
+<p>onListItemClick则是ListView的点击事件，我们调用了EventBus.getDefault().post(getListView().getItemAtPosition(position));去发布一个事件，</p>
+<p>getListView().getItemAtPosition(position)的类型为Item类型；</p>
+<p>细心的你一定发现了一些诡异的事，直接new Thread()获取到数据以后，竟然没有使用handler；我们界面竟然发生了变化，那么List是何时绑定的数据？</p>
+<p>仔细看下代码，发现这个方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onEventMainThread</span><span class="params">(ItemListEvent event)</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		setListAdapter(<span class="keyword">new</span> ArrayAdapter&lt;Item&gt;(getActivity(),</span><br><span class="line">				android.R.layout.simple_list_item_activated_1,</span><br><span class="line">				android.R.id.text1, event.getItems()));</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p>应该是这个方法为List绑定的数据。那么这个方法是怎么被调用的呢？<br>现在就可以细谈订阅事件与发布事件了：</p>
+<p>如果方法名以onEvent开头，则代表要订阅一个事件，MainThread意思，这个方法最终要在UI线程执行；当事件发布的时候，这个方法就会被执行。<br>那么这个事件什么时候发布呢？</p>
+<p>我们的onEventMainThread触发时机应该在new Thread()执行完成之后，可以看到子线程执行完成之后，执行了EventBus.getDefault().post(new ItemListEvent(Item.ITEMS));</p>
+<p>意味着发布了一个事件，当这个事件发布，我们的onEventMainThread就执行了，那么二者的关联关系是什么呢？</p>
+<p>其实和参数的类型，我们onEventMainThread需要接收一个ItemListEvent ，我们也发布了一个ItemListEvent的实例。</p>
+<p>现在我们完整的理一下：</p>
+<p>在onCreate里面执行    EventBus.getDefault().register(this);意思是让EventBus扫描当前类，把所有onEvent开头的方法记录下来，如何记录呢？使用Map，Key为方法的参数类型，Value中包含我们的方法。<br>这样在onCreate执行完成以后，我们的onEventMainThread就已经以键值对的方式被存储到EventBus中了。</p>
+<p>然后当子线程执行完毕，调用EventBus.getDefault().post(new ItemListEvent(Item.ITEMS))时，EventBus会根据post中实参的类型，去Map中查找对于的方法，于是找到了我们的onEventMainThread，最终调用反射去执行我们的方法。</p>
+<p>现在应该明白了，整个运行的流程了；那么没有接口却能发生回调应该也能解释了。</p>
+<p>现在我们在看看代码，当Item点击的时候EventBus.getDefault().post(getListView().getItemAtPosition(position));我们同样发布了一个事件，参数为Item；这个事件是为了让详细信息的Fragment去更新数据，不用说，按照上面的推测，详细信息的Fragment里面一个有个这样的方法：    public void onEventMainThread(Item item) ； 是不是呢？我们去看看。</p>
+<h4 id="3-ItemDetailFragment"><a href="#3-ItemDetailFragment" class="headerlink" title="3.ItemDetailFragment"></a>3.ItemDetailFragment</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ItemDetailFragment</span> <span class="keyword">extends</span> <span class="title">Fragment</span>  </span></span><br><span class="line"><span class="class"></span>&#123;  </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">private</span> TextView tvDetail;  </span><br><span class="line">  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span>  </span></span><br><span class="line"><span class="function">    </span>&#123;  </span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);  </span><br><span class="line">        <span class="comment">// register  </span></span><br><span class="line">        EventBus.getDefault().register(<span class="keyword">this</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span>  </span></span><br><span class="line"><span class="function">    </span>&#123;  </span><br><span class="line">        <span class="keyword">super</span>.onDestroy();  </span><br><span class="line">        <span class="comment">// Unregister  </span></span><br><span class="line">        EventBus.getDefault().unregister(<span class="keyword">this</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="comment">/** List点击时会发送些事件，接收到事件后更新详情 */</span>  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onEventMainThread</span><span class="params">(Item item)</span>  </span></span><br><span class="line"><span class="function">    </span>&#123;  </span><br><span class="line">        <span class="keyword">if</span> (item != <span class="keyword">null</span>)  </span><br><span class="line">            tvDetail.setText(item.content);  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> View <span class="title">onCreateView</span><span class="params">(LayoutInflater inflater, ViewGroup container,  </span></span></span><br><span class="line"><span class="function"><span class="params">            Bundle savedInstanceState)</span>  </span></span><br><span class="line"><span class="function">    </span>&#123;  </span><br><span class="line">        View rootView = inflater.inflate(R.layout.fragment_item_detail,  </span><br><span class="line">                container, <span class="keyword">false</span>);  </span><br><span class="line">        tvDetail = (TextView) rootView.findViewById(R.id.item_detail);  </span><br><span class="line">        <span class="keyword">return</span> rootView;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>果然不出我们的所料，真的存在onEventMainThread(Item item)的方法。当然了，必须在onCreate里面首先书写EventBus.getDefault().register(this);让EventBus扫描再说。</p>
+<p>那么这个Fragment的流程就是：onCreate时，EventBus扫描当前类，将onEventMainThread以键值对的形式进行存储，键为Item.class ，值为包含该方法的对象。</p>
+<p>然后当ItemListFragment中Item被点击时，发布了一个事件：EventBus.getDefault().post(getListView().getItemAtPosition(position));实参的类型恰好是Item，于是触发我们的<br>onEventMainThread方法，并把Item实参传递进来，我们更新控件。</p>
+<h4 id="4-Event"><a href="#4-Event" class="headerlink" title="4.Event"></a>4.Event</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Event</span>  </span></span><br><span class="line"><span class="class"></span>&#123;  </span><br><span class="line">    <span class="comment">/** 列表加载事件 */</span>  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ItemListEvent</span>  </span></span><br><span class="line"><span class="class">    </span>&#123;  </span><br><span class="line">        <span class="keyword">private</span> List&lt;Item&gt; items;  </span><br><span class="line">  </span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">ItemListEvent</span><span class="params">(List&lt;Item&gt; items)</span>  </span></span><br><span class="line"><span class="function">        </span>&#123;  </span><br><span class="line">            <span class="keyword">this</span>.items = items;  </span><br><span class="line">        &#125;  </span><br><span class="line">  </span><br><span class="line">        <span class="function"><span class="keyword">public</span> List&lt;Item&gt; <span class="title">getItems</span><span class="params">()</span>  </span></span><br><span class="line"><span class="function">        </span>&#123;  </span><br><span class="line">            <span class="keyword">return</span> items;  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个Event 可以是任意类型 可以是个类，还可以是个枚举等，只要参数不同，针对参数的事件做相应的处理。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/EventBus/" rel="tag"># EventBus</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/01/18/Android-Listview%E5%88%97%E8%A1%A8%E4%B8%AD%E8%A7%86%E9%A2%91%E7%9A%84%E6%92%AD%E6%94%BE%E4%B8%8E%E6%9A%82%E5%81%9C%E5%8F%8A%E4%B9%8B%E9%97%B4%E7%9A%84%E7%89%B5%E5%88%B6/" rel="next" title="Android Listview列表中视频的播放与暂停及之间的牵制">
+                <i class="fa fa-chevron-left"></i> Android Listview列表中视频的播放与暂停及之间的牵制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/02/17/%E8%87%AA%E5%AE%9A%E4%B9%89ViewPager%E5%AE%9E%E7%8E%B0%E6%97%A0%E9%99%90%E8%BD%AE%E6%92%AD/" rel="prev" title="自定义ViewPager实现无限轮播">
+                自定义ViewPager实现无限轮播 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">walkingCoder</p>
+              <p class="site-description motion-element" itemprop="description">专注技术,极速成长</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/walkingCoder" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="os_line@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、概述"><span class="nav-number">1.</span> <span class="nav-text">一、概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、基本使用"><span class="nav-number">2.</span> <span class="nav-text">二、基本使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、实战"><span class="nav-number">3.</span> <span class="nav-text">三、实战</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-MainActivity及其布局"><span class="nav-number">3.1.</span> <span class="nav-text">1.MainActivity及其布局</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-ItemListFragment"><span class="nav-number">3.2.</span> <span class="nav-text">2.ItemListFragment</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-ItemDetailFragment"><span class="nav-number">3.3.</span> <span class="nav-text">3.ItemDetailFragment</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-Event"><span class="nav-number">3.4.</span> <span class="nav-text">4.Event</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">walkingCoder</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://walkingCoder.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2016/02/16/EventBus%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/';
+          this.page.identifier = '2016/02/16/EventBus使用详解/';
+          this.page.title = 'EventBus使用详解';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://walkingCoder.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
