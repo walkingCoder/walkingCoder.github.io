@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang="zh-Hans">
+<html class="theme-next mist use-motion" lang="zh-Hans">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -94,7 +94,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Muse',
+    scheme: 'Mist',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -128,6 +128,16 @@
 
 
 
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d93547c1df1bf79570af4684f56090cf";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -188,12 +198,52 @@
         </li>
       
         
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
         <li class="menu-item menu-item-archives">
           <a href="/archives/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
             归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            日程表
           </a>
         </li>
       
@@ -275,6 +325,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/07/23/%E8%A7%A3%E5%86%B3scrollview%E4%B8%AD%E5%B5%8C%E5%A5%97listview%E3%80%81gridview%E7%9A%84%E9%97%AE%E9%A2%98/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015/07/23/解决scrollview中嵌套listview、gridview的问题/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -301,32 +362,16 @@
       
         
           
-            <h3 id="出现的问题："><a href="#出现的问题：" class="headerlink" title="出现的问题："></a>出现的问题：</h3><p>   1.在SrollView中嵌套ListView，ListView的显示会有问题，只显示一行或显示效果与预期不同，这是因为android禁止这样使用，放入ScrollView中的ListView的高度是无法计算的。</p>
-<p>   2.嵌套中的子ListView和GridvIew是无法滑动的，因为子控件的滑动事件会被外面的ScrollView吃掉，如果想让子控件可以滑动，只能强行的截取滑动的相关事件了。</p>
-<h3 id="原因：原因就是scroll事件的消费处理以及ListView控件的高度设定问题。"><a href="#原因：原因就是scroll事件的消费处理以及ListView控件的高度设定问题。" class="headerlink" title="原因：原因就是scroll事件的消费处理以及ListView控件的高度设定问题。"></a>原因：原因就是scroll事件的消费处理以及ListView控件的高度设定问题。</h3><h3 id="解决的办法："><a href="#解决的办法：" class="headerlink" title="解决的办法："></a>解决的办法：</h3><h4 id="一、手动设置listview高度"><a href="#一、手动设置listview高度" class="headerlink" title="一、手动设置listview高度"></a>一、手动设置listview高度</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 动态设置ListView的高度</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> listView</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setListViewHeightBasedOnChildren</span><span class="params">(ListView listView)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">if</span>(listView == <span class="keyword">null</span>) <span class="keyword">return</span>;</span><br><span class="line">   ListAdapter listAdapter = listView.getAdapter();</span><br><span class="line">   <span class="keyword">if</span> (listAdapter == <span class="keyword">null</span>) &#123;</span><br><span class="line">       <span class="comment">// pre-condition</span></span><br><span class="line">       <span class="keyword">return</span>;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">int</span> totalHeight = <span class="number">0</span>;</span><br><span class="line">   <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; listAdapter.getCount(); i++) &#123;</span><br><span class="line">       View listItem = listAdapter.getView(i, <span class="keyword">null</span>, listView);</span><br><span class="line">       listItem.measure(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">       totalHeight += listItem.getMeasuredHeight();</span><br><span class="line">   &#125;</span><br><span class="line">   ViewGroup.LayoutParams params = listView.getLayoutParams();</span><br><span class="line">   params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - <span class="number">1</span>));</span><br><span class="line">   listView.setLayoutParams(params);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>  上面这个方法就是设定ListView的高度了，<b>在为ListView设置了Adapter之后使用</b>，就可以解决问题了。</p>
-<p>  但是这个方法有个两个细节需要注意：</p>
-<p>   <b>一是Adapter中getView方法返回的View的必须由LinearLayout组成</b>，因为只有LinearLayout才有measure()方法，如果使用其他的布局如RelativeLayout，在调用listItem.measure(0, 0);时就会抛异常，因为除LinearLayout外的其他布局的这个方法就是直接抛异常的，没理由…。我最初使用的就是这个方法，但是因为子控件的顶层布局是RelativeLayout，所以一直报错，不得不放弃这个方法。</p>
-<p>   <b>二是需要手动把ScrollView滚动至最顶端</b>，因为使用这个方法的话，默认在ScrollView顶端的项是ListView，具体原因不了解，求大神解答…可以在Activity中设置：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sv &#x3D; (ScrollView) findViewById(R.id.act_solution_1_sv);</span><br><span class="line">sv.ScrollTo(0,0);</span><br></pre></td></tr></table></figure>
-<h4 id="二、使用LinearLayout取代ListView"><a href="#二、使用LinearLayout取代ListView" class="headerlink" title="二、使用LinearLayout取代ListView"></a>二、使用LinearLayout取代ListView</h4><p>既然ListView不能适应ScrollView，那就换一个可以适应ScrollView的控件，干嘛非要吊死在ListView这一棵树上呢？</p>
-<p>而LinearLayout是最好的选择。但如果我仍想继续使用已经定义好的Adater呢？我们只需要自定义一个类继承自LinearLayout，为其加上对BaseAdapter的适配。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 取代ListView的LinearLayout，使之能够成功嵌套在ScrollView中</span></span><br><span class="line"><span class="comment">* <span class="doctag">@author</span> </span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LinearLayoutForListView</span> <span class="keyword">extends</span> <span class="title">LinearLayout</span> </span>&#123;</span><br><span class="line">   <span class="keyword">private</span> BaseAdapter adapter;</span><br><span class="line">   <span class="keyword">private</span> OnClickListener onClickListener = <span class="keyword">null</span>;</span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 绑定布局</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">bindLinearLayout</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">int</span> count = adapter.getCount();</span><br><span class="line">       <span class="keyword">this</span>.removeAllViews();</span><br><span class="line">       <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; count; i++) &#123;</span><br><span class="line">           View v = adapter.getView(i, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line">           v.setOnClickListener(<span class="keyword">this</span>.onClickListener);</span><br><span class="line">           addView(v, i);</span><br><span class="line">       &#125;</span><br><span class="line">      Log.v(<span class="string">"countTAG"</span>, <span class="string">""</span> + count);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">LinearLayoutForListView</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">super</span>(context);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>它的使用和listview一样，写在布局文件里 然后setAdapter就ok了</p>
-<h4 id="三、自定义适应ScrollView的listview"><a href="#三、自定义适应ScrollView的listview" class="headerlink" title="三、自定义适应ScrollView的listview"></a>三、自定义适应ScrollView的listview</h4><p>自定义一个类继承自ListView，通过重写其onMeasure方法，达到对ScrollView适配的效果。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> android.content.Context;</span><br><span class="line"><span class="keyword">import</span> android.util.AttributeSet;</span><br><span class="line"><span class="keyword">import</span> android.widget.ListView;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ListViewForScrollView</span> <span class="keyword">extends</span> <span class="title">ListView</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ListViewForScrollView</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ListViewForScrollView</span><span class="params">(Context context, AttributeSet attrs)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context, attrs);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ListViewForScrollView</span><span class="params">(Context context, AttributeSet attrs,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">int</span> defStyle)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context, attrs, defStyle);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 重写该方法，达到使ListView适应ScrollView的效果</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthMeasureSpec, <span class="keyword">int</span> heightMeasureSpec)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> expandSpec = MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE &gt;&gt; <span class="number">2</span>,</span><br><span class="line">        MeasureSpec.AT_MOST);</span><br><span class="line">        <span class="keyword">super</span>.onMeasure(widthMeasureSpec, expandSpec);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>三个构造方法完全不用动，只要重写onMeasure方法，需要改动的地方比起方法2少了不是一点半点…</p>
-<p>在xml布局中和Activty中使用的ListView改成这个自定义ListView就行了。代码就省了吧…</p>
-<p>这个方法和方法1有一个同样的毛病，就是默认显示的首项是ListView，需要手动把ScrollView滚动至最顶端。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">	sv = (ScrollView) findViewById(R.id.act_solution_4_sv);</span><br><span class="line">	sv.smoothScrollTo(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">```	</span><br><span class="line">&lt;b&gt;GridView也一样，只需重写onMeasure()方法即可&lt;/b&gt;</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">	<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NoScrollGridView</span> <span class="keyword">extends</span> <span class="title">GridView</span></span>&#123;  </span><br><span class="line">	  </span><br><span class="line">	     <span class="function"><span class="keyword">public</span> <span class="title">NoScrollGridView</span><span class="params">(Context context, AttributeSet attrs)</span></span>&#123;  </span><br><span class="line">	          <span class="keyword">super</span>(context, attrs);  </span><br><span class="line">	     &#125;  </span><br><span class="line">	  </span><br><span class="line">	     <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthMeasureSpec, <span class="keyword">int</span> heightMeasureSpec)</span></span>&#123;  </span><br><span class="line">	          <span class="keyword">int</span> mExpandSpec = MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE &gt;&gt; <span class="number">2</span>, MeasureSpec.AT_MOST);  </span><br><span class="line">	          <span class="keyword">super</span>.onMeasure(widthMeasureSpec, mExpandSpec);  </span><br><span class="line">	     &#125;  </span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="注意："><a href="#注意：" class="headerlink" title="注意："></a>注意：</h4><p>使用PullToRefresh下拉刷新和上拉加载更多时，sv.ScrollTo(0,0) 是起不到作用的。</p>
-<p>解决办法一：  亲测没用</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pullScrollView.getRefreshableView().ScrollTo(<span class="number">0</span>,<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
-
-<p>解决办法二： 在PullToRefreshAdapterViewBase源码中添加这两个方法即可 （本人觉得麻烦，不建议）</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">	 <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">setSelection</span><span class="params">(<span class="keyword">int</span> scrollTop)</span></span>&#123;</span><br><span class="line">	       mRefreshableView.setSelection(scrollTop);</span><br><span class="line">	   &#125;</span><br><span class="line">	    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">getFirstVisiablePosition</span><span class="params">()</span></span>&#123;</span><br><span class="line">	        <span class="keyword">return</span> mRefreshableView.getFirstVisiablePosition();</span><br><span class="line">	    &#125;</span><br><span class="line">```	    </span><br><span class="line">解决办法三：&lt;b&gt;让listview顶部的组件获得焦点（非常好用),有时需注意使用顺序&lt;/b&gt;</span><br><span class="line">	</span><br><span class="line">```java		 </span><br><span class="line">		tsstPager.setFocusable(<span class="keyword">true</span>);</span><br><span class="line">		testPager.setFocusableInTouchMode(<span class="keyword">true</span>);</span><br><span class="line">		testPager.requestFocus();</span><br></pre></td></tr></table></figure>
-<h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><h4 id="上述几个方法无非就是对listview（gridview）进行重新测量，但在pullToRefresh加载更多和下拉刷新时，会出现不停的测量，不停的刷新数据，手机屏幕乱跳等现象。解决办法：暂无。有能力再解决。"><a href="#上述几个方法无非就是对listview（gridview）进行重新测量，但在pullToRefresh加载更多和下拉刷新时，会出现不停的测量，不停的刷新数据，手机屏幕乱跳等现象。解决办法：暂无。有能力再解决。" class="headerlink" title="上述几个方法无非就是对listview（gridview）进行重新测量，但在pullToRefresh加载更多和下拉刷新时，会出现不停的测量，不停的刷新数据，手机屏幕乱跳等现象。解决办法：暂无。有能力再解决。"></a>上述几个方法无非就是对listview（gridview）进行重新测量，但在pullToRefresh加载更多和下拉刷新时，会出现不停的测量，不停的刷新数据，手机屏幕乱跳等现象。解决办法：暂无。有能力再解决。</h4>
-          
+          出现的问题：   1.在SrollView中嵌套ListView，ListView的显示会有问题，只显示一行或显示效果与预期不同，这是因为android禁止这样使用，放入ScrollView中的ListView的高度是无法计算的。
+   2.嵌套中的子ListView和GridvIew是无法滑动的，
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2015/07/23/%E8%A7%A3%E5%86%B3scrollview%E4%B8%AD%E5%B5%8C%E5%A5%97listview%E3%80%81gridview%E7%9A%84%E9%97%AE%E9%A2%98/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -418,6 +463,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/07/23/%E5%85%B3%E4%BA%8EEditText%E7%9A%84%E4%B8%80%E4%BA%9B%E7%89%B9%E5%88%AB%E4%BD%BF%E7%94%A8/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015/07/23/关于EditText的一些特别使用/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -444,26 +500,17 @@
       
         
           
-            <p> 首先，会有这样的需求，进入这个Activity,会默认让当前EditText不获取焦点，点击这个组件之后才获取焦点，弹出输入法，（或者做一些操作）。</p>
-<p>解决办法：<br>   在布局文件中，在这个EditText组件的父view中添加</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">         android:focusable=<span class="string">"true"</span></span><br><span class="line">         android:focusableInTouchMode=<span class="string">"true"</span></span><br><span class="line">```       </span><br><span class="line">   即可解决让当前EditText默认不获取焦点。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">对EditText进行监听，失去和获取焦点的事件</span><br><span class="line">    </span><br><span class="line">```java</span><br><span class="line">     input.setOnFocusChangeListener(<span class="keyword">new</span>    View.OnFocusChangeListener() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFocusChange</span><span class="params">(View v, <span class="keyword">boolean</span> hasFocus)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">if</span>(hasFocus)&#123;</span><br><span class="line">                   <span class="comment">//逻辑操作</span></span><br><span class="line">                   input.clearFocus();  <span class="comment">//失去焦点 不然输入法会一直存在</span></span><br><span class="line">                &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                  <span class="comment">//逻辑操作</span></span><br><span class="line">              &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br></pre></td></tr></table></figure>
-<p>增加一个需求，就是让点击搜索之后EditText中显示刚才输入的值,其实很简单，只需要一句话</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">input.setText(inputContent);</span><br></pre></td></tr></table></figure>
-
-<h3 id="一、进入这个页面的时候默认弹出输入法"><a href="#一、进入这个页面的时候默认弹出输入法" class="headerlink" title="一、进入这个页面的时候默认弹出输入法"></a>一、进入这个页面的时候默认弹出输入法</h3><p>看一个manifest中Activity的配置，如果这个页面有EditText，并且我们想要进入这个页面的时候默认弹出输入法，可以这样设置这个属性：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">     android:windowSoftInputMode=stateVisible</span><br><span class="line">```     </span><br><span class="line">这样就会默认弹起输入法，当然还有别的办法。</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">     &lt;activity android:name=<span class="string">".ui.LoginActivity"</span> </span><br><span class="line">                  android:configChanges=<span class="string">"orientation|keyboardHidden|locale"</span> </span><br><span class="line">                  android:screenOrientation=<span class="string">"portrait"</span> </span><br><span class="line">                  android:windowSoftInputMode=<span class="string">"stateVisible|adjustPan"</span> &gt; </span><br><span class="line">      &lt;/activity&gt;</span><br></pre></td></tr></table></figure>
-<h3 id="二、Android-EditText-不弹出输入法总结"><a href="#二、Android-EditText-不弹出输入法总结" class="headerlink" title="二、Android EditText 不弹出输入法总结"></a>二、Android EditText 不弹出输入法总结</h3><p>方法一：</p>
-<p>在AndroidMainfest.xml中选择哪个activity，设置windowSoftInputMode属性为adjustUnspecified|stateHidden</p>
-<p>例如：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;activity android:name=<span class="string">".Main"</span> </span><br><span class="line">     android:windowSoftInputMode=<span class="string">"adjustUnspecified|stateHidden"</span> </span><br><span class="line">     android:configChanges=<span class="string">"orientation|keyboardHidden"</span>&gt; </span><br><span class="line">&lt; /activity&gt;</span><br></pre></td></tr></table></figure>
-<p>方法二：</p>
-<p>让EditText失去焦点，使用EditText的clearFocus方法</p>
-<p>例如：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">		EditText edit=(EditText)findViewById(R.id.edit); </span><br><span class="line">		edit.clearFocus();  </span><br><span class="line">```		</span><br><span class="line">方法三：</span><br><span class="line"></span><br><span class="line">强制隐藏Android输入法窗口</span><br><span class="line"></span><br><span class="line">例如：</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">		EditText edit=(EditText)findViewById(R.id.edit); </span><br><span class="line">		InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE); </span><br><span class="line">		imm.hideSoftInputFromWindow(edit.getWindowToken(),<span class="number">0</span>); </span><br><span class="line">```		</span><br><span class="line">方法四：</span><br><span class="line"></span><br><span class="line">EditText始终不弹出软件键盘</span><br><span class="line"></span><br><span class="line">例：</span><br></pre></td></tr></table></figure>
-<pre><code>EditText edit=(EditText)findViewById(R.id.edit); 
-edit.setInputType(InputType.TYPE_NULL);  </code></pre><p>```</p>
-<h3 id="三、总结-后续添加，敬请期待……"><a href="#三、总结-后续添加，敬请期待……" class="headerlink" title="三、总结 后续添加，敬请期待…….."></a>三、总结 后续添加，敬请期待……..</h3>
-          
+           首先，会有这样的需求，进入这个Activity,会默认让当前EditText不获取焦点，点击这个组件之后才获取焦点，弹出输入法，（或者做一些操作）。
+解决办法：   在布局文件中，在这个EditText组件的父view中添加
+1234567891011121314151617181920     
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2015/07/23/%E5%85%B3%E4%BA%8EEditText%E7%9A%84%E4%B8%80%E4%BA%9B%E7%89%B9%E5%88%AB%E4%BD%BF%E7%94%A8/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -555,6 +602,17 @@ edit.setInputType(InputType.TYPE_NULL);  </code></pre><p>```</p>
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/07/16/my-first-blog/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015/07/16/my-first-blog/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -581,10 +639,17 @@ edit.setInputType(InputType.TYPE_NULL);  </code></pre><p>```</p>
       
         
           
-            <h3 id="初次见面，请多关照"><a href="#初次见面，请多关照" class="headerlink" title="初次见面，请多关照"></a>初次见面，请多关照</h3><p>  从建这个博客开始，即开始一种新的体验。为了很好的督促自己，让自己不至于迷失的太远。将自己工作中遇到的问题，涉及到的知识点及难点记录下来便于知识的掌握和将来时时的回头查阅，更好的丰富自己。</p>
-<h3 id="正解（我自己都不信）"><a href="#正解（我自己都不信）" class="headerlink" title="正解（我自己都不信）"></a>正解（我自己都不信）</h3><p>  瞎扯蛋，以上皆为废话…………</p>
+          初次见面，请多关照  从建这个博客开始，即开始一种新的体验。为了很好的督促自己，让自己不至于迷失的太远。将自己工作中遇到的问题，涉及到的知识点及难点记录下来便于知识的掌握和将来时时的回头查阅，更好的丰富自己。
+正解（我自己都不信）  瞎扯蛋，以上皆为废话…………
 
           
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2015/07/16/my-first-blog/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -692,6 +757,22 @@ edit.setInputType(InputType.TYPE_NULL);  </code></pre><p>```</p>
           
 
           
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/walkingCoder" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="os_line@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
 
           
           
@@ -736,7 +817,7 @@ edit.setInputType(InputType.TYPE_NULL);  </code></pre><p>```</p>
 
 
 
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
 
 
 
@@ -850,6 +931,14 @@ edit.setInputType(InputType.TYPE_NULL);  </code></pre><p>```</p>
 
   
 
+    
+      <script id="dsq-count-scr" src="https://walkingCoder.disqus.com/count.js" async></script>
+    
+
+    
+
+  
+
 
 
 
@@ -862,10 +951,6 @@ edit.setInputType(InputType.TYPE_NULL);  </code></pre><p>```</p>
   
 
 
-
-
-
-  
 
 
 

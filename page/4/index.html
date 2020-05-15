@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang="zh-Hans">
+<html class="theme-next mist use-motion" lang="zh-Hans">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -94,7 +94,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Muse',
+    scheme: 'Mist',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -128,6 +128,16 @@
 
 
 
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d93547c1df1bf79570af4684f56090cf";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -188,12 +198,52 @@
         </li>
       
         
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
         <li class="menu-item menu-item-archives">
           <a href="/archives/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
             归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            日程表
           </a>
         </li>
       
@@ -275,6 +325,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/02/24/%E9%80%9A%E7%9F%A5%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%87%AA%E5%AE%9A%E4%B9%89%E9%80%9A%E7%9F%A5/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/02/24/通知学习之自定义通知/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -301,34 +362,17 @@
       
         
           
-            <p>实现自定义的通知栏效果：</p>
-<p>主要要用到RemoteViews这个类</p>
-<h4 id="注意："><a href="#注意：" class="headerlink" title="注意："></a>注意：</h4><p>Notification的自定义布局是RemoteViews，和其他RemoteViews一样，在自定义视图布局文件中，仅支持FrameLayout、LinearLayout、RelativeLayout三种布局控件和AnalogClock、Chronometer、Button、ImageButton、ImageView、ProgressBar、TextView、ViewFlipper、ListView、GridView、StackView和AdapterViewFlipper这些显示控件，不支持这些类的子类或Android提供的其他控件。否则会引起ClassNotFoundException异常</p>
-<h4 id="步骤如下："><a href="#步骤如下：" class="headerlink" title="步骤如下："></a>步骤如下：</h4><li>1）创建自定义视图
-<li>2）获取远程视图对象（注：Notification的contentView不能为空）
-<li>3）设置PendingIntent（来响应各种事件）
-<li>4）发起Notification
-
-<h4 id="代码模块："><a href="#代码模块：" class="headerlink" title="代码模块："></a>代码模块：</h4><p>样式：</p>
-<h5 id="1-自定义带按钮通知栏-如下样式"><a href="#1-自定义带按钮通知栏-如下样式" class="headerlink" title="1.自定义带按钮通知栏(如下样式)"></a>1.自定义带按钮通知栏(如下样式)</h5><p>正在进行的<br>“正在进行的”通知使用户了解正在运行的后台进程。例如，音乐播放器可以显示正在播放的音乐。也可以用来显示需要长时间处理的操作，例如下载或编码视频。“正在进行的”通知不能被手动删除。<br><img src="http://7xl32g.com1.z0.glb.clouddn.com/notifications_pattern_ongoing_music.png"></p>
-<p>实现方法如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">showButtonNotify</span><span class="params">()</span></span>&#123;</span><br><span class="line">     NotificationCompat.Builder mBuilder = <span class="keyword">new</span> Builder(<span class="keyword">this</span>);</span><br><span class="line">     RemoteViews mRemoteViews = <span class="keyword">new</span> RemoteViews(getPackageName(), R.layout.view_custom_button);</span><br><span class="line">     mRemoteViews.setImageViewResource(R.id.custom_song_icon, R.drawable.sing_icon);</span><br><span class="line">     <span class="comment">//API3.0 以上的时候显示按钮，否则消失</span></span><br><span class="line">     mRemoteViews.setTextViewText(R.id.tv_custom_song_singer, <span class="string">"周杰伦"</span>);</span><br><span class="line">     mRemoteViews.setTextViewText(R.id.tv_custom_song_name, <span class="string">"七里香"</span>);</span><br><span class="line">     <span class="comment">//如果版本号低于（3。0），那么不显示按钮</span></span><br><span class="line">     <span class="keyword">if</span>(BaseTools.getSystemVersion() &lt;= <span class="number">9</span>)&#123;</span><br><span class="line">           mRemoteViews.setViewVisibility(R.id.ll_custom_button, View.GONE);</span><br><span class="line">     &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">           mRemoteViews.setViewVisibility(R.id.ll_custom_button, View.VISIBLE);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="comment">//</span></span><br><span class="line">     <span class="keyword">if</span>(isPlay)&#123;</span><br><span class="line">           mRemoteViews.setImageViewResource(R.id.btn_custom_play, R.drawable.btn_pause);</span><br><span class="line">     &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">           mRemoteViews.setImageViewResource(R.id.btn_custom_play, R.drawable.btn_play);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="comment">//点击的事件处理</span></span><br><span class="line">     Intent buttonIntent = <span class="keyword">new</span> Intent(ACTION_BUTTON);</span><br><span class="line">     <span class="comment">/* 上一首按钮 */</span></span><br><span class="line">     buttonIntent.putExtra(INTENT_BUTTONID_TAG, BUTTON_PREV_ID);</span><br><span class="line">     <span class="comment">//这里加了广播，所及INTENT的必须用getBroadcast方法</span></span><br><span class="line">     PendingIntent intent_prev = PendingIntent.getBroadcast(<span class="keyword">this</span>, <span class="number">1</span>, buttonIntent, PendingIntent.FLAG_UPDATE_CURRENT);</span><br><span class="line">     mRemoteViews.setOnClickPendingIntent(R.id.btn_custom_prev, intent_prev);</span><br><span class="line">     <span class="comment">/* 播放/暂停  按钮 */</span></span><br><span class="line">     buttonIntent.putExtra(INTENT_BUTTONID_TAG, BUTTON_PALY_ID);</span><br><span class="line">     PendingIntent intent_paly = PendingIntent.getBroadcast(<span class="keyword">this</span>, <span class="number">2</span>, buttonIntent, PendingIntent.FLAG_UPDATE_CURRENT);</span><br><span class="line">     mRemoteViews.setOnClickPendingIntent(R.id.btn_custom_play, intent_paly);</span><br><span class="line">     <span class="comment">/* 下一首 按钮  */</span></span><br><span class="line">     buttonIntent.putExtra(INTENT_BUTTONID_TAG, BUTTON_NEXT_ID);</span><br><span class="line">     PendingIntent intent_next = PendingIntent.getBroadcast(<span class="keyword">this</span>, <span class="number">3</span>, buttonIntent, PendingIntent.FLAG_UPDATE_CURRENT);</span><br><span class="line">     mRemoteViews.setOnClickPendingIntent(R.id.btn_custom_next, intent_next);</span><br><span class="line"> </span><br><span class="line">     mBuilder.setContent(mRemoteViews)</span><br><span class="line">             .setContentIntent(getDefalutIntent(Notification.FLAG_ONGOING_EVENT))</span><br><span class="line">             .setWhen(System.currentTimeMillis())<span class="comment">// 通知产生的时间，会在通知信息里显示</span></span><br><span class="line">             .setTicker(<span class="string">"正在播放"</span>)</span><br><span class="line">             .setPriority(Notification.PRIORITY_DEFAULT)<span class="comment">// 设置该通知优先级</span></span><br><span class="line">             .setOngoing(<span class="keyword">true</span>)</span><br><span class="line">             .setSmallIcon(R.drawable.sing_icon);</span><br><span class="line">     Notification notify = mBuilder.build();</span><br><span class="line">     notify.flags = Notification.FLAG_ONGOING_EVENT;</span><br><span class="line">     mNotificationManager.notify(notifyId, notify);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>注意：带按钮的布局相应点击事件在3.0以下版本没有用，所以这边作了系统版本判断，来显示消失按钮。</p>
-<h5 id="2-自定义不带按钮通知栏"><a href="#2-自定义不带按钮通知栏" class="headerlink" title="2.自定义不带按钮通知栏"></a>2.自定义不带按钮通知栏</h5><p>实现方法如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">	<span class="comment">//先设定RemoteViews</span></span><br><span class="line">	RemoteViews view_custom = <span class="keyword">new</span> RemoteViews(getPackageName(), R.layout.view_custom);</span><br><span class="line">	<span class="comment">//设置对应IMAGEVIEW的ID的资源图片</span></span><br><span class="line">	view_custom.setImageViewResource(R.id.custom_icon, R.drawable.icon);</span><br><span class="line">	<span class="comment">//view_custom.setInt(R.id.custom_icon,"setBackgroundResource",R.drawable.icon);</span></span><br><span class="line">	view_custom.setTextViewText(R.id.tv_custom_title, <span class="string">"今日头条"</span>);</span><br><span class="line">	view_custom.setTextViewText(R.id.tv_custom_content, <span class="string">"金州勇士官方宣布球队已经解雇了主帅马克-杰克逊"</span>);</span><br><span class="line">```	</span><br><span class="line"></span><br><span class="line">之后调用：</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">	mBuilder.setContent(view_custom)</span><br></pre></td></tr></table></figure>
-
-<p>来设定自定义的这个布局。</p>
-<h5 id="最近遇到的代码例子："><a href="#最近遇到的代码例子：" class="headerlink" title="最近遇到的代码例子："></a>最近遇到的代码例子：</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//final String STATUS_BAR_COVER_CLICK_ACTION="download";</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">showNotification</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       </span><br><span class="line">        <span class="keyword">final</span> NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);</span><br><span class="line">        NotificationCompat.Builder mBuilder = <span class="keyword">new</span> NotificationCompat.Builder(<span class="keyword">this</span>);</span><br><span class="line">        <span class="keyword">final</span> RemoteViews mRemoteViews = <span class="keyword">new</span> RemoteViews(getPackageName(), R.layout.layout_notification_custom);</span><br><span class="line">       </span><br><span class="line"></span><br><span class="line"><span class="comment">//        Intent buttonIntent=new Intent(this, SendNewsActivity.class);</span></span><br><span class="line"><span class="comment">//        buttonIntent.putExtra("key", 1456546);</span></span><br><span class="line"><span class="comment">//        buttonIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);</span></span><br><span class="line"></span><br><span class="line">        mBuilder.setContent(mRemoteViews)</span><br><span class="line">                .setWhen(System.currentTimeMillis())<span class="comment">// 通知产生的时间，会在通知信息里显示</span></span><br><span class="line">                .setPriority(Notification.PRIORITY_DEFAULT)<span class="comment">// 设置该通知优先级</span></span><br><span class="line">                .setSmallIcon(R.drawable.myicon).setAutoCancel(<span class="keyword">true</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//        BroadcastReceiver onClickReceiver = new BroadcastReceiver() &#123;</span></span><br><span class="line"><span class="comment">//            private boolean flag = false;</span></span><br><span class="line"><span class="comment">//            @Override</span></span><br><span class="line"><span class="comment">//            public void onReceive(Context context, Intent intent) &#123;</span></span><br><span class="line"><span class="comment">//                if (intent.getAction().equals(STATUS_BAR_COVER_CLICK_ACTION)) &#123;</span></span><br><span class="line"><span class="comment">//                 //在这里处理点击事件</span></span><br><span class="line"><span class="comment">//                   ToastUtil.show("========wobeidianjile");</span></span><br><span class="line"><span class="comment">//                 //取消通知栏</span></span><br><span class="line"><span class="comment">////                    mNotificationManager.cancel(0);</span></span><br><span class="line"><span class="comment">//                &#125;</span></span><br><span class="line"><span class="comment">//            &#125;&#125;;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//        IntentFilter filter = new IntentFilter();</span></span><br><span class="line"><span class="comment">//        filter.addAction(STATUS_BAR_COVER_CLICK_ACTION);</span></span><br><span class="line"><span class="comment">//        registerReceiver(onClickReceiver, filter);</span></span><br><span class="line"><span class="comment">//        Intent buttonIntent = new Intent(STATUS_BAR_COVER_CLICK_ACTION);</span></span><br><span class="line"></span><br><span class="line">        Intent buttonIntent=<span class="keyword">new</span> Intent();</span><br><span class="line">        buttonIntent.setAction(Intent.ACTION_VIEW);</span><br><span class="line">        buttonIntent.setData(Uri.parse(<span class="string">"http://img.zcool.cn/community/01b28d554bcd6e000001bf72eacf96.jpg"</span>));</span><br><span class="line">        PendingIntent pendingIntent=PendingIntent.getActivity(<span class="keyword">this</span>,<span class="number">0</span>,buttonIntent,PendingIntent.FLAG_UPDATE_CURRENT);</span><br><span class="line"><span class="comment">//        PendingIntent pendingIntent=PendingIntent.getBroadcast(this, 0, buttonIntent, 0);</span></span><br><span class="line">        mBuilder.setContentIntent(pendingIntent);</span><br><span class="line"><span class="comment">//        mRemoteViews.setOnClickPendingIntent(R.id.image,pendingIntent);</span></span><br><span class="line">        Notification notify = mBuilder.build();</span><br><span class="line">Picasso.with(<span class="keyword">this</span>).load(bean.getImg()).into(mRemoteViews,R.id.image,<span class="number">0</span>,notify);</span><br><span class="line">        mNotificationManager.notify(<span class="number">0</span>, notify);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="Android-5-0之后通知栏图标为白色的解决方案："><a href="#Android-5-0之后通知栏图标为白色的解决方案：" class="headerlink" title="Android 5.0之后通知栏图标为白色的解决方案："></a>Android 5.0之后通知栏图标为白色的解决方案：</h4><h5 id="1"><a href="#1" class="headerlink" title="1."></a>1.</h5><p>Android 5.0(API23)针对targetSdkVersion&gt;=21（Build.VERSION_CODES.LOLLIPOP是21，非23 )， 通知栏图标均自动做了过滤处理，为了统一整个系统的风格。 </p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (entry.icon != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (entry.targetSdk &gt;= Build.VERSION_CODES.LOLLIPOP) &#123;</span><br><span class="line">                entry.icon.setColorFilter(mContext.getResources().getColor(android.R.color.white));</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                entry.icon.setColorFilter(<span class="keyword">null</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
-
-<p>目前可行的就是把AndroidManifest.xml uses-sdk节点的targetSdkVersion属性设置为21以下（不含21）。</p>
-<h5 id="2"><a href="#2" class="headerlink" title="2."></a>2.</h5><p>在5.0之前的版本用一个图片，在之后的版本用另一张只有白色和透明的颜色，然后再设置一个背景颜色</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (android.os.Build.VERSION.SDK_INT &lt; <span class="number">21</span>) 						</span><br><span class="line">     nf.icon = R.drawable.ic_launcher; 					</span><br><span class="line"><span class="keyword">else</span> &#123; 						</span><br><span class="line">     nf.icon = R.drawable.ic_launcher_notification; 						</span><br><span class="line">     Class&lt;?&gt; clazz = nf.getClass(); 						</span><br><span class="line">     Field field = clazz.getDeclaredField(<span class="string">"color"</span>); 						</span><br><span class="line">     field.setAccessible(<span class="keyword">true</span>); 						</span><br><span class="line">     field.set(nf, context.getResources().getColor(R.color.red_launcher)); 		</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="知识点示例代码"><a href="#知识点示例代码" class="headerlink" title="知识点示例代码"></a><a href="https://github.com/iosline/Notification" target="_blank" rel="noopener">知识点示例代码</h4>
-          
+          实现自定义的通知栏效果：
+主要要用到RemoteViews这个类
+注意：Notification的自定义布局是RemoteViews，和其他RemoteViews一样，在自定义视图布局文件中，仅支持FrameLayout、LinearLayout、RelativeLayout三种布局控件和Analo
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/02/24/%E9%80%9A%E7%9F%A5%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%87%AA%E5%AE%9A%E4%B9%89%E9%80%9A%E7%9F%A5/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -420,6 +464,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/02/24/Android%E9%80%9A%E7%9F%A5%E8%AF%A6%E8%A7%A3%E5%AD%A6%E4%B9%A0/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/02/24/Android通知详解学习/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -446,130 +501,21 @@
       
         
           
-            <p>Notification状态通知栏：</p>
-<h3 id="功能作用"><a href="#功能作用" class="headerlink" title="功能作用"></a>功能作用</h3><ol>
-<li>显示接收到短消息、即使消息等信息 （如QQ、微信、新浪、短信）</li>
-<li>显示客户端的推送消息（如有新版本发布，广告，推荐新闻等）</li>
-<li>显示正在进行的事物（例如：后台运行的程序）（如音乐播放器、版本更新时候的下载进度等）</li>
-</ol>
-<h3 id="思维导图结构"><a href="#思维导图结构" class="headerlink" title="思维导图结构"></a>思维导图结构</h3><p>Notificaiton — service   – BroadcastReceiver  – Intent（flag、Action等属性应用） —  PendingIntent</p>
-<h3 id="联系："><a href="#联系：" class="headerlink" title="联系："></a>联系：</h3><ol>
-<li><p>由于service 是在后台运行，所以它意图做什么我们看不到，可以通过Notificaiton 来显示提醒（如音乐的后台播放）。</p>
-</li>
-<li><p>service服务和BroadcastReceiver广播相结合，在加上Notificaiton 显示（如程序的后台更新）。</p>
-</li>
-<li><p>Intent作为意图处理，和Notificaiton的点击时间紧密结合在了一起，并且与BroadcastReceiver和service的联系也紧密不可以分割。</p>
-</li>
-</ol>
-<p>（service 在后台之后通过BroadcastReceiver来通知Notificaiton 显示相关东西，在通过Intent完成用户的意图操作）</p>
-<h3 id="大体了解"><a href="#大体了解" class="headerlink" title="大体了解"></a>大体了解</h3><p>Notification支持文字内容显示、震动、三色灯、铃声等多种提示形式，在默认情况下，Notification仅显示消息标题、消息内容、送达时间这3项内容。以下就是通知的基本布局。</p>
-<h4 id="通知的基本布局："><a href="#通知的基本布局：" class="headerlink" title="通知的基本布局："></a>通知的基本布局：</h4><img src="http://7xl32g.com1.z0.glb.clouddn.com/notifications_pattern_anatomy.png">
+          Notification状态通知栏：
+功能作用
+显示接收到短消息、即使消息等信息 （如QQ、微信、新浪、短信）
+显示客户端的推送消息（如有新版本发布，广告，推荐新闻等）
+显示正在进行的事物（例如：后台运行的程序）（如音乐播放器、版本更新时候的下载进度等）
 
-<h4 id="元素："><a href="#元素：" class="headerlink" title="元素："></a>元素：</h4><ol>
-<li><p>标题   Title/Name</p>
-</li>
-<li><p>大图标  Icon/Photo</p>
-</li>
-<li><p>内容文字</p>
-</li>
-<li><p>内容信息   MESSAGE</p>
-</li>
-<li><p>小图标 Secondary Icon</p>
-</li>
-<li><p>通知的时间 Timestamp,默认为系统发出通知的时间，也可通过setWhen()来设置</p>
-</li>
-</ol>
-<h3 id="相关分析："><a href="#相关分析：" class="headerlink" title="相关分析："></a>相关分析：</h3><p>状态通知栏主要涉及到2个类：  Notification 和 NotificationManager</p>
-<p>Notification为通知信息类，它里面对应了通知栏的各个属性</p>
-<p>NotificationManager ：  是状态栏通知的管理类，负责发通知、清除通知等操作。</p>
-<p>注意：NotificationManager 是一个系统Service，所以必须通过 getSystemService(NOTIFICATION_SERVICE)方法来获取，方法如下。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);</span><br></pre></td></tr></table></figure>
-
-<h3 id="使用步骤："><a href="#使用步骤：" class="headerlink" title="使用步骤："></a>使用步骤：</h3><h4 id="流程模块："><a href="#流程模块：" class="headerlink" title="流程模块："></a>流程模块：</h4><li>第一步：创建一个通知栏的Builder构造类  （Create a Notification Builder）
-
-<li>第二步：定义通知栏的Action  （Define the Notification’s Action）
-
-<li>第三步：设置通知栏点击事件    （Set the Notification’s Click Behavior）
-
-<li>第四步：通知   （Issue the Notification）
-
-<h4 id="代码模块："><a href="#代码模块：" class="headerlink" title="代码模块："></a>代码模块：</h4><p>实现系统默认的通知栏效果：</p>
-<li>第一步：获取状态通知栏管理：
-
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);</span><br></pre></td></tr></table></figure>
-
-<li>第二步：实例化通知栏构造器NotificationCompat.Builder：
-
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NotificationCompat.Builder mBuilder = <span class="keyword">new</span> NotificationCompat.Builder(<span class="keyword">this</span>);</span><br></pre></td></tr></table></figure>
-
-<li>第三步：对Builder进行配置：
-
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">	mBuilder.setContentTitle(<span class="string">"测试标题"</span>)<span class="comment">//设置通知栏标题</span></span><br><span class="line">        .setContentText(<span class="string">"测试内容"</span>) <span class="comment">//设置通知栏显示内容</span></span><br><span class="line">        .setContentIntent(getDefalutIntent(Notification.FLAG_AUTO_CANCEL)) <span class="comment">//设置通知栏点击意图</span></span><br><span class="line">        <span class="comment">//  .setNumber(number) //设置通知集合的数量</span></span><br><span class="line">        .setTicker(<span class="string">"测试通知来啦"</span>) <span class="comment">//通知首次出现在通知栏，带上升动画效果的</span></span><br><span class="line">        .setWhen(System.currentTimeMillis())<span class="comment">//通知产生的时间，会在通知信息里显示，一般是系统获取到的时间</span></span><br><span class="line">        .setPriority(Notification.PRIORITY_DEFAULT) <span class="comment">//设置该通知优先级</span></span><br><span class="line">        <span class="comment">//  .setAutoCancel(true)//设置这个标志当用户单击面板就可以让通知将自动取消</span></span><br><span class="line">        .setOngoing(<span class="keyword">false</span>)<span class="comment">//true，设置他为一个正在进行的通知。他们通常是用来表示一个后台任务,用户积极参与(如播放音乐)或以某种方式正在等待,因此占用设备(如一个文件下载,同步操作,主动网络连接)</span></span><br><span class="line">        .setDefaults(Notification.DEFAULT_VIBRATE)<span class="comment">//向通知添加声音、闪灯和振动效果的最简单、最一致的方式是使用当前的用户默认设置，使用defaults属性，可以组合</span></span><br><span class="line">        <span class="comment">//Notification.DEFAULT_ALL  Notification.DEFAULT_SOUND 添加声音 // requires VIBRATE permission</span></span><br><span class="line">        .setSmallIcon(R.drawable.ic_launcher);<span class="comment">//设置通知小ICON</span></span><br><span class="line">```        </span><br><span class="line">        </span><br><span class="line">&lt;li&gt;第四步：设置通知栏PendingIntent（点击动作事件等都包含在这里）</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">	mBuilder.setContentIntent(PendingIntent intent)</span><br></pre></td></tr></table></figure>
-<p>PendingIntent和Intent略有不同，它可以设置执行次数，主要用于远程服务通信、闹铃、通知、启动器、短信中，在一般情况下用的比较少。</p>
-<p>相关属性和方法</p>
-<p>属性：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">PendingIntent的位标识符：</span><br><span class="line">FLAG_ONE_SHOT   表示返回的PendingIntent仅能执行一次，执行完后自动取消</span><br><span class="line">FLAG_NO_CREATE     表示如果描述的PendingIntent不存在，并不创建相应的PendingIntent，而是返回NULL</span><br><span class="line">FLAG_CANCEL_CURRENT      表示相应的PendingIntent已经存在，则取消前者，然后创建新的PendingIntent，这个有利于数据保持为最新的，可以用于即时通信的通信场景</span><br><span class="line">FLAG_UPDATE_CURRENT     表示更新的PendingIntent</span><br></pre></td></tr></table></figure>
-
-<p>方法：<br><img src="http://7xl32g.com1.z0.glb.clouddn.com/20140511193432625.jpg"><br>可以看出，它支持多种相应方式，有Activity、Broadcast、Service，就根据你自身需求去选择。</p>
-<p>在各种情况下情况下它还会根据各种情况出发效果：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">	contentIntent：在通知窗口区域，Notification被单击时的响应事件由该intent触发；</span><br><span class="line">	deleteIntent：当用户点击全部清除按钮时，响应该清除事件的Intent；</span><br><span class="line">	fullScreenIntent：响应紧急状态的全屏事件（例如来电事件），也就是说通知来的时候，跳过在通知区域点击通知这一步，直接执行fullScreenIntent代表的事件。</span><br><span class="line">例如：在执行了点击通知之后要跳转到指定的XXX的Activity的时候，可以设置以下方法来相应点击事件：</span><br><span class="line"></span><br><span class="line">	Intent intent = <span class="keyword">new</span> Intent(context,XXX<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">	PendingIntent pendingIntent = PendingIntent.getActivity(context, <span class="number">0</span>, intent, <span class="number">0</span>);</span><br><span class="line">	mBuilder.setContentIntent(pendingIntent)</span><br></pre></td></tr></table></figure>
-<p>例如：在执行了清空全部的通知操作时候，可以设置以下方法来相应这个事件：</p>
-<p>采用setDeleteIntent(PendingIntent intent)方法或按照以下写法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Intent deleteIntent = <span class="keyword">new</span> Intent();</span><br><span class="line">deleteIntent.setClass(context, XXXReceiver<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">deleteIntent.setAction(DELETE_ACTION);</span><br><span class="line">notification.deleteIntent = PendingIntent.getBroadcast(context, <span class="number">0</span>, deleteIntent, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
-
-<p>例如：在响应紧急事件（如来电）时候，可以设置以下方法来相应这个事件：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setFullScreenIntent(PendingIntent intent, <span class="keyword">boolean</span> highPriority)</span><br></pre></td></tr></table></figure>
-
-<li>第五步，最简单的一部，发送通知请求
-
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mNotificationManager.notify(notifyId, mBuilder.build());</span><br></pre></td></tr></table></figure>
-<h4 id="对应的各个方法的属性（部分方法以上代码中已经作注释，就不再介绍）："><a href="#对应的各个方法的属性（部分方法以上代码中已经作注释，就不再介绍）：" class="headerlink" title="对应的各个方法的属性（部分方法以上代码中已经作注释，就不再介绍）："></a>对应的各个方法的属性（部分方法以上代码中已经作注释，就不再介绍）：</h4><p>#####（1）方法：设置提醒标志符Flags<br>功能：提醒标志符，向通知添加声音、闪灯和振动效果等设置达到通知提醒效果，可以组合多个属性</p>
-<p>有2种设置方法：</p>
-<p>1.实例化通知栏之后通过给他添加.flags属性赋值。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Notification notification = mBuilder.build();</span><br><span class="line">notification.flags = Notification.FLAG_AUTO_CANCEL;</span><br></pre></td></tr></table></figure>
-
-<p>2.通过setContentIntent(PendingIntent intent)方法中的意图设置对应的flags</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> PendingIntent <span class="title">getDefalutIntent</span><span class="params">(<span class="keyword">int</span> flags)</span></span>&#123;</span><br><span class="line">      PendingIntent pendingIntent= PendingIntent.getActivity(<span class="keyword">this</span>, <span class="number">1</span>, <span class="keyword">new</span> Intent(), flags);</span><br><span class="line">      <span class="keyword">return</span> pendingIntent;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>提醒标志符成员：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Notification.FLAG_SHOW_LIGHTS              <span class="comment">//三色灯提醒，在使用三色灯提醒时候必须加该标志符</span></span><br><span class="line">Notification.FLAG_ONGOING_EVENT          <span class="comment">//发起正在运行事件（活动中）</span></span><br><span class="line">Notification.FLAG_INSISTENT   <span class="comment">//让声音、振动无限循环，直到用户响应 （取消或者打开）</span></span><br><span class="line">Notification.FLAG_ONLY_ALERT_ONCE  <span class="comment">//发起Notification后，铃声和震动均只执行一次</span></span><br><span class="line">Notification.FLAG_AUTO_CANCEL      <span class="comment">//用户单击通知后自动消失</span></span><br><span class="line">Notification.FLAG_NO_CLEAR          <span class="comment">//只有全部清除时，Notification才会清除 ，不清楚该通知(QQ的通知无法清除，就是用的这个)</span></span><br><span class="line">Notification.FLAG_FOREGROUND_SERVICE    <span class="comment">//表示正在运行的服务</span></span><br></pre></td></tr></table></figure>
-
-<p>#####（2）方法：.setDefaults(int defaults)     （NotificationCompat.Builder中的方法，用于提示）</p>
-<p>功能：向通知添加声音、闪灯和振动效果的最简单、使用默认（defaults）属性，可以组合多个属性（和方法1中提示效果一样的）<br>对应属性：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Notification.DEFAULT_VIBRATE    <span class="comment">//添加默认震动提醒  需要 VIBRATE permission</span></span><br><span class="line">Notification.DEFAULT_SOUND    <span class="comment">// 添加默认声音提醒</span></span><br><span class="line">Notification.DEFAULT_LIGHTS<span class="comment">// 添加默认三色灯提醒</span></span><br><span class="line">Notification.DEFAULT_ALL<span class="comment">// 添加默认以上3种全部提醒</span></span><br></pre></td></tr></table></figure>
-
-<p>#####（3）方法：setVibrate(long[] pattern)</p>
-<p>功能：设置震动方式。<br>使用：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mBuilder.setVibrate(<span class="keyword">new</span> <span class="keyword">long</span>[] &#123;<span class="number">0</span>,<span class="number">300</span>,<span class="number">500</span>,<span class="number">700</span>&#125;);</span><br></pre></td></tr></table></figure>
-<p>实现效果：延迟0ms，然后振动300ms，在延迟500ms，接着在振动700ms。</p>
-<p>以上方法的还有种写法是</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mBuilder.build().vibrate = <span class="keyword">new</span> <span class="keyword">long</span>[] &#123;<span class="number">0</span>,<span class="number">300</span>,<span class="number">500</span>,<span class="number">700</span>&#125;;</span><br></pre></td></tr></table></figure>
-<p>以此类推，2种写法都可以。</p>
-<p>如果希望设置默认振动方式，设置了方法（2）中默认为DEFAULT_VIBRATE 即可。</p>
-<p>#####（4）方法：.setLights(intledARGB ,intledOnMS ,intledOffMS )</p>
-<p>功能：android支持三色灯提醒，这个方法就是设置不同场景下的不同颜色的灯。<br>描述：其中ledARGB 表示灯光颜色、 ledOnMS 亮持续时间、ledOffMS 暗的时间。<br>注意：</p>
-<p>1）只有在设置了标志符Flags为Notification.FLAG_SHOW_LIGHTS的时候，才支持三色灯提醒。<br>2）这边的颜色跟设备有关，不是所有的颜色都可以，要看具体设备。<br>使用：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mBuilder.setLights(<span class="number">0xff0000ff</span>, <span class="number">300</span>, <span class="number">0</span>)</span><br></pre></td></tr></table></figure>
-<p>同理，以下方法也可以设置同样效果：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Notification notify = mBuilder.build();</span><br><span class="line">notify.flags = Notification.FLAG_SHOW_LIGHTS;</span><br><span class="line">notify.ledARGB = <span class="number">0xff0000ff</span>;</span><br><span class="line">notify.ledOnMS = <span class="number">300</span>;</span><br><span class="line">notify.ledOffMS = <span class="number">300</span>;</span><br></pre></td></tr></table></figure>
-
-<p>如果希望使用默认的三色灯提醒，设置了方法（2）中默认为DEFAULT_LIGHTS即可。</p>
-<p>#####（5）方法：.setSound(Uri sound)</p>
-<p>功能：设置默认或则自定义的铃声，来提醒。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获取默认铃声</span></span><br><span class="line">.setDefaults(Notification.DEFAULT_SOUND)</span><br><span class="line"><span class="comment">//获取自定义铃声</span></span><br><span class="line">.setSound(Uri.parse(<span class="string">"file:///sdcard/xx/xx.mp3"</span>))</span><br><span class="line"><span class="comment">//获取Android多媒体库内的铃声</span></span><br><span class="line">.setSound(Uri.withAppendedPath(Audio.Media.INTERNAL_CONTENT_URI, <span class="string">"5"</span>))</span><br></pre></td></tr></table></figure>
-<p>同理相同效果的另一种设置方法这边就不讲， 和上面的都是一样的。</p>
-<p>#####（6）方法：.setPriority(int pri)</p>
-<p>功能：设置优先级</p>
-<p>对应属性：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Notification.PRIORITY_DEFAULT</span><br><span class="line">Notification.PRIORITY_HIGH</span><br><span class="line">Notification.PRIORITY_LOW</span><br><span class="line">Notification.PRIORITY_MAX</span><br><span class="line">Notification.PRIORITY_MIN</span><br></pre></td></tr></table></figure>
-<p>#####（7）方法：setOngoing(boolean ongoing)</p>
-<p>功能：设置为ture，表示它为一个正在进行的通知。他们通常是用来表示一个后台任务,用户积极参与(如播放音乐)或以某种方式正在等待,因此占用设备(如一个文件下载,同步操作,主动网络连接)<br>#####（8）方法：setProgress(int max, int progress,boolean indeterminate)</p>
-<p>属性：max:进度条最大数值  、progress:当前进度、indeterminate:表示进度是否不确定，true为不确定，false为确定</p>
-<p>功能：设置带进度条的通知，可以在下载中使用</p>
-<p>注意：此方法在4.0及以后版本才有用，如果为早期版本：需要自定义通知布局，其中包含ProgressBar视图</p>
-<p>使用：如果为确定的进度条：调用setProgress(max, progress, false)来设置通知，在更新进度的时候在此发起通知更新progress，并且在下载完成后要移除进度条，通过调用setProgress(0, 0, false)既可。</p>
-<p>如果为不确定（持续活动）的进度条，这是在处理进度无法准确获知时显示活动正在持续，所以调用setProgress(0, 0, true) ，操作结束时，调用setProgress(0, 0, false)并更新通知以移除指示条</p>
-
-          
+思维导图结构Notificaiton — 
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/02/24/Android%E9%80%9A%E7%9F%A5%E8%AF%A6%E8%A7%A3%E5%AD%A6%E4%B9%A0/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -660,6 +606,17 @@
           
 
           
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/02/17/%E8%87%AA%E5%AE%9A%E4%B9%89ViewPager%E5%AE%9E%E7%8E%B0%E6%97%A0%E9%99%90%E8%BD%AE%E6%92%AD/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/02/17/自定义ViewPager实现无限轮播/" itemprop="commentCount"></span>
+                </a>
+              </span>
             
           
 
@@ -785,6 +742,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/02/16/EventBus%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/02/16/EventBus使用详解/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -811,86 +779,18 @@
       
         
           
-            <h3 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h3><p>EventBus是一款针对Android优化的发布/订阅事件总线。</p>
-<p>主要功能是替代Intent、Handler、BroadCast在Fragment、Activity、Service、线程之间传递消息。</p>
-<p>优点是，开销小，代码更优雅，以及将发送者和接受者解耦。</p>
-<p>作为一个消息总线，有三个主要的元素：</p>
-<li>Event：事件
-
-<pre><code>Event 可以是任意类型的对象</code></pre><li>Subscriber:事件订阅者，接收特定的事件
-
-<p>   在EventBus中，使用约定来指定事件订阅者以简化使用。即所有事件订阅都都是以onEvent开头的函数，具体来说，函数的名字是onEvent，onEventMainThread，onEventBackgroundThread，onEventAsync这四个，这个和ThreadMode有关</p>
-<li>Publisher:事件发布者，用于通知Subscriber有事件发生
-
-<p>可以在任意线程任意位置发送事件，直接调用EventBus的<code>post(Object)</code>方法，可以自己实例化EventBus对象，但一般使用默认的单例就好了：<code>EventBus.getDefault()</code>，根据post函数参数的类型，会自动调用订阅相应类型事件的函数。</p>
-<li>ThreadMode
-
-<p>前面说了，Subscriber函数的名字只能是那4个，因为每个事件订阅函数都是和一个<code>ThreadMode</code>相关联的，ThreadMode指定了会调用的函数。有以下四个ThreadMode：</p>
-<ul><li>PostThread：事件的处理在和事件的发送在相同的进程，所以事件处理时间不应太长，不然影响事件的发送线程，而这个线程可能是UI线程。对应的函数名是onEvent。
-
-<li>MainThread: 事件的处理会在UI线程中执行。事件处理时间不能太长，这个不用说的，长了会ANR的，对应的函数名是onEventMainThread。
-
-<li>BackgroundThread：事件的处理会在一个后台线程中执行，对应的函数名是onEventBackgroundThread，虽然名字是BackgroundThread，事件处理是在后台线程，但事件处理时间还是不应该太长，因为如果发送事件的线程是后台线程，会直接执行事件，如果当前线程是UI线程，事件会被加到一个队列中，由一个线程依次处理这些事件，如果某个事件处理时间太长，会阻塞后面的事件的派发或处理。
-
-<li>Async：事件处理会在单独的线程中执行，主要用于在后台线程中执行耗时操作，每个事件会开启一个线程（有线程池），但最好限制线程的数目。</ul>
-
-<p>根据事件订阅都函数名称的不同，会使用不同的ThreadMode，比如果在后台线程加载了数据想在UI线程显示，订阅者只需把函数命名为onEventMainThread。</p>
-<h3 id="二、基本使用"><a href="#二、基本使用" class="headerlink" title="二、基本使用"></a>二、基本使用</h3><p>导入：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">compile <span class="string">'de.greenrobot:eventbus:2.4.0'</span></span><br></pre></td></tr></table></figure>
-
-<p>使用方法：</p>
-<p>在EventBus中，获取实例的方法一般是采用EventBus.getInstance()来获取默认的EventBus实例</p>
-<p>①.定义事件类型：<br><code>public class MyEvent {}</code></p>
-<p>②.定义事件处理方法：<br><code>public void onEventMainThread</code></p>
-<p>③.注册订阅者：<br><code>EventBus.getDefault().register(this)</code></p>
-<p>③.解除注册订阅者：<br><code>EventBus.getDefault().unregister(this)</code></p>
-<p>④.发送事件：<br><code>EventBus.getDefault().post(new MyEvent())</code></p>
-<p>注册/解除订阅者，是在对事件进行处理的Activity或者Fragment等的onCreate()、onDestoty()中进行的。<br>发送事件的页面中不用注册。</p>
-<h3 id="三、实战"><a href="#三、实战" class="headerlink" title="三、实战"></a>三、实战</h3><p>现在我们的需求是这样的，两个Fragment组成主界面，左边的Fragment是个目录、即列表，右边的Fragment是详细信息面板；</p>
-<p>a、目录的列表是从网络获取的。</p>
-<p>b、当点击目录上的条目时，动态更新详细信息面板；</p>
-<p>效果图：</p>
-<img src="http://7xl32g.com1.z0.glb.clouddn.com/greendao.gif">
-
-<p>有了这个需求，我们传统的做法是：</p>
-<p>a、目录Fragment在onCreate中去开启线程去访问网络获取数据，获取完成以后，通过handler去更新界面。</p>
-<p>b、在目录的Fragment中提供一个接口，然后详细信息面板去注册这个接口，当发生点击时，去回调这个接口，让详细信息面板发生改变。</p>
-<p>这种做法不错的，但是有了EventBus之后，我们有….</p>
-<h4 id="1-MainActivity及其布局"><a href="#1-MainActivity及其布局" class="headerlink" title="1.MainActivity及其布局"></a>1.MainActivity及其布局</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">FragmentActivity</span>  </span></span><br><span class="line"><span class="class"></span>&#123;  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span>  </span></span><br><span class="line"><span class="function">    </span>&#123;  </span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);  </span><br><span class="line">        setContentView(R.layout.activity_main);  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>布局</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&lt;LinearLayout xmlns:android=<span class="string">"http://schemas.android.com/apk/res/android"</span>  </span><br><span class="line">    xmlns:tools=<span class="string">"http://schemas.android.com/tools"</span>  </span><br><span class="line">    android:layout_width=<span class="string">"match_parent"</span>  </span><br><span class="line">    android:layout_height=<span class="string">"match_parent"</span>  </span><br><span class="line">    android:baselineAligned=<span class="string">"false"</span>  </span><br><span class="line">    android:divider=<span class="string">"?android:attr/dividerHorizontal"</span>  </span><br><span class="line">    android:orientation=<span class="string">"horizontal"</span>  </span><br><span class="line">    android:showDividers=<span class="string">"middle"</span> &gt;  </span><br><span class="line">  </span><br><span class="line">    &lt;fragment  </span><br><span class="line">        android:id=<span class="string">"@+id/item_list"</span>  </span><br><span class="line">        android:name=<span class="string">"com.angeldevil.eventbusdemo.ItemListFragment"</span>  </span><br><span class="line">        android:layout_width=<span class="string">"0dip"</span>  </span><br><span class="line">        android:layout_height=<span class="string">"match_parent"</span>  </span><br><span class="line">        android:layout_weight=<span class="string">"1"</span> /&gt;  </span><br><span class="line">  </span><br><span class="line">    &lt;fragment  </span><br><span class="line">        android:id=<span class="string">"@+id/item_detail_container"</span>  </span><br><span class="line">        android:name=<span class="string">"com.angeldevil.eventbusdemo.ItemDetailFragment"</span>  </span><br><span class="line">        android:layout_width=<span class="string">"0dip"</span>  </span><br><span class="line">        android:layout_height=<span class="string">"match_parent"</span>  </span><br><span class="line">        android:layout_weight=<span class="string">"2"</span> /&gt;  </span><br><span class="line">  </span><br><span class="line">&lt;/LinearLayout&gt;</span><br></pre></td></tr></table></figure>
-<p>可以看到，我们MainActvity可以说没有一行代码，布局文件即两个Fragment组成；</p>
-<h4 id="2-ItemListFragment"><a href="#2-ItemListFragment" class="headerlink" title="2.ItemListFragment"></a>2.ItemListFragment</h4><p>首先看个实体类</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Item</span>  </span></span><br><span class="line"><span class="class"></span>&#123;  </span><br><span class="line">    <span class="keyword">public</span> String id;  </span><br><span class="line">    <span class="keyword">public</span> String content;  </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> List&lt;Item&gt; ITEMS = <span class="keyword">new</span> ArrayList&lt;Item&gt;();  </span><br><span class="line">    <span class="keyword">static</span>  </span><br><span class="line">    &#123;  </span><br><span class="line">        <span class="comment">// Add 6 sample items.  </span></span><br><span class="line">        addItem(<span class="keyword">new</span> Item(<span class="string">"1"</span>, <span class="string">"Item 1"</span>));  </span><br><span class="line">        addItem(<span class="keyword">new</span> Item(<span class="string">"2"</span>, <span class="string">"Item 2"</span>));  </span><br><span class="line">        addItem(<span class="keyword">new</span> Item(<span class="string">"3"</span>, <span class="string">"Item 3"</span>));  </span><br><span class="line">        addItem(<span class="keyword">new</span> Item(<span class="string">"4"</span>, <span class="string">"Item 4"</span>));  </span><br><span class="line">        addItem(<span class="keyword">new</span> Item(<span class="string">"5"</span>, <span class="string">"Item 5"</span>));  </span><br><span class="line">        addItem(<span class="keyword">new</span> Item(<span class="string">"6"</span>, <span class="string">"Item 6"</span>));  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">addItem</span><span class="params">(Item item)</span>  </span></span><br><span class="line"><span class="function">    </span>&#123;  </span><br><span class="line">        ITEMS.add(item);  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Item</span><span class="params">(String id, String content)</span>  </span></span><br><span class="line"><span class="function">    </span>&#123;  </span><br><span class="line">        <span class="keyword">this</span>.id = id;  </span><br><span class="line">        <span class="keyword">this</span>.content = content;  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span>  </span></span><br><span class="line"><span class="function">    </span>&#123;  </span><br><span class="line">        <span class="keyword">return</span> content;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>其次，ItemListFragment</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ItemListFragment</span> <span class="keyword">extends</span> <span class="title">ListFragment</span>  </span></span><br><span class="line"><span class="class"></span>&#123;  </span><br><span class="line">  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span>  </span></span><br><span class="line"><span class="function">    </span>&#123;  </span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);  </span><br><span class="line">        <span class="comment">// Register  </span></span><br><span class="line">        EventBus.getDefault().register(<span class="keyword">this</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span>  </span></span><br><span class="line"><span class="function">    </span>&#123;  </span><br><span class="line">        <span class="keyword">super</span>.onDestroy();  </span><br><span class="line">        <span class="comment">// Unregister  </span></span><br><span class="line">        EventBus.getDefault().unregister(<span class="keyword">this</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onViewCreated</span><span class="params">(View view, Bundle savedInstanceState)</span>  </span></span><br><span class="line"><span class="function">    </span>&#123;  </span><br><span class="line">        <span class="keyword">super</span>.onViewCreated(view, savedInstanceState);  </span><br><span class="line">        <span class="comment">// 开启线程加载列表  </span></span><br><span class="line">        <span class="keyword">new</span> Thread()  </span><br><span class="line">        &#123;  </span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span>  </span></span><br><span class="line"><span class="function">            </span>&#123;  </span><br><span class="line">                <span class="keyword">try</span>  </span><br><span class="line">                &#123;  </span><br><span class="line">                    Thread.sleep(<span class="number">2000</span>); <span class="comment">// 模拟延时  </span></span><br><span class="line">                    <span class="comment">// 发布事件，在后台线程发的事件  </span></span><br><span class="line">                    EventBus.getDefault().post(<span class="keyword">new</span> ItemListEvent(Item.ITEMS));  </span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e)  </span><br><span class="line">                &#123;  </span><br><span class="line">                    e.printStackTrace();  </span><br><span class="line">                &#125;  </span><br><span class="line">            &#125;;  </span><br><span class="line">        &#125;.start();  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onEventMainThread</span><span class="params">(ItemListEvent event)</span>  </span></span><br><span class="line"><span class="function">    </span>&#123;  </span><br><span class="line">        setListAdapter(<span class="keyword">new</span> ArrayAdapter&lt;Item&gt;(getActivity(),  </span><br><span class="line">                android.R.layout.simple_list_item_activated_1,  </span><br><span class="line">                android.R.id.text1, event.getItems()));  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onListItemClick</span><span class="params">(ListView listView, View view, <span class="keyword">int</span> position,  </span></span></span><br><span class="line"><span class="function"><span class="params">            <span class="keyword">long</span> id)</span>  </span></span><br><span class="line"><span class="function">    </span>&#123;  </span><br><span class="line">        <span class="keyword">super</span>.onListItemClick(listView, view, position, id);  </span><br><span class="line">        EventBus.getDefault().post(getListView().getItemAtPosition(position));  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>ItemListFragment里面在onCreate里面进行了事件的订阅，onDestroy里面进行了事件的取消；onViewCreated中我们模拟了一个子线程去网络加载数据，获取成功后我们调用<br>了EventBus.getDefault().post(new ItemListEvent(Item.ITEMS));发布了一个事件；</p>
-<p>onListItemClick则是ListView的点击事件，我们调用了EventBus.getDefault().post(getListView().getItemAtPosition(position));去发布一个事件，</p>
-<p>getListView().getItemAtPosition(position)的类型为Item类型；</p>
-<p>细心的你一定发现了一些诡异的事，直接new Thread()获取到数据以后，竟然没有使用handler；我们界面竟然发生了变化，那么List是何时绑定的数据？</p>
-<p>仔细看下代码，发现这个方法：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onEventMainThread</span><span class="params">(ItemListEvent event)</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		setListAdapter(<span class="keyword">new</span> ArrayAdapter&lt;Item&gt;(getActivity(),</span><br><span class="line">				android.R.layout.simple_list_item_activated_1,</span><br><span class="line">				android.R.id.text1, event.getItems()));</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
-
-<p>应该是这个方法为List绑定的数据。那么这个方法是怎么被调用的呢？<br>现在就可以细谈订阅事件与发布事件了：</p>
-<p>如果方法名以onEvent开头，则代表要订阅一个事件，MainThread意思，这个方法最终要在UI线程执行；当事件发布的时候，这个方法就会被执行。<br>那么这个事件什么时候发布呢？</p>
-<p>我们的onEventMainThread触发时机应该在new Thread()执行完成之后，可以看到子线程执行完成之后，执行了EventBus.getDefault().post(new ItemListEvent(Item.ITEMS));</p>
-<p>意味着发布了一个事件，当这个事件发布，我们的onEventMainThread就执行了，那么二者的关联关系是什么呢？</p>
-<p>其实和参数的类型，我们onEventMainThread需要接收一个ItemListEvent ，我们也发布了一个ItemListEvent的实例。</p>
-<p>现在我们完整的理一下：</p>
-<p>在onCreate里面执行    EventBus.getDefault().register(this);意思是让EventBus扫描当前类，把所有onEvent开头的方法记录下来，如何记录呢？使用Map，Key为方法的参数类型，Value中包含我们的方法。<br>这样在onCreate执行完成以后，我们的onEventMainThread就已经以键值对的方式被存储到EventBus中了。</p>
-<p>然后当子线程执行完毕，调用EventBus.getDefault().post(new ItemListEvent(Item.ITEMS))时，EventBus会根据post中实参的类型，去Map中查找对于的方法，于是找到了我们的onEventMainThread，最终调用反射去执行我们的方法。</p>
-<p>现在应该明白了，整个运行的流程了；那么没有接口却能发生回调应该也能解释了。</p>
-<p>现在我们在看看代码，当Item点击的时候EventBus.getDefault().post(getListView().getItemAtPosition(position));我们同样发布了一个事件，参数为Item；这个事件是为了让详细信息的Fragment去更新数据，不用说，按照上面的推测，详细信息的Fragment里面一个有个这样的方法：    public void onEventMainThread(Item item) ； 是不是呢？我们去看看。</p>
-<h4 id="3-ItemDetailFragment"><a href="#3-ItemDetailFragment" class="headerlink" title="3.ItemDetailFragment"></a>3.ItemDetailFragment</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ItemDetailFragment</span> <span class="keyword">extends</span> <span class="title">Fragment</span>  </span></span><br><span class="line"><span class="class"></span>&#123;  </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">private</span> TextView tvDetail;  </span><br><span class="line">  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span>  </span></span><br><span class="line"><span class="function">    </span>&#123;  </span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);  </span><br><span class="line">        <span class="comment">// register  </span></span><br><span class="line">        EventBus.getDefault().register(<span class="keyword">this</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span>  </span></span><br><span class="line"><span class="function">    </span>&#123;  </span><br><span class="line">        <span class="keyword">super</span>.onDestroy();  </span><br><span class="line">        <span class="comment">// Unregister  </span></span><br><span class="line">        EventBus.getDefault().unregister(<span class="keyword">this</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="comment">/** List点击时会发送些事件，接收到事件后更新详情 */</span>  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onEventMainThread</span><span class="params">(Item item)</span>  </span></span><br><span class="line"><span class="function">    </span>&#123;  </span><br><span class="line">        <span class="keyword">if</span> (item != <span class="keyword">null</span>)  </span><br><span class="line">            tvDetail.setText(item.content);  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> View <span class="title">onCreateView</span><span class="params">(LayoutInflater inflater, ViewGroup container,  </span></span></span><br><span class="line"><span class="function"><span class="params">            Bundle savedInstanceState)</span>  </span></span><br><span class="line"><span class="function">    </span>&#123;  </span><br><span class="line">        View rootView = inflater.inflate(R.layout.fragment_item_detail,  </span><br><span class="line">                container, <span class="keyword">false</span>);  </span><br><span class="line">        tvDetail = (TextView) rootView.findViewById(R.id.item_detail);  </span><br><span class="line">        <span class="keyword">return</span> rootView;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>果然不出我们的所料，真的存在onEventMainThread(Item item)的方法。当然了，必须在onCreate里面首先书写EventBus.getDefault().register(this);让EventBus扫描再说。</p>
-<p>那么这个Fragment的流程就是：onCreate时，EventBus扫描当前类，将onEventMainThread以键值对的形式进行存储，键为Item.class ，值为包含该方法的对象。</p>
-<p>然后当ItemListFragment中Item被点击时，发布了一个事件：EventBus.getDefault().post(getListView().getItemAtPosition(position));实参的类型恰好是Item，于是触发我们的<br>onEventMainThread方法，并把Item实参传递进来，我们更新控件。</p>
-<h4 id="4-Event"><a href="#4-Event" class="headerlink" title="4.Event"></a>4.Event</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Event</span>  </span></span><br><span class="line"><span class="class"></span>&#123;  </span><br><span class="line">    <span class="comment">/** 列表加载事件 */</span>  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ItemListEvent</span>  </span></span><br><span class="line"><span class="class">    </span>&#123;  </span><br><span class="line">        <span class="keyword">private</span> List&lt;Item&gt; items;  </span><br><span class="line">  </span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">ItemListEvent</span><span class="params">(List&lt;Item&gt; items)</span>  </span></span><br><span class="line"><span class="function">        </span>&#123;  </span><br><span class="line">            <span class="keyword">this</span>.items = items;  </span><br><span class="line">        &#125;  </span><br><span class="line">  </span><br><span class="line">        <span class="function"><span class="keyword">public</span> List&lt;Item&gt; <span class="title">getItems</span><span class="params">()</span>  </span></span><br><span class="line"><span class="function">        </span>&#123;  </span><br><span class="line">            <span class="keyword">return</span> items;  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这个Event 可以是任意类型 可以是个类，还可以是个枚举等，只要参数不同，针对参数的事件做相应的处理。</p>
-
-          
+          一、概述EventBus是一款针对Android优化的发布/订阅事件总线。
+主要功能是替代Intent、Handler、BroadCast在Fragment、Activity、Service、线程之间传递消息。
+优点是，开销小，代码更优雅，以及将发送者和接受者解耦。
+作为一个消息总线，有三个主要的元
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/02/16/EventBus%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -982,6 +882,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/01/18/Android-Listview%E5%88%97%E8%A1%A8%E4%B8%AD%E8%A7%86%E9%A2%91%E7%9A%84%E6%92%AD%E6%94%BE%E4%B8%8E%E6%9A%82%E5%81%9C%E5%8F%8A%E4%B9%8B%E9%97%B4%E7%9A%84%E7%89%B5%E5%88%B6/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/01/18/Android-Listview列表中视频的播放与暂停及之间的牵制/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -1008,18 +919,18 @@
       
         
           
-            <p>实现的效果：</p>
-<p>   在列表中播放视频，同时播放这个视频的同时，打开列表中另一个视频，当前视频停止播放,控制视频的进度。</p>
-<p>实现方式：</p>
-<p>   android原生的videoview及系统的mediaControll，自带的进度条会在当前页面的下方，不能达到我们每个视频一个进度条的效果， 还有进度条位置的效果。</p>
-<p>解决：</p>
-<p>  自定义视频播放组件，就是将videoview和seekbar整合到一个组件中，自己控制进度，不使用系统的mediaControll。</p>
-<p>思路：</p>
-<p> 检查 定时器任务是否继续进行，定时器任务（videoview播放进度 控制seekbar的进度），定时器任务关掉，否则会一直进行，退出的时候会崩溃</p>
-<p>没写完，回来了解透彻之后在写。</p>
-<p>具体代码见：<a href="https://github.com/iosline/videoplayer" target="_blank" rel="noopener">源码地址</a></p>
-
-          
+          实现的效果：
+   在列表中播放视频，同时播放这个视频的同时，打开列表中另一个视频，当前视频停止播放,控制视频的进度。
+实现方式：
+   android原生的videoview及系统的mediaControll，自带的进度条会在当前页面的下方，不能达到我们每个视频一个进度条的效果， 还有进度条位置的
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/01/18/Android-Listview%E5%88%97%E8%A1%A8%E4%B8%AD%E8%A7%86%E9%A2%91%E7%9A%84%E6%92%AD%E6%94%BE%E4%B8%8E%E6%9A%82%E5%81%9C%E5%8F%8A%E4%B9%8B%E9%97%B4%E7%9A%84%E7%89%B5%E5%88%B6/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1111,6 +1022,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/12/17/Android%E4%B8%ADWebView%E4%BD%BF%E7%94%A8%E4%B9%8B%E4%BA%8C%EF%BC%88JavaScript%E4%BB%A3%E7%A0%81%E4%BD%BF%E7%94%A8%EF%BC%89/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015/12/17/Android中WebView使用之二（JavaScript代码使用）/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -1137,41 +1059,17 @@
       
         
           
-            <h3 id="本文主要讲的是-JS代码与Android代码的互相调用"><a href="#本文主要讲的是-JS代码与Android代码的互相调用" class="headerlink" title="本文主要讲的是 JS代码与Android代码的互相调用"></a>本文主要讲的是 JS代码与Android代码的互相调用</h3><h4 id="一、在WebView中使用JavaScript"><a href="#一、在WebView中使用JavaScript" class="headerlink" title="一、在WebView中使用JavaScript"></a>一、在WebView中使用JavaScript</h4><p>如果你想要载入的页面中用了JavaScript，你必须为你的WebView使用JavaScript。</p>
-<p>一旦使用之后，你也可以自己创建接口在你的应用和JavaScript代码间进行交互。</p>
-<h5 id="前情提要：使用JavaScript"><a href="#前情提要：使用JavaScript" class="headerlink" title="前情提要：使用JavaScript"></a>前情提要：使用JavaScript</h5><p>上一篇文章已经说过，可以通过getSettings()获得WebSettings，然后用setJavaScriptEnabled()使能JavaScript：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">WebView myWebView = (WebView) findViewById(R.id.webview);</span><br><span class="line">WebSettings webSettings = myWebView.getSettings();</span><br><span class="line">webSettings.setJavaScriptEnabled(<span class="keyword">true</span>);</span><br></pre></td></tr></table></figure>
-
-<h5 id="绑定JavaScript与Android代码"><a href="#绑定JavaScript与Android代码" class="headerlink" title="绑定JavaScript与Android代码"></a>绑定JavaScript与Android代码</h5><p>当你为你的Android应用中的WebView专门开发一个网页应用时，你可以创建你的JavaScript代码和你的客户端的Android代码之间的接口。</p>
-<p>比如，你可以用JavaScript代码调用Android代码中的方法，来展现一个对话框之类，而不是使用alert()方法（JS中的对话框方法）。</p>
-<p>在JS和Android代码间绑定一个新的接口，需要调用 addJavascriptInterface()方法。</p>
-<p>方法参数传入一个Java对象实例和一个字符串，该字符串是一个名字（interface name，注意此接口不是通常所说的那个用来实现的接口，而是传入的这个对象在JS中的别名），在JS代码中用此名字调用该Java对象的方法。</p>
-<p>注意这个方法可以让JS代码控制宿主程序，这是一个非常有力的特性，但是同时也存在一些安全问题，因为进一步JS代码可以通过反射访问到注入对象的公有域。攻击者可能会在HTML和JavaScript中包含了有威胁性的代码。</p>
-<p>所以Android 4.1，API 17，也就是JELLY_BEAN 开始，只有被JavascriptInterface 注解标识的公有方法可以被JS代码访问。</p>
-<p>另外，因为JS代码和Java对象在这个WebView所私有的后台线程交互，所以还需要注意线程安全性问题。</p>
-<p>注意，与JS代码绑定的的这个Java对象运行在另一个线程中，与创建它的线程不是一个线程。</p>
-<p>注意，这个Java对象的域是不可访问的。</p>
-<h5 id="绑定JavaScript与Android代码的例子"><a href="#绑定JavaScript与Android代码的例子" class="headerlink" title="绑定JavaScript与Android代码的例子"></a>绑定JavaScript与Android代码的例子</h5><p>比如可以定义这么一个类：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 自定义的Android代码和JavaScript代码之间的桥梁类</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> 1</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebAppInterface</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    Context mContext;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Instantiate the interface and set the context */</span></span><br><span class="line">    WebAppInterface(Context c)</span><br><span class="line">    &#123;</span><br><span class="line">        mContext = c;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Show a toast from the web page */</span></span><br><span class="line">    <span class="comment">// 如果target 大于等于API 17，则需要加上如下注解</span></span><br><span class="line">    <span class="comment">// @JavascriptInterface</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">showToast</span><span class="params">(String toast)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">// Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show();</span></span><br><span class="line">        Toast.makeText(mContext, toast, Toast.LENGTH_LONG).show();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-<p>然后将这个类和你的WebView中的JS代码绑定：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">WebView webView = (WebView) findViewById(R.id.webview);</span><br><span class="line">webView.addJavascriptInterface(<span class="keyword">new</span> WebAppInterface(<span class="keyword">this</span>), <span class="string">"Android"</span>);</span><br></pre></td></tr></table></figure>
-
-<p>　　给这个对象起的别名叫“Android”。</p>
-<p>　　这个就创立了一个接口名，叫“Android”，运行在WebView中的JS代码可以通过这个名字调用WebAppInterface类中的showToast()方法：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;input type=<span class="string">"button"</span> value=<span class="string">"Say hello"</span> onClick=<span class="string">"showAndroidToast('Hello Android!')"</span> /&gt;</span><br><span class="line"></span><br><span class="line">&lt;script type=<span class="string">"text/javascript"</span>&gt;</span><br><span class="line">    <span class="function">function <span class="title">showAndroidToast</span><span class="params">(toast)</span> </span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Android.showToast(toast);</span><br><span class="line">    &#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
-<h5 id="特别注意：需要设置chrome-handler"><a href="#特别注意：需要设置chrome-handler" class="headerlink" title="特别注意：需要设置chrome handler"></a>特别注意：需要设置chrome handler</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 如果不设置这个，JS代码中的按钮会显示，但是按下去却不弹出对话框</span></span><br><span class="line">  <span class="comment">// Sets the chrome handler. This is an implementation of WebChromeClient</span></span><br><span class="line">  <span class="comment">// for use in handling JavaScript dialogs, favicons, titles, and the</span></span><br><span class="line">  <span class="comment">// progress. This will replace the current handler.</span></span><br><span class="line">  myWebView.setWebChromeClient(<span class="keyword">new</span> WebChromeClient()</span><br><span class="line">  &#123;</span><br><span class="line">	</span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onJsAlert</span><span class="params">(WebView view, String url, String message,</span></span></span><br><span class="line"><span class="function"><span class="params">              JsResult result)</span></span></span><br><span class="line"><span class="function">      </span>&#123;</span><br><span class="line">          <span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">          <span class="keyword">return</span> <span class="keyword">super</span>.onJsAlert(view, url, message, result);</span><br><span class="line">      &#125;</span><br><span class="line">	</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
-<h4 id="二、Android-调用JavaScript代码"><a href="#二、Android-调用JavaScript代码" class="headerlink" title="二、Android 调用JavaScript代码"></a>二、Android 调用JavaScript代码</h4><p>这个还比较简单，需要调用的时候只需要一行代码：　　</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">myWebView.loadUrl(<span class="string">"javascript:myFunction()"</span>);<span class="comment">//其中myFunction()是JS函数。</span></span><br></pre></td></tr></table></figure>
-<p>　　这里要补充一下，如果JavaScript函数是带参数的，那么调用时要特别注意。</p>
-<p>　　比如下面这个JS函数，在原来内容上加入一行：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">    <span class="function">function <span class="title">writeLine</span><span class="params">(string)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        console.log(<span class="string">"Write a new Line"</span>);<span class="comment">//调试信息</span></span><br><span class="line">        document.getElementById(<span class="string">"content"</span>).innerHTML += string + <span class="string">"&lt;br /&gt;"</span>;<span class="comment">//在content标签段落加入新行</span></span><br><span class="line">    &#125;</span><br><span class="line">```    </span><br><span class="line">    </span><br><span class="line">　　注：其中content是自定义的标签，html中有一个段落是：</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">    &lt;p id="content"&gt;&lt;/p&gt;</span><br></pre></td></tr></table></figure>
-<p>那么在Android代码中调用这个writeLine()函数时，需要传入一个字符串参数，比如，想要传入一个叫name的String：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">myWebView.loadUrl(<span class="string">"javascript:writeLine('"</span>+name+<span class="string">"')"</span>);<span class="comment">//JS代码要是带参数</span></span><br></pre></td></tr></table></figure>
-<p>　　还有就是要注意双引号中的函数名一定不要写错。</p>
-
-          
+          本文主要讲的是 JS代码与Android代码的互相调用一、在WebView中使用JavaScript如果你想要载入的页面中用了JavaScript，你必须为你的WebView使用JavaScript。
+一旦使用之后，你也可以自己创建接口在你的应用和JavaScript代码间进行交互。
+前情提要：使用
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2015/12/17/Android%E4%B8%ADWebView%E4%BD%BF%E7%94%A8%E4%B9%8B%E4%BA%8C%EF%BC%88JavaScript%E4%BB%A3%E7%A0%81%E4%BD%BF%E7%94%A8%EF%BC%89/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1262,6 +1160,17 @@
           
 
           
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/12/17/Android%E4%B8%ADWebView%E4%BD%BF%E7%94%A8%E4%B9%8B%E4%B8%80%EF%BC%88%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95%EF%BC%89/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015/12/17/Android中WebView使用之一（基础用法）/" itemprop="commentCount"></span>
+                </a>
+              </span>
             
           
 
@@ -1387,6 +1296,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/12/15/%E4%BB%BFQQ%E5%A5%BD%E5%8F%8B%E5%88%97%E8%A1%A8/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015/12/15/仿QQ好友列表/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -1413,28 +1333,17 @@
       
         
           
-            <p>前段时间，朋友不经意间就说起了那天发生的事，一个ios面试者去他公司面试，让他直接做一个QQ好友列表，那哥们不会，被他彻底的鄙视了一番，马丹，我一听，草，我也不会啊，然后我就默默的记住了，回来去查了下资料写了下。</p>
-<h4 id="唉，我太菜了，学无止境啊"><a href="#唉，我太菜了，学无止境啊" class="headerlink" title="唉，我太菜了，学无止境啊"></a>唉，我太菜了，学无止境啊</h4><p>进入正题：</p>
-<p>其实就是用到了<b>ExpandableListView</b>这个组件，用法和listview相似。</p>
-<h4 id="一、默认图标"><a href="#一、默认图标" class="headerlink" title="一、默认图标"></a>一、默认图标</h4><p>在Activity的布局文件中</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;RelativeLayout </span><br><span class="line">    android:layout_width=<span class="string">"match_parent"</span></span><br><span class="line">    android:layout_height=<span class="string">"match_parent"</span></span><br><span class="line">    &gt;</span><br><span class="line"></span><br><span class="line">    &lt;ExpandableListView</span><br><span class="line">        android:id=<span class="string">"@+id/expanded_list"</span></span><br><span class="line">        android:layout_width=<span class="string">"match_parent"</span></span><br><span class="line">        android:layout_height=<span class="string">"match_parent"</span></span><br><span class="line">        android:divider=<span class="string">"@null"</span></span><br><span class="line">        android:scrollbars=<span class="string">"none"</span>/&gt;</span><br><span class="line">&lt;/RelativeLayout&gt;</span><br></pre></td></tr></table></figure>
-
-<p>然后在Activity中</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    ExpandableListView expandablelistview;</span><br><span class="line">    <span class="comment">//群组名称</span></span><br><span class="line">    <span class="keyword">private</span> String[] group = <span class="keyword">new</span> String[] &#123; <span class="string">"在线好友"</span>, <span class="string">"我的好友"</span>, <span class="string">"我的同事"</span>&#125;;</span><br><span class="line">    <span class="comment">//好友名称</span></span><br><span class="line">    <span class="keyword">private</span> String[][] buddy = <span class="keyword">new</span> String[][] &#123;</span><br><span class="line">            &#123; <span class="string">"元芳"</span>, <span class="string">"雷丶小贱"</span>, <span class="string">"狄大人"</span>&#125;,</span><br><span class="line">            &#123;<span class="string">"高太后"</span>, <span class="string">"士兵甲"</span>, <span class="string">"士兵乙"</span>, <span class="string">"士兵丙"</span> &#125;,</span><br><span class="line">            &#123; <span class="string">"艺术家"</span>, <span class="string">"叫兽"</span>, <span class="string">"攻城师"</span>, <span class="string">"职业玩家"</span> &#125;&#125;;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">       </span><br><span class="line"></span><br><span class="line">        expandablelistview= (ExpandableListView) findViewById(R.id.expanded_list);</span><br><span class="line">        ExpandableListAdapter adapter=<span class="keyword">new</span> BuddyAdapter();</span><br><span class="line">        expandablelistview.setAdapter(adapter);</span><br><span class="line">        expandablelistview.setOnChildClickListener(<span class="keyword">new</span> ExpandableListView.OnChildClickListener() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onChildClick</span><span class="params">(ExpandableListView parent, View v, <span class="keyword">int</span> groupPosition, <span class="keyword">int</span> childPosition, <span class="keyword">long</span> id)</span> </span>&#123;</span><br><span class="line">                Toast.makeText(MainActivity.<span class="keyword">this</span>,buddy[groupPosition][childPosition].toString(),Toast.LENGTH_SHORT).show();</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">BuddyAdapter</span> <span class="keyword">extends</span> <span class="title">BaseExpandableListAdapter</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getGroupCount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> group.length;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getChildrenCount</span><span class="params">(<span class="keyword">int</span> groupPosition)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> buddy[groupPosition].length;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Object <span class="title">getGroup</span><span class="params">(<span class="keyword">int</span> groupPosition)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> group[groupPosition];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Object <span class="title">getChild</span><span class="params">(<span class="keyword">int</span> groupPosition, <span class="keyword">int</span> childPosition)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> buddy[groupPosition][childPosition];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">getGroupId</span><span class="params">(<span class="keyword">int</span> groupPosition)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> groupPosition;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">getChildId</span><span class="params">(<span class="keyword">int</span> groupPosition, <span class="keyword">int</span> childPosition)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> childPosition;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasStableIds</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> View <span class="title">getGroupView</span><span class="params">(<span class="keyword">int</span> groupPosition, <span class="keyword">boolean</span> isExpanded, View convertView, ViewGroup parent)</span> </span>&#123;</span><br><span class="line">            TextView textView = getTextView();<span class="comment">//调用定义的getTextView()方法</span></span><br><span class="line">            textView.setText(getGroup(groupPosition).toString());<span class="comment">//添加数据</span></span><br><span class="line">            <span class="keyword">return</span> textView;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> View <span class="title">getChildView</span><span class="params">(<span class="keyword">int</span> groupPosition, <span class="keyword">int</span> childPosition, <span class="keyword">boolean</span> isLastChild, View convertView, ViewGroup parent)</span> </span>&#123;</span><br><span class="line">            LinearLayout ll = <span class="keyword">new</span> LinearLayout(MainActivity.<span class="keyword">this</span>);</span><br><span class="line">            ll.setOrientation(LinearLayout.HORIZONTAL);<span class="comment">//定义为纵向排列</span></span><br><span class="line">            ImageView logo = <span class="keyword">new</span> ImageView(MainActivity.<span class="keyword">this</span>);</span><br><span class="line">            logo.setImageResource(R.mipmap.ic_launcher);<span class="comment">//添加图片</span></span><br><span class="line">            ll.addView(logo);</span><br><span class="line">            TextView textView = getTextView();<span class="comment">//调用定义的getTextView()方法</span></span><br><span class="line">            LinearLayout.LayoutParams params=<span class="keyword">new</span> LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);</span><br><span class="line">            params.gravity= Gravity.CENTER;</span><br><span class="line">            textView.setLayoutParams(params);</span><br><span class="line">            textView.setText(getChild(groupPosition,childPosition).toString());<span class="comment">//添加数据</span></span><br><span class="line">            ll.addView(textView);</span><br><span class="line">            <span class="keyword">return</span> ll;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isChildSelectable</span><span class="params">(<span class="keyword">int</span> groupPosition, <span class="keyword">int</span> childPosition)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> TextView <span class="title">getTextView</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        AbsListView.LayoutParams lp = <span class="keyword">new</span> AbsListView.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,<span class="number">100</span>);</span><br><span class="line">        TextView textView = <span class="keyword">new</span> TextView(MainActivity.<span class="keyword">this</span>);</span><br><span class="line">        textView.setLayoutParams(lp);</span><br><span class="line">        textView.setPadding(<span class="number">100</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        textView.setTextSize(<span class="number">20</span>);</span><br><span class="line">        <span class="keyword">return</span> textView;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>效果图：<br><img src="http://7xl32g.com1.z0.glb.clouddn.com/仿QQ好友列表.gif"/></p>
-<h4 id="二、自定义列表图标"><a href="#二、自定义列表图标" class="headerlink" title="二、自定义列表图标"></a>二、自定义列表图标</h4><li>1、更改自定义图标
-
-<p>在drawable文件夹下新建expandablelistview_change.xml</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version = <span class="string">"1.0"</span>   encoding = <span class="string">"utf-8"</span>?&gt;</span><br><span class="line">&lt;selector   xmlns:android = <span class="string">"http://schemas.android.com/apk/res/android"</span> &gt;      </span><br><span class="line">     &lt;item android:state_expanded = <span class="string">"true"</span>   android:drawable = <span class="string">"@drawable/w2"</span>/&gt;      </span><br><span class="line">     &lt;item android:drawable = <span class="string">"@drawable/w1"</span>/&gt;      </span><br><span class="line">&lt;/selector &gt;</span><br></pre></td></tr></table></figure>
-<li>2.修改布局文件中Expandablelistview的属性等
-
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&lt;ExpandableListView</span><br><span class="line">    android:id=<span class="string">"@+id/expanded_list"</span></span><br><span class="line">    android:layout_width=<span class="string">"match_parent"</span></span><br><span class="line">    android:layout_height=<span class="string">"match_parent"</span></span><br><span class="line">    android:divider=<span class="string">"@null"</span></span><br><span class="line">    android:scrollbars=<span class="string">"none"</span></span><br><span class="line">    android:groupIndicator=<span class="string">"@drawable/expandablelistview_change"</span>/&gt;   <span class="comment">//就是添加这个</span></span><br></pre></td></tr></table></figure>
-<li>3.如果想让图标放在右边可以这样做：
-
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 得到屏幕的大小</span></span><br><span class="line">DisplayMetrics dm = <span class="keyword">new</span> DisplayMetrics();</span><br><span class="line">getWindowManager().getDefaultDisplay().getMetrics(dm);</span><br><span class="line"><span class="comment">//图标设置在右边</span></span><br><span class="line">getExpandableListView().setIndicatorBounds(dm.widthPixels-<span class="number">60</span>, dm.widthPixels); <span class="comment">// 设置指示图标的位置</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="引以为戒"><a href="#引以为戒" class="headerlink" title="引以为戒"></a>引以为戒</h4>
-          
+          前段时间，朋友不经意间就说起了那天发生的事，一个ios面试者去他公司面试，让他直接做一个QQ好友列表，那哥们不会，被他彻底的鄙视了一番，马丹，我一听，草，我也不会啊，然后我就默默的记住了，回来去查了下资料写了下。
+唉，我太菜了，学无止境啊进入正题：
+其实就是用到了ExpandableListView
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2015/12/15/%E4%BB%BFQQ%E5%A5%BD%E5%8F%8B%E5%88%97%E8%A1%A8/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1526,6 +1435,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/10/31/Android-%E5%A4%9C%E9%97%B4%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015/10/31/Android-夜间模式的简单实现/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -1552,29 +1472,15 @@
       
         
           
-            <p>夜间模式的实现，是关于Theme的设置。在Activity中有一个方法叫setTheme()，可以设置Activity的Theme，当然Application类中也有相同的方法，也可以在Application中设置当前应用的Theme。就好像我们可以在Manifest文件中通过android:theme=“”来设置主题一样。</p>
-<p>实现流程：</p>
-<h3 id="一、创建属性名"><a href="#一、创建属性名" class="headerlink" title="一、创建属性名"></a>一、创建属性名</h3><p>在<code>res/value</code>目录下新建一个attr文件，并添加两个item，如下：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=<span class="string">"1.0"</span> encoding=<span class="string">"utf-8"</span>?&gt;</span><br><span class="line">&lt;resources&gt;</span><br><span class="line">    &lt;attr name=<span class="string">"text_color"</span> format=<span class="string">"reference|color"</span> /&gt;</span><br><span class="line">    &lt;attr name=<span class="string">"text_bg_color"</span> format=<span class="string">"reference|color"</span> /&gt;</span><br><span class="line">&lt;/resources&gt;</span><br></pre></td></tr></table></figure>
-
-<p>其中text_bg和text_bg_color就是我们定义的两个属性名，后面的format是指的这个属性名的类型，这里我是用reference|color表示既可以是一个引用，也可以是一个argb颜色值。除了这些你还可以选择int，boolan，string等数据类型。</p>
-<h3 id="二、定义资源样式"><a href="#二、定义资源样式" class="headerlink" title="二、定义资源样式"></a>二、定义资源样式</h3><p>创建完属性名后就需要创建主题样式了。依旧在res/values/下新建一个xml文件，或者也可以在原style.xml中写，是一样的。 我们需要在这里定义步骤一中定义的各属性名在当前主题下的值。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;style name=<span class="string">"Dark"</span> parent=<span class="string">"AppTheme"</span>&gt;</span><br><span class="line">    &lt;item name="text_color"&gt;@color/black_text&lt;/item&gt;</span><br><span class="line">    &lt;item name="text_bg_color"&gt;@color/white&lt;/item&gt;</span><br><span class="line">&lt;/style&gt;</span><br><span class="line"></span><br><span class="line"> &lt;style name=<span class="string">"Light"</span> parent=<span class="string">"AppTheme"</span>&gt;</span><br><span class="line">    &lt;item name="text_color"&gt;@color/black_text&lt;/item&gt;</span><br><span class="line">    &lt;item name="text_bg_color"&gt;@color/white&lt;/item&gt;    //也可以选择器</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
-
-<h3 id="三、布局中使用"><a href="#三、布局中使用" class="headerlink" title="三、布局中使用"></a>三、布局中使用</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;TextView</span><br><span class="line">      android:layout_width=<span class="string">"wrap_content"</span></span><br><span class="line">      android:layout_height=<span class="string">"wrap_content"</span></span><br><span class="line">      android:text=<span class="string">"第一"</span></span><br><span class="line">      android:layout_margin=<span class="string">"5dp"</span></span><br><span class="line">      android:background=<span class="string">"?text_bg_color"</span>      <span class="comment">//这样使用</span></span><br><span class="line">      android:textColor=<span class="string">"?text_color"</span></span><br><span class="line">      android:textSize=<span class="string">"25sp"</span> /&gt;</span><br></pre></td></tr></table></figure>
-
-<p>因为应用夜间模式的Textview控件很多，抽取为一个样式在引用</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;style name=<span class="string">"TextStyle"</span>&gt;</span><br><span class="line">       &lt;item name="android:background"&gt;?text_bg_color&lt;/item&gt;</span><br><span class="line">       &lt;item name="android:textColor"&gt;?text_color&lt;/item&gt;</span><br><span class="line">   &lt;/style&gt;</span><br></pre></td></tr></table></figure>
-
-<p>然后这样使用</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">	 &lt;TextView</span><br><span class="line">        android:layout_width=<span class="string">"wrap_content"</span></span><br><span class="line">        android:layout_height=<span class="string">"wrap_content"</span></span><br><span class="line">        android:text=<span class="string">"第一"</span></span><br><span class="line">        style=<span class="string">"@style/TextStyle"</span></span><br><span class="line">        android:layout_margin=<span class="string">"5dp"</span></span><br><span class="line">        android:textSize=<span class="string">"25sp"</span> /&gt;</span><br><span class="line">``` </span><br><span class="line">       </span><br><span class="line">### 四、代码中使用</span><br><span class="line">在要切换夜间模式的Activity使用`setTheme`方法：</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">	    <span class="comment">/**</span></span><br><span class="line"><span class="comment">	     * 设置为日间模式</span></span><br><span class="line"><span class="comment">	     */</span></span><br><span class="line">	</span><br><span class="line">	    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setLight</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	        LLogUtils.i(<span class="string">"设置为日间模式"</span>);</span><br><span class="line">	        setTheme(R.style.Light);</span><br><span class="line">	        CacheUtil.save(IS_NIGHT, <span class="keyword">false</span>);</span><br><span class="line">	        <span class="keyword">super</span>.recreate();</span><br><span class="line">	    &#125;</span><br><span class="line">	</span><br><span class="line">	    <span class="comment">/**</span></span><br><span class="line"><span class="comment">	     * 设置为夜间模式</span></span><br><span class="line"><span class="comment">	     */</span></span><br><span class="line">	    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setNight</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	        LLogUtils.i(<span class="string">"设置为夜间模式"</span>);</span><br><span class="line">	        setTheme(R.style.Dark);</span><br><span class="line">	        CacheUtil.save(IS_NIGHT, <span class="keyword">true</span>);</span><br><span class="line">	        <span class="keyword">super</span>.recreate();</span><br><span class="line">	    &#125;</span><br></pre></td></tr></table></figure>
-
-<p>效果图：</p>
-<img src="http://7xniib.com1.z0.glb.clouddn.com/darkandnight.gif">
-
-<p>如果需要在开启Activity的时候根据以前的配置，需要重写Activity中的<code>setContentView</code>方法中调用：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setContentView</span><span class="params">(<span class="keyword">int</span> layoutResID)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (CacheUtil.getBoolean(IS_NIGHT)) &#123;</span><br><span class="line">        LLogUtils.i(<span class="string">"设置为夜间模式"</span>);</span><br><span class="line">        setTheme(R.style.Dark);</span><br><span class="line">        CacheUtil.save(IS_NIGHT, <span class="keyword">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">super</span>.setContentView(layoutResID);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          
+          夜间模式的实现，是关于Theme的设置。在Activity中有一个方法叫setTheme()，可以设置Activity的Theme，当然Application类中也有相同的方法，也可以在Application中设置当前应用的Theme。就好像我们可以在Manifest文件中通过android:the
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2015/10/31/Android-%E5%A4%9C%E9%97%B4%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1665,6 +1571,17 @@
           
 
           
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/10/29/Android%E5%A6%82%E4%BD%95%E4%BB%8E%E7%B3%BB%E7%BB%9F%E5%9B%BE%E5%BA%93%E4%B8%AD%E9%80%89%E6%8B%A9%E5%9B%BE%E7%89%87/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015/10/29/Android如何从系统图库中选择图片/" itemprop="commentCount"></span>
+                </a>
+              </span>
             
           
 
@@ -1806,6 +1723,22 @@
           
 
           
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/walkingCoder" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="os_line@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
 
           
           
@@ -1850,7 +1783,7 @@
 
 
 
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
 
 
 
@@ -1964,6 +1897,14 @@
 
   
 
+    
+      <script id="dsq-count-scr" src="https://walkingCoder.disqus.com/count.js" async></script>
+    
+
+    
+
+  
+
 
 
 
@@ -1976,10 +1917,6 @@
   
 
 
-
-
-
-  
 
 
 
